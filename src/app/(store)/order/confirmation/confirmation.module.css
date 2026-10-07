@@ -1,0 +1,142 @@
+.pageWrapper {
+  padding-top: var(--space-3xl);
+  padding-bottom: var(--space-4xl);
+  display: flex;
+  justify-content: center;
+}
+
+.receiptCard {
+  width: 100%;
+  max-width: 620px;
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xs);
+  padding: var(--space-3xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.logoRow {
+  margin-bottom: var(--space-md);
+}
+
+.statusRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xl);
+}
+
+.heading {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-h2);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--color-black-rich);
+}
+
+.orderRef {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-caption);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-gray-600);
+}
+
+.messageBox {
+  background-color: var(--color-white-off);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xs);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.primaryText {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-black-rich);
+  line-height: 1.5;
+}
+
+.secondaryText {
+  font-size: var(--font-size-caption);
+  color: var(--color-gray-500);
+  line-height: 1.45;
+}
+
+.timeline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: var(--space-3xl);
+  padding: 0 var(--space-md);
+}
+
+.timelineStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--color-gray-300);
+  background-color: var(--color-white-pure);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-gray-500);
+}
+
+.stepDone .stepCircle {
+  background-color: var(--color-black-rich);
+  border-color: var(--color-black-rich);
+  color: var(--color-white-pure);
+}
+
+.stepCurrent .stepCircle {
+  border-color: var(--color-black-rich);
+  color: var(--color-black-rich);
+  border-width: 2px;
+}
+
+.stepLine {
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-gray-200);
+  margin: 0 8px;
+  margin-bottom: 22px;
+}
+
+.stepLabel {
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-gray-600);
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xl);
+}
+
+.footerNote {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-micro);
+  color: var(--color-gray-500);
+}

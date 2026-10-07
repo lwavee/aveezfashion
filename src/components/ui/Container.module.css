@@ -1,0 +1,39 @@
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding-mobile, 1rem);
+  padding-right: var(--container-padding-mobile, 1rem);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: var(--container-padding, 1.5rem);
+    padding-right: var(--container-padding, 1.5rem);
+  }
+}
+
+.sm {
+  max-width: var(--container-sm, 640px);
+}
+
+.md {
+  max-width: var(--container-md, 768px);
+}
+
+.lg {
+  max-width: var(--container-lg, 1024px);
+}
+
+.xl {
+  max-width: var(--container-max-width, 1400px);
+}
+
+.full {
+  max-width: 100%;
+}
+
+.clean {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}

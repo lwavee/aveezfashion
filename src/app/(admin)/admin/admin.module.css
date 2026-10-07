@@ -1,0 +1,159 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pageTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-h2);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.pageSubtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-gray-600);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+.metricCard {
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xs);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.metricTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metricLabel {
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-widest);
+  color: var(--color-gray-500);
+}
+
+.metricIcon {
+  color: var(--color-gray-400);
+}
+
+.metricValue {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-black-rich);
+}
+
+.metricChange {
+  font-size: var(--font-size-caption);
+  color: var(--color-gray-600);
+}
+
+.sectionCard {
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xs);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body-sm);
+  text-align: left;
+}
+
+.table th {
+  padding: 12px 14px;
+  background-color: var(--color-white-off);
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-widest);
+  color: var(--color-gray-600);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--color-gray-200);
+  color: var(--color-black-rich);
+}
+
+.statusDot {
+  display: inline-flex;
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.statusProcessing {
+  background-color: #FEF3C7;
+  color: #B45309;
+}
+
+.statusShipped {
+  background-color: #E0E7FF;
+  color: #4338CA;
+}
+
+.statusUnfulfilled {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-600);
+}
+
+.dateCol {
+  font-size: var(--font-size-caption);
+  color: var(--color-gray-500);
+}
+
+@media (max-width: 1024px) {
+  .metricsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+}

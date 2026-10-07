@@ -1,0 +1,108 @@
+.fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8, 0.5rem);
+}
+
+.legend {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-label, 0.6875rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+  margin-bottom: var(--space-8, 0.5rem);
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12, 0.75rem);
+}
+
+.radioContainer {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-12, 0.75rem);
+  cursor: pointer;
+  user-select: none;
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.circle {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-neutral-400);
+  background-color: var(--color-white-pure);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-black-rich);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: all var(--transition-fast);
+}
+
+.input:checked + .circle {
+  border-color: var(--color-black-rich);
+}
+
+.input:checked + .circle .dot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.input:focus-visible + .circle {
+  outline: 2px solid var(--color-black-rich);
+  outline-offset: 2px;
+}
+
+.labelContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.labelText {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-sm);
+  color: var(--color-black-rich);
+  line-height: 1.4;
+}
+
+.descriptionText {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-caption);
+  color: var(--color-neutral-500);
+  line-height: 1.4;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.errorText {
+  font-size: var(--font-size-caption);
+  color: var(--color-error);
+}

@@ -1,0 +1,87 @@
+.section {
+  padding: var(--space-4xl) var(--container-padding);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: var(--space-3xl);
+}
+
+.sectionSubtitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+  color: var(--color-gray-500);
+  margin-bottom: var(--space-xs);
+}
+
+.sectionTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-h2);
+  letter-spacing: var(--letter-spacing-tight);
+  margin-bottom: var(--space-xs);
+}
+
+.handleLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-widest);
+  color: var(--color-black-rich);
+  margin-top: var(--space-xs);
+}
+
+.handleLink:hover {
+  opacity: 0.7;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+}
+
+.postCard {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background-color: var(--color-gray-100);
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 400ms ease;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.postCard:hover .image {
+  transform: scale(1.05);
+}
+
+.postCard:hover .overlay {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

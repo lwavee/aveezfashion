@@ -1,0 +1,45 @@
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-64, 4rem) var(--space-24, 1.5rem);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.iconContainer,
+.defaultIcon {
+  color: var(--color-neutral-400);
+  margin-bottom: var(--space-24, 1.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  color: var(--color-black-rich);
+  margin: 0 0 var(--space-12, 0.75rem) 0;
+}
+
+.description {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-sm);
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-body);
+  margin: 0 0 var(--space-32, 2rem) 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12, 0.75rem);
+}

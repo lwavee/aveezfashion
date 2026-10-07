@@ -1,0 +1,98 @@
+.sidebar {
+  width: 250px;
+  background-color: var(--color-black-rich);
+  color: var(--color-white-pure);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl) var(--space-md);
+  border-right: 1px solid var(--color-black-border);
+  flex-shrink: 0;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-2xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-black-border);
+}
+
+.brandTitle {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.portalTag {
+  font-size: 9px;
+  letter-spacing: var(--letter-spacing-widest);
+  color: var(--color-gray-400);
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px 14px;
+  border-radius: var(--radius-xs);
+  color: var(--color-gray-300);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  transition: all var(--transition-fast);
+}
+
+.navItem:hover {
+  background-color: var(--color-black-surface);
+  color: var(--color-white-pure);
+}
+
+.activeItem {
+  background-color: var(--color-white-pure);
+  color: var(--color-black-rich);
+  font-weight: var(--font-weight-bold);
+}
+
+.activeItem .icon {
+  color: var(--color-black-rich);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+}
+
+.footerLink {
+  margin-top: auto;
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-black-border);
+}
+
+.storefrontLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-gray-400);
+  padding: 8px 12px;
+}
+
+.storefrontLink:hover {
+  color: var(--color-white-pure);
+}

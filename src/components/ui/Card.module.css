@@ -1,0 +1,93 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: transparent;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  transform: translateY(-2px);
+}
+
+/* Variants */
+.minimal {
+  border: none;
+}
+
+.bordered {
+  border: 1px solid var(--color-neutral-200);
+}
+
+.elevated {
+  background-color: var(--color-white-pure);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-neutral-100);
+}
+
+.editorial {
+  overflow: hidden;
+}
+
+/* Media */
+.media {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--color-neutral-100);
+}
+
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.card:hover .media img {
+  transform: scale(1.03);
+}
+
+.portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.square {
+  aspect-ratio: 1 / 1;
+}
+
+.editorial {
+  aspect-ratio: 4 / 5;
+}
+
+.landscape {
+  aspect-ratio: 16 / 9;
+}
+
+/* Content */
+.content {
+  padding-top: var(--space-12, 0.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 0.25rem);
+}
+
+.bordered .content,
+.elevated .content {
+  padding: var(--space-16, 1rem);
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  padding-top: var(--space-8, 0.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

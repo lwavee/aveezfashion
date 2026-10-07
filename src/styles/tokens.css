@@ -1,0 +1,191 @@
+/* ==================================================
+   AVEEZ FASHION — CORE DESIGN TOKENS
+   Monochrome Luxury Aesthetic System
+   ================================================== */
+
+:root {
+  /* ==================================================
+     1. COLOR SYSTEM (Monochrome & Neutral Scale)
+     ================================================== */
+  --color-black-pure:       #000000;
+  --color-black-rich:       #0A0A0A; /* Primary dark background & text */
+  --color-black-surface:    #141414; /* Elevated dark card surface */
+  --color-black-border:     #242424; /* Subtle divider on dark backgrounds */
+  
+  --color-white-pure:       #FFFFFF; /* Primary light background & inverted text */
+  --color-white-off:        #FBFBFB; /* Subtle off-white card/filter background */
+  --color-white-surface:    #F4F4F5; /* Neutral hover and pill background */
+
+  /* Neutral Scale (50 - 950) */
+  --color-neutral-50:       #FAFAFA;
+  --color-neutral-100:      #F4F4F5;
+  --color-neutral-200:      #E4E4E7;
+  --color-neutral-300:      #D4D4D8;
+  --color-neutral-400:      #A1A1AA;
+  --color-neutral-500:      #71717A;
+  --color-neutral-600:      #52525B;
+  --color-neutral-700:      #3F3F46;
+  --color-neutral-800:      #27272A;
+  --color-neutral-900:      #18181B;
+  --color-neutral-950:      #09090B;
+
+  /* Aliases for secondary neutrals */
+  --color-gray-50:          var(--color-neutral-50);
+  --color-gray-100:         var(--color-neutral-100);
+  --color-gray-200:         var(--color-neutral-200);
+  --color-gray-300:         var(--color-neutral-300);
+  --color-gray-400:         var(--color-neutral-400);
+  --color-gray-500:         var(--color-neutral-500);
+  --color-gray-600:         var(--color-neutral-600);
+  --color-gray-700:         var(--color-neutral-700);
+  --color-gray-800:         var(--color-neutral-800);
+  --color-gray-900:         var(--color-neutral-900);
+
+  /* Functional Accents (Restrained, High-Contrast) */
+  --color-success:          #15803D;
+  --color-success-bg:       #F0FDF4;
+  --color-error:            #B91C1C;
+  --color-error-bg:         #FEF2F2;
+  --color-warning:          #B45309;
+  --color-warning-bg:       #FFFBEB;
+  --color-info:             #1D4ED8;
+  --color-info-bg:          #EFF6FF;
+
+  /* ==================================================
+     2. TYPOGRAPHY SYSTEM
+     ================================================== */
+  --font-family-display:    'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-body:       'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono:       ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Heading & Display Scale */
+  --font-size-display:      clamp(2.75rem, 6vw, 5.0rem);  /* 44px - 80px */
+  --font-size-hero:         clamp(2.5rem, 5vw, 4.5rem);   /* 40px - 72px */
+  --font-size-h1:           clamp(2.0rem, 3.5vw, 3.0rem); /* 32px - 48px */
+  --font-size-h2:           clamp(1.5rem, 2.5vw, 2.25rem);/* 24px - 36px */
+  --font-size-h3:           1.5rem;                       /* 24px */
+  --font-size-h4:           1.25rem;                      /* 20px */
+
+  /* Body & UI Scale */
+  --font-size-body-lg:      1.125rem;                     /* 18px */
+  --font-size-body-md:      1.0rem;                       /* 16px (Base) */
+  --font-size-body-sm:      0.875rem;                     /* 14px */
+  --font-size-caption:      0.75rem;                      /* 12px */
+  --font-size-micro:        0.6875rem;                    /* 11px */
+  --font-size-label:        0.6875rem;                    /* 11px */
+
+  /* Font Weights */
+  --font-weight-regular:    400;
+  --font-weight-medium:     500;
+  --font-weight-semibold:   600;
+  --font-weight-bold:       700;
+
+  /* Line Heights */
+  --line-height-tight:      1.1;
+  --line-height-heading:    1.25;
+  --line-height-body:       1.5;
+  --line-height-relaxed:    1.65;
+
+  /* Letter Spacing */
+  --letter-spacing-tight:   -0.02em;
+  --letter-spacing-normal:   0em;
+  --letter-spacing-wide:     0.05em;
+  --letter-spacing-widest:   0.15em;
+
+  /* ==================================================
+     3. SPACING SCALE (8pt Fluid System)
+     ================================================== */
+  --space-4:                0.25rem;  /* 4px */
+  --space-8:                0.5rem;   /* 8px */
+  --space-12:               0.75rem;  /* 12px */
+  --space-16:               1.0rem;   /* 16px */
+  --space-24:               1.5rem;   /* 24px */
+  --space-32:               2.0rem;   /* 32px */
+  --space-40:               2.5rem;   /* 40px */
+  --space-48:               3.0rem;   /* 48px */
+  --space-64:               4.0rem;   /* 64px */
+  --space-80:               5.0rem;   /* 80px */
+  --space-96:               6.0rem;   /* 96px */
+  --space-120:              7.5rem;   /* 120px */
+
+  /* Aliases */
+  --space-2xs:              var(--space-4);
+  --space-xs:               var(--space-8);
+  --space-sm:               var(--space-12);
+  --space-md:               var(--space-16);
+  --space-lg:               var(--space-24);
+  --space-xl:               var(--space-32);
+  --space-2xl:              var(--space-48);
+  --space-3xl:              var(--space-72, 4.5rem);
+  --space-4xl:              var(--space-96);
+
+  /* Section Spacing Variants */
+  --section-space-sm:       var(--space-32);
+  --section-space-md:       var(--space-48);
+  --section-space-lg:       var(--space-80);
+  --section-space-editorial: var(--space-120);
+
+  /* ==================================================
+     4. LAYOUT & CONTAINERS
+     ================================================== */
+  --container-sm:           640px;
+  --container-md:           768px;
+  --container-lg:           1024px;
+  --container-xl:           1280px;
+  --container-max-width:    1400px;
+  --container-padding:      1.5rem;
+  --container-padding-mobile: 1.0rem;
+
+  --header-height:          72px;
+  --header-height-mobile:   60px;
+  --announcement-height:    36px;
+
+  /* ==================================================
+     5. BORDER & RADIUS SYSTEM (Subtle Architectural)
+     ================================================== */
+  --radius-none:            0px;
+  --radius-xs:              2px;
+  --radius-sm:              4px;
+  --radius-md:              6px;
+  --radius-lg:              10px;
+  --radius-full:            9999px;
+
+  /* ==================================================
+     6. SHADOW SYSTEM (Subtle, Flat-Editorial)
+     ================================================== */
+  --shadow-none:            none;
+  --shadow-subtle:          0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-sm:              0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-medium:          0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-md:              0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg:              0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-drawer:          -10px 0 30px rgba(0, 0, 0, 0.12);
+
+  /* ==================================================
+     7. TRANSITIONS & TIMING
+     ================================================== */
+  --transition-fast:        150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal:      250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow:        350ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ==================================================
+     8. Z-INDEX LAYERS
+     ================================================== */
+  --z-base:                 1;
+  --z-sticky:               100;
+  --z-header:               200;
+  --z-overlay:              300;
+  --z-drawer:               400;
+  --z-modal:                500;
+  --z-toast:                600;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,44 @@
+.triggerBtn,
+.triggerLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-black-rich);
+  cursor: pointer;
+  padding: 6px;
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.triggerBtn:hover,
+.triggerLink:hover {
+  opacity: 0.7;
+}
+
+.triggerBtn:focus-visible,
+.triggerLink:focus-visible {
+  outline: 2px solid var(--color-black-rich);
+  outline-offset: 2px;
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  background-color: var(--color-black-rich);
+  color: var(--color-white-pure);
+  font-family: var(--font-family-body);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  min-width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+}

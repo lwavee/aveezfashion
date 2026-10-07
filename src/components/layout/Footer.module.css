@@ -1,0 +1,202 @@
+.footer {
+  background-color: var(--color-black-rich);
+  color: var(--color-white-pure);
+  border-top: 1px solid var(--color-black-border);
+  margin-top: var(--space-4xl);
+}
+
+.newsletterSection {
+  padding: var(--space-3xl) 0;
+  border-bottom: 1px solid var(--color-black-border);
+}
+
+.newsletterContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2xl);
+}
+
+.newsletterInfo {
+  max-width: 500px;
+}
+
+.newsletterTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-h2);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-white-pure);
+  margin-bottom: var(--space-xs);
+}
+
+.newsletterSubtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-gray-400);
+  line-height: 1.6;
+}
+
+.newsletterFormWrapper {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.newsletterForm {
+  display: flex;
+  border-bottom: 1px solid var(--color-white-pure);
+  padding-bottom: 8px;
+}
+
+.newsletterInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--color-white-pure);
+  font-size: var(--font-size-body-sm);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.newsletterInput::placeholder {
+  color: var(--color-gray-500);
+}
+
+.newsletterSubmit {
+  color: var(--color-white-pure);
+  padding: 4px;
+  transition: transform var(--transition-fast);
+}
+
+.newsletterSubmit:hover {
+  transform: translateX(4px);
+}
+
+.subscribedState {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-caption);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-white-pure);
+}
+
+.errorText {
+  font-size: var(--font-size-caption);
+  color: #F87171;
+}
+
+.consentNote {
+  font-size: var(--font-size-micro);
+  color: var(--color-gray-500);
+}
+
+.mainLinksContainer {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--space-3xl);
+  padding: var(--space-4xl) var(--container-padding);
+}
+
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-width: 320px;
+}
+
+.brandBio {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-gray-400);
+  line-height: 1.6;
+}
+
+.socialIcons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}
+
+.socialLink {
+  color: var(--color-gray-400);
+  transition: color var(--transition-fast);
+}
+
+.socialLink:hover {
+  color: var(--color-white-pure);
+}
+
+.colHeader {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+  color: var(--color-white-pure);
+  margin-bottom: var(--space-lg);
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.linkList a {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-gray-400);
+  transition: color var(--transition-fast);
+}
+
+.linkList a:hover {
+  color: var(--color-white-pure);
+}
+
+.bottomBar {
+  border-top: 1px solid var(--color-black-border);
+  padding: var(--space-lg) 0;
+}
+
+.bottomContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--font-size-micro);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-gray-500);
+}
+
+.paymentBadges {
+  display: flex;
+  gap: var(--space-md);
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 1024px) {
+  .newsletterContainer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .mainLinksContainer {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xl);
+  }
+}
+
+@media (max-width: 640px) {
+  .mainLinksContainer {
+    grid-template-columns: 1fr;
+  }
+  .bottomContainer {
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-align: center;
+  }
+  .paymentBadges {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

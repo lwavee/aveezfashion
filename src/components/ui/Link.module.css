@@ -1,0 +1,98 @@
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8, 0.5rem);
+  font-family: var(--font-family-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-black-rich);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-black-rich);
+  outline-offset: 2px;
+}
+
+/* Default */
+.default:hover {
+  opacity: 0.7;
+}
+
+/* Nav */
+.nav {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.nav:hover {
+  opacity: 0.6;
+}
+
+/* Underline */
+.underline {
+  border-bottom: 1px solid var(--color-black-rich);
+  padding-bottom: 2px;
+}
+
+.underline:hover {
+  border-bottom-color: transparent;
+  opacity: 0.7;
+}
+
+/* Arrow */
+.arrow {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+}
+
+.arrow .arrowRight {
+  display: flex;
+  align-items: center;
+  transition: transform var(--transition-fast);
+}
+
+.arrow:hover .arrowRight {
+  transform: translateX(4px);
+}
+
+.arrow .arrowLeft {
+  display: flex;
+  align-items: center;
+  transition: transform var(--transition-fast);
+}
+
+.arrow:hover .arrowLeft {
+  transform: translateX(-4px);
+}
+
+/* Subtle */
+.subtle {
+  font-size: var(--font-size-caption);
+  color: var(--color-neutral-500);
+}
+
+.subtle:hover {
+  color: var(--color-black-rich);
+}
+
+/* Inverted */
+.inverted {
+  color: var(--color-white-pure);
+}
+
+.inverted.underline {
+  border-bottom-color: var(--color-white-pure);
+}
+
+.inverted.subtle {
+  color: var(--color-neutral-400);
+}
+
+.inverted.subtle:hover {
+  color: var(--color-white-pure);
+}

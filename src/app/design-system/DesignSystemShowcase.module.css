@@ -1,0 +1,304 @@
+.showcaseRoot {
+  padding-bottom: var(--space-80, 5rem);
+  background-color: var(--color-white-pure);
+  color: var(--color-black-rich);
+}
+
+.heroBanner {
+  background-color: var(--color-black-rich);
+  color: var(--color-white-pure);
+  padding: var(--space-64, 4rem) 0;
+  margin-bottom: var(--space-48, 3rem);
+}
+
+.heroContent {
+  max-width: 800px;
+}
+
+.heroEyebrow {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-widest);
+  color: var(--color-neutral-400);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: var(--space-8, 0.5rem);
+}
+
+.heroTitle {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-hero);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-tight);
+  text-transform: uppercase;
+  color: var(--color-white-pure);
+  margin-bottom: var(--space-12, 0.75rem);
+  line-height: 1.1;
+}
+
+.heroDesc {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-md);
+  color: var(--color-neutral-300);
+  line-height: var(--line-height-body);
+}
+
+.sectionBlock {
+  padding: var(--space-48, 3rem) 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+
+.blockHeader {
+  margin-bottom: var(--space-32, 2rem);
+}
+
+.blockHeader h2 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  margin-bottom: var(--space-4, 0.25rem);
+}
+
+.blockHeader p {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-neutral-600);
+}
+
+.groupLabel {
+  display: block;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-label, 0.6875rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+  margin-bottom: var(--space-12, 0.75rem);
+}
+
+/* Logos */
+.logoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-20, 1.25rem);
+}
+
+.logoCard {
+  background-color: var(--color-white-off);
+  border: 1px solid var(--color-neutral-200);
+  padding: var(--space-24, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-16, 1rem);
+  min-height: 180px;
+}
+
+.darkCard {
+  background-color: var(--color-black-rich);
+  border-color: var(--color-neutral-800);
+}
+
+.logoLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-neutral-500);
+  font-weight: var(--font-weight-medium);
+}
+
+.logoLabelInverted {
+  font-size: var(--font-size-caption);
+  color: var(--color-neutral-400);
+  font-weight: var(--font-weight-medium);
+}
+
+.logoDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* Swatches */
+.swatchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--space-16, 1rem);
+}
+
+.swatchItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8, 0.5rem);
+}
+
+.swatch {
+  height: 64px;
+  width: 100%;
+}
+
+.swatchInfo {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-size-caption);
+}
+
+.swatchInfo strong {
+  color: var(--color-black-rich);
+}
+
+.swatchInfo code {
+  color: var(--color-neutral-500);
+  font-size: 11px;
+}
+
+.subSwatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-16, 1rem);
+  margin-top: var(--space-24, 1.5rem);
+}
+
+.accentChip {
+  padding: var(--space-8, 0.5rem) var(--space-16, 1rem);
+  background-color: var(--color-neutral-100);
+  border-left: 3px solid;
+  font-size: var(--font-size-caption);
+}
+
+/* Typography */
+.typographyTable {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24, 1.5rem);
+}
+
+.typeRow {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  align-items: baseline;
+  padding-bottom: var(--space-16, 1rem);
+  border-bottom: 1px dashed var(--color-neutral-200);
+}
+
+@media (max-width: 640px) {
+  .typeRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-8, 0.5rem);
+  }
+}
+
+.typeToken {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-caption);
+  color: var(--color-neutral-500);
+}
+
+/* Buttons */
+.componentGroup {
+  margin-bottom: var(--space-24, 1.5rem);
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12, 0.75rem);
+  align-items: center;
+}
+
+/* Forms */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-20, 1.25rem);
+}
+
+.controlsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-32, 2rem);
+  margin-top: var(--space-32, 2rem);
+}
+
+.controlBox {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12, 0.75rem);
+}
+
+/* Badges & Links */
+.badgeRow,
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-16, 1rem);
+  align-items: center;
+}
+
+/* Product Cards */
+.productCardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-24, 1.5rem);
+}
+
+/* Nav Preview */
+.navPreviewBox {
+  padding: var(--space-20, 1.25rem);
+  background-color: var(--color-white-off);
+  border: 1px solid var(--color-neutral-200);
+}
+
+.navBarMock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-24, 1.5rem);
+  flex-wrap: wrap;
+}
+
+/* Loading */
+.loadingRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-32, 2rem);
+}
+
+.loadingCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12, 0.75rem);
+}
+
+/* Empty & Error */
+.emptyStatePreview {
+  border: 1px dashed var(--color-neutral-300);
+  padding: var(--space-24, 1.5rem);
+}
+
+.errorStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16, 1rem);
+  max-width: 600px;
+}
+
+/* Icons */
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: var(--space-16, 1rem);
+}
+
+.iconCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8, 0.5rem);
+  padding: var(--space-16, 1rem);
+  background-color: var(--color-neutral-100);
+  font-size: var(--font-size-micro);
+  color: var(--color-neutral-700);
+  text-align: center;
+}

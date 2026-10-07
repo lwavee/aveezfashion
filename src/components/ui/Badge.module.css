@@ -1,0 +1,70 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-widest);
+  text-transform: uppercase;
+  border-radius: var(--radius-none);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Sizes */
+.sm {
+  padding: 3px 8px;
+  font-size: var(--font-size-micro, 0.6875rem);
+}
+
+.md {
+  padding: 5px 12px;
+  font-size: var(--font-size-caption, 0.75rem);
+}
+
+/* Variants */
+.default {
+  background-color: var(--color-white-surface);
+  color: var(--color-black-rich);
+  border: 1px solid var(--color-neutral-300);
+}
+
+.new {
+  background-color: var(--color-black-rich);
+  color: var(--color-white-pure);
+}
+
+.sale {
+  background-color: var(--color-black-pure);
+  color: var(--color-white-pure);
+}
+
+.best-seller {
+  background-color: var(--color-neutral-900);
+  color: var(--color-white-pure);
+  border: 1px solid var(--color-neutral-700);
+}
+
+.limited {
+  background-color: var(--color-neutral-800);
+  color: var(--color-white-pure);
+}
+
+.out-of-stock,
+.soldout {
+  background-color: var(--color-neutral-200);
+  color: var(--color-neutral-500);
+}
+
+.aveez-original {
+  background-color: var(--color-black-rich);
+  color: var(--color-white-pure);
+  border: 1px solid var(--color-white-pure);
+  box-shadow: 0 0 0 1px var(--color-black-rich);
+}
+
+.outline {
+  background-color: transparent;
+  color: var(--color-black-rich);
+  border: 1px solid var(--color-black-rich);
+}
