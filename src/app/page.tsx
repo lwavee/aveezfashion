@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { HeroSection } from '@/components/home/HeroSection';
+import { NewArrivalsSection } from '@/components/home/NewArrivalsSection';
 import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { AveezOriginalsSection } from '@/components/home/AveezOriginalsSection';
 import { BrandStorySection } from '@/components/home/BrandStorySection';
@@ -18,52 +19,17 @@ export default async function HomePage() {
   const [content, categories, newArrivalsData, bestSellersData] = await Promise.all([
     CatalogService.getHomepageContent(),
     CatalogService.getCategories(),
-    CatalogService.getProducts({ isNewArrival: true, limit: 4 }),
+    CatalogService.getProducts({ isNewArrival: true, limit: 8 }),
     CatalogService.getProducts({ isBestSeller: true, limit: 4 }),
   ]);
 
   return (
     <div className={styles.homeContainer}>
-      {/* 3. Hero Section */}
-      <HeroSection
-        headline={content.hero.headline}
-        subheadline={content.hero.subheadline}
-        desktopImage={content.hero.desktopImage}
-        mobileImage={content.hero.mobileImage}
-        primaryCtaText={content.hero.primaryCtaText}
-        primaryCtaLink={content.hero.primaryCtaLink}
-        secondaryCtaText={content.hero.secondaryCtaText}
-        secondaryCtaLink={content.hero.secondaryCtaLink}
-      />
+      {/* 3. Hero Section Slider */}
+      <HeroSection />
 
       {/* 4. New Arrivals Showcase */}
-      <section className={`container ${styles.productSection}`} aria-label="New Arrivals">
-        <div className={styles.sectionHeader}>
-          <div className={styles.titleStack}>
-            <span className={styles.sectionSub}>FRESH CUTS</span>
-            <h2 className={styles.sectionHeading}>NEW ARRIVALS</h2>
-          </div>
-          <Link href="/shop?filter=new" className={styles.desktopViewAll}>
-            <Button variant="ghost" size="sm">
-              VIEW ALL (NEW) →
-            </Button>
-          </Link>
-        </div>
-
-        <div className={styles.productGrid}>
-          {newArrivalsData.products.map((product, idx) => (
-            <ProductCard key={product._id} product={product} priority={idx < 2} />
-          ))}
-        </div>
-
-        <div className={styles.mobileViewAll}>
-          <Link href="/shop?filter=new">
-            <Button variant="outline" size="md" fullWidth>
-              EXPLORE ALL NEW ARRIVALS
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <NewArrivalsSection products={newArrivalsData.products} />
 
       {/* 5. Shop By Category */}
       <CategoryGrid categories={categories} />

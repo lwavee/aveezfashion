@@ -26,12 +26,14 @@ All brand marks are served directly as optimized SVG vectors from `/public/brand
 
 | Asset File | Name & Context | Approved Use Cases |
 |---|---|---|
-| `primary-logo.svg` | **Primary Logo** | Hero brand moments, major editorial splash screens, about page header. |
-| `av-monogram.svg` | **AV Monogram** | Mobile compact sticky header, browser favicon, app icons, garment tags. |
-| `aveez-wordmark.svg` | **Aveez Wordmark** | Desktop navigation bar, compact headers, editorial lockups. |
-| `horizontal-logo.svg` / `logo-black.svg` | **Horizontal Logo (Black)** | Light surface navigation, invoices, printed packaging. |
-| `logo-white.svg` | **Horizontal Logo (White)** | Dark/black surface headers, footer banners, inverted editorial spreads. |
+| `primary-logo.svg` / `.png` | **Primary Logo (Black)** | Main navigation header, hero brand moments, invoices, light editorial spreads. |
+| `primary-logo-white.svg` / `.png` | **Primary Logo (White)** | Dark/black surface headers, footer banners, inverted editorial spreads. |
+| `av-monogram.svg` / `.png` | **AV Monogram** | Mobile compact sticky header, browser favicon, app icons, garment tags. |
+| `aveez-wordmark.svg` / `.png` | **Aveez Wordmark** | Editorial headers and compact text-first lockups. |
+| `horizontal-logo.svg` / `logo-black.svg` | **Horizontal Logo (Black)** | Wide light surface banners, invoices, packaging. |
+| `logo-white.svg` / `horizontal-logo-white.png` | **Horizontal Logo (White)** | Wide dark/black surface banners. |
 | `clothing-label-mark.svg` | **Clothing Label Mark** | Physical woven garment tags, authenticity cards, fabric detail sections. |
+| `master-logo-black.png` / `master-logo-white.png` | **Original Masters** | High-resolution untouched source masters as provided. |
 
 ---
 

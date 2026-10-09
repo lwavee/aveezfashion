@@ -1,21 +1,22 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Search, User, Heart, ShoppingBag, Menu, X } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import styles from './Navbar.module.css';
 
-export const Navbar: React.FC = () => {
+function NavbarContent() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { totalItems, openCart } = useCart();
   const { totalWishlist } = useWishlist();
 
@@ -28,11 +29,11 @@ export const Navbar: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Close menus on route change
   useEffect(() => {
     setMobileMenuOpen(false);
     setSearchOpen(false);
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +42,33 @@ export const Navbar: React.FC = () => {
     }
   };
 
+  // Active state calculations
+  const filterParam = searchParams?.get('filter');
+  const genderParam = searchParams?.get('gender');
+  const collectionParam = searchParams?.get('collection');
+
+  const isHome = pathname === '/';
+  const isShop = pathname === '/shop';
+
+  const isNewArrivalsActive =
+    !isHome && (filterParam === 'new' || pathname.startsWith('/collections/new'));
+  const isWomenActive =
+    !isHome && (genderParam === 'WOMEN' || pathname.startsWith('/collections/women'));
+  const isMenActive =
+    !isHome && (genderParam === 'MEN' || pathname.startsWith('/collections/men'));
+  const isOriginalsActive =
+    !isHome &&
+    (pathname.startsWith('/collections/aveez-originals') ||
+      collectionParam === 'aveez-originals' ||
+      collectionParam === 'originals');
+  const isShopAllActive =
+    !isHome && isShop && !filterParam && !genderParam && !collectionParam;
+  const isSaleActive =
+    !isHome &&
+    (filterParam === 'sale' ||
+      pathname.startsWith('/collections/sale') ||
+      pathname.startsWith('/sale'));
+
   return (
     <>
       <header
@@ -48,79 +76,81 @@ export const Navbar: React.FC = () => {
         role="banner"
       >
         <div className={`container ${styles.navContainer}`}>
-          {/* Mobile Hamburger Button */}
-          <button
-            className={styles.mobileMenuBtn}
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="Open Navigation Menu"
-          >
-            <Menu size={24} strokeWidth={1.5} />
-          </button>
+          {/* Left Column: Mobile Menu & Logo */}
+          <div className={styles.logoCol}>
+            <button
+              className={styles.mobileMenuBtn}
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open Navigation Menu"
+            >
+              <Menu size={22} strokeWidth={1.5} />
+            </button>
 
-          {/* Brand Logo */}
-          <Link href="/" className={styles.logoLink} aria-label="Aveez Fashion Home">
-            <Logo variant="horizontal" theme="black" height={32} />
-          </Link>
+            <Link href="/" className={styles.logoLink} aria-label="Aveez Fashion Home">
+              <Logo variant="primary" theme="black" height={46} />
+            </Link>
+          </div>
 
-          {/* Desktop Navigation Links */}
+          {/* Center Column: Desktop Navigation */}
           <nav className={styles.desktopNav} role="navigation" aria-label="Main Navigation">
             <Link
               href="/shop?filter=new"
-              className={`${styles.navLink} ${pathname.includes('filter=new') ? styles.active : ''}`}
+              className={`${styles.navLink} ${isNewArrivalsActive ? styles.active : ''}`}
             >
               NEW ARRIVALS
             </Link>
             <Link
-              href="/shop?gender=MEN"
-              className={`${styles.navLink} ${pathname.includes('gender=MEN') ? styles.active : ''}`}
-            >
-              MEN
-            </Link>
-            <Link
               href="/shop?gender=WOMEN"
-              className={`${styles.navLink} ${pathname.includes('gender=WOMEN') ? styles.active : ''}`}
+              className={`${styles.navLink} ${isWomenActive ? styles.active : ''}`}
             >
               WOMEN
             </Link>
             <Link
+              href="/shop?gender=MEN"
+              className={`${styles.navLink} ${isMenActive ? styles.active : ''}`}
+            >
+              MEN
+            </Link>
+            <Link
               href="/collections/aveez-originals"
-              className={`${styles.navLink} ${pathname.includes('aveez-originals') ? styles.active : ''}`}
+              className={`${styles.navLink} ${styles.originalsLink} ${
+                isOriginalsActive ? styles.active : ''
+              }`}
             >
               AVEEZ ORIGINALS
             </Link>
             <Link
               href="/shop"
-              className={`${styles.navLink} ${pathname === '/shop' ? styles.active : ''}`}
+              className={`${styles.navLink} ${isShopAllActive ? styles.active : ''}`}
             >
               SHOP ALL
             </Link>
             <Link
               href="/shop?filter=sale"
-              className={`${styles.navLink} ${styles.saleLink}`}
+              className={`${styles.navLink} ${styles.saleLink} ${
+                isSaleActive ? styles.active : ''
+              }`}
             >
               SALE
             </Link>
           </nav>
 
-          {/* Right Action Icons */}
+          {/* Right Column: Action Icons */}
           <div className={styles.actionIcons}>
-            {/* Search Trigger */}
             <button
               className={styles.iconBtn}
               onClick={() => setSearchOpen((prev) => !prev)}
               aria-label="Search Catalog"
             >
-              <Search size={21} strokeWidth={1.5} />
+              <Search size={20} strokeWidth={1.5} />
             </button>
 
-            {/* Customer Account */}
             <Link href="/account" className={styles.iconBtn} aria-label="Customer Account">
-              <User size={21} strokeWidth={1.5} />
+              <User size={20} strokeWidth={1.5} />
             </Link>
 
-            {/* Wishlist */}
             <Link href="/wishlist" className={styles.iconBtn} aria-label="Wishlist">
-              <Heart size={21} strokeWidth={1.5} />
+              <Heart size={20} strokeWidth={1.5} />
               {totalWishlist > 0 && (
                 <span className={styles.badge} aria-label={`${totalWishlist} items in wishlist`}>
                   {totalWishlist}
@@ -128,13 +158,12 @@ export const Navbar: React.FC = () => {
               )}
             </Link>
 
-            {/* Shopping Bag / Cart Drawer */}
             <button
               className={styles.iconBtn}
               onClick={openCart}
               aria-label="Shopping Bag"
             >
-              <ShoppingBag size={21} strokeWidth={1.5} />
+              <ShoppingBag size={20} strokeWidth={1.5} />
               {totalItems > 0 && (
                 <span className={styles.badge} aria-label={`${totalItems} items in bag`}>
                   {totalItems}
@@ -181,33 +210,55 @@ export const Navbar: React.FC = () => {
             aria-label="Mobile Navigation"
           >
             <div className={styles.mobileDrawerHeader}>
-              <Logo variant="monogram" height={32} />
+              <Logo variant="primary" theme="black" height={40} />
               <button
                 className={styles.closeBtn}
                 onClick={() => setMobileMenuOpen(false)}
                 aria-label="Close Menu"
               >
-                <X size={24} />
+                <X size={22} />
               </button>
             </div>
 
             <nav className={styles.mobileNavLinks}>
-              <Link href="/shop?filter=new" className={styles.mobileNavLink}>
+              <Link
+                href="/shop?filter=new"
+                className={`${styles.mobileNavLink} ${isNewArrivalsActive ? styles.active : ''}`}
+              >
                 NEW ARRIVALS
               </Link>
-              <Link href="/shop?gender=MEN" className={styles.mobileNavLink}>
-                MEN
-              </Link>
-              <Link href="/shop?gender=WOMEN" className={styles.mobileNavLink}>
+              <Link
+                href="/shop?gender=WOMEN"
+                className={`${styles.mobileNavLink} ${isWomenActive ? styles.active : ''}`}
+              >
                 WOMEN
               </Link>
-              <Link href="/collections/aveez-originals" className={styles.mobileNavLink}>
+              <Link
+                href="/shop?gender=MEN"
+                className={`${styles.mobileNavLink} ${isMenActive ? styles.active : ''}`}
+              >
+                MEN
+              </Link>
+              <Link
+                href="/collections/aveez-originals"
+                className={`${styles.mobileNavLink} ${styles.originalsLink} ${
+                  isOriginalsActive ? styles.active : ''
+                }`}
+              >
                 AVEEZ ORIGINALS
               </Link>
-              <Link href="/shop" className={styles.mobileNavLink}>
+              <Link
+                href="/shop"
+                className={`${styles.mobileNavLink} ${isShopAllActive ? styles.active : ''}`}
+              >
                 SHOP ALL
               </Link>
-              <Link href="/shop?filter=sale" className={`${styles.mobileNavLink} ${styles.saleLink}`}>
+              <Link
+                href="/shop?filter=sale"
+                className={`${styles.mobileNavLink} ${styles.saleLink} ${
+                  isSaleActive ? styles.active : ''
+                }`}
+              >
                 SALE
               </Link>
             </nav>
@@ -217,7 +268,7 @@ export const Navbar: React.FC = () => {
                 ACCOUNT
               </Link>
               <Link href="/wishlist" className={styles.mobileFooterLink}>
-                WISHLIST ({totalWishlist})
+                WISHLIST {totalWishlist > 0 ? `(${totalWishlist})` : ''}
               </Link>
               <Link href="/about" className={styles.mobileFooterLink}>
                 OUR STORY
@@ -227,5 +278,34 @@ export const Navbar: React.FC = () => {
         </div>
       )}
     </>
+  );
+}
+
+export const Navbar: React.FC = () => {
+  return (
+    <Suspense
+      fallback={
+        <header className={styles.navbar} role="banner">
+          <div className={`container ${styles.navContainer}`}>
+            <div className={styles.logoCol}>
+              <Link href="/" className={styles.logoLink} aria-label="Aveez Fashion Home">
+                <Logo variant="primary" theme="black" height={46} />
+              </Link>
+            </div>
+            <nav className={styles.desktopNav} role="navigation" aria-label="Main Navigation">
+              <span className={styles.navLink}>NEW ARRIVALS</span>
+              <span className={styles.navLink}>WOMEN</span>
+              <span className={styles.navLink}>MEN</span>
+              <span className={`${styles.navLink} ${styles.originalsLink}`}>AVEEZ ORIGINALS</span>
+              <span className={styles.navLink}>SHOP ALL</span>
+              <span className={`${styles.navLink} ${styles.saleLink}`}>SALE</span>
+            </nav>
+            <div className={styles.actionIcons} />
+          </div>
+        </header>
+      }
+    >
+      <NavbarContent />
+    </Suspense>
   );
 };

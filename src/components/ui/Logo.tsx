@@ -10,45 +10,42 @@ interface LogoProps {
 }
 
 export const Logo: React.FC<LogoProps> = ({
-  variant = 'horizontal',
+  variant = 'primary',
   theme = 'black',
   width,
   height,
   className = '',
 }) => {
-  let src = '/brand/horizontal-logo.svg';
-  let defaultWidth = 180;
-  let defaultHeight = 36;
+  const isWhite = theme === 'white';
+  let src = isWhite ? '/brand/primary-logo-white.svg' : '/brand/primary-logo.svg';
+  let aspectRatio = 945 / 766; // primary aspect ratio (~1.234)
+  let defaultHeight = 60;
 
   if (variant === 'monogram') {
-    src = '/brand/av-monogram.svg';
-    defaultWidth = 40;
+    src = isWhite ? '/brand/av-monogram-white.svg' : '/brand/av-monogram.svg';
+    aspectRatio = 799 / 473; // ~1.689
     defaultHeight = 40;
   } else if (variant === 'wordmark') {
-    src = '/brand/aveez-wordmark.svg';
-    defaultWidth = 140;
+    src = isWhite ? '/brand/aveez-wordmark-white.svg' : '/brand/aveez-wordmark.svg';
+    aspectRatio = 945 / 276; // ~3.424
     defaultHeight = 28;
-  } else if (variant === 'primary') {
-    src = '/brand/primary-logo.svg';
-    defaultWidth = 100;
-    defaultHeight = 80;
+  } else if (variant === 'horizontal') {
+    src = isWhite ? '/brand/logo-white.svg' : '/brand/logo-black.svg';
+    aspectRatio = 932 / 220; // ~4.236
+    defaultHeight = 36;
   } else if (variant === 'clothing-label') {
     src = '/brand/clothing-label-mark.svg';
-    defaultWidth = 120;
-    defaultHeight = 165;
+    aspectRatio = 200 / 280; // ~0.714
+    defaultHeight = 140;
   } else {
-    // Horizontal
-    if (theme === 'white') {
-      src = '/brand/logo-white.svg';
-    } else {
-      src = '/brand/logo-black.svg';
-    }
-    defaultWidth = 190;
-    defaultHeight = 36;
+    // Primary default
+    src = isWhite ? '/brand/primary-logo-white.svg' : '/brand/primary-logo.svg';
+    aspectRatio = 945 / 766;
+    defaultHeight = 60;
   }
 
-  const w = width || defaultWidth;
-  const h = height || defaultHeight;
+  const h = height || (width ? Math.round(width / aspectRatio) : defaultHeight);
+  const w = width || Math.round(h * aspectRatio);
 
   return (
     <div
@@ -67,8 +64,9 @@ export const Logo: React.FC<LogoProps> = ({
         height={h}
         priority
         style={{
-          width: `${w}px`,
-          height: 'auto',
+          width: 'auto',
+          height: `${h}px`,
+          maxWidth: width ? `${width}px` : 'none',
           maxHeight: `${h}px`,
           objectFit: 'contain',
         }}

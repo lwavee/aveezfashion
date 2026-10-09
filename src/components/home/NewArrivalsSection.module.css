@@ -1,0 +1,237 @@
+.section {
+  position: relative;
+  width: 100%;
+  padding: clamp(3rem, 6vw, 5.5rem) 0;
+  background-color: var(--color-white-pure);
+  overflow: hidden;
+}
+
+.headerWrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: clamp(2rem, 3.5vw, 3rem);
+  gap: 2rem;
+}
+
+/* Giant faint watermark typography in the background */
+.watermark {
+  position: absolute;
+  left: 36%;
+  top: -24px;
+  font-family: var(--font-family-serif);
+  font-size: clamp(5.5rem, 12vw, 10.5rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  color: rgba(0, 0, 0, 0.028);
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+/* Left Column: Eyebrow + Main Title + Tagline */
+.leftCol {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.eyebrowText {
+  font-family: var(--font-family-body);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gray-600);
+}
+
+.eyebrowLine {
+  width: 56px;
+  height: 1px;
+  background-color: var(--color-gray-300);
+}
+
+.mainTitle {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(8px, 1.2vw, 16px);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.titleWordNew {
+  font-family: var(--font-family-display);
+  font-size: clamp(2.4rem, 5.2vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--color-black-rich);
+}
+
+.titleWordArrivals {
+  font-family: var(--font-family-serif);
+  font-style: italic;
+  font-size: clamp(2.4rem, 5.2vw, 4.2rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #B5997A; /* Warm luxury champagne bronze tone from reference */
+}
+
+.tagline {
+  font-family: var(--font-family-body);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gray-500);
+}
+
+/* Right Column: Blurb + View All Link + Slider Arrows */
+.rightCol {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.blurbText {
+  font-family: var(--font-family-body);
+  font-size: 0.8125rem;
+  color: var(--color-gray-600);
+  line-height: 1.45;
+  margin-bottom: 12px;
+  max-width: 260px;
+}
+
+.actionsRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.viewAllLink {
+  font-family: var(--font-family-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-black-rich);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: opacity var(--transition-fast);
+  white-space: nowrap;
+}
+
+.viewAllLink:hover {
+  opacity: 0.7;
+}
+
+.navControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arrowBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.arrowBtnPrev {
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-300);
+  color: var(--color-black-rich);
+}
+
+.arrowBtnPrev:hover {
+  background-color: var(--color-gray-100);
+  border-color: var(--color-black-rich);
+}
+
+.arrowBtnNext {
+  background-color: var(--color-black-rich);
+  border: 1px solid var(--color-black-rich);
+  color: var(--color-white-pure);
+}
+
+.arrowBtnNext:hover {
+  background-color: #262626;
+  transform: scale(1.05);
+}
+
+/* Grid / Scrollable Cards Track */
+.cardsTrack {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(14px, 1.8vw, 24px);
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .headerWrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .rightCol {
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+  }
+
+  .watermark {
+    display: none;
+  }
+
+  .cardsTrack {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .cardsTrack {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 12px;
+    margin-left: calc(-1 * var(--container-padding-mobile));
+    margin-right: calc(-1 * var(--container-padding-mobile));
+    padding-left: var(--container-padding-mobile);
+    padding-right: var(--container-padding-mobile);
+    gap: 14px;
+  }
+
+  .cardsTrack > * {
+    flex: 0 0 78%;
+    scroll-snap-align: start;
+  }
+
+  .cardsTrack::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -288,11 +288,9 @@ export class CatalogService {
       hero: {
         headline: 'WEAR DIFFERENT.',
         subheadline:
-          'Architectural silhouettes & heavyweight essentials designed for individuality.',
-        desktopImage:
-          'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1920&auto=format&fit=crop',
-        mobileImage:
-          'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1080&auto=format&fit=crop',
+          'ARCHITECTURAL SILHOUETTES & HEAVYWEIGHT ESSENTIALS DESIGNED FOR INDIVIDUALITY.',
+        desktopImage: '/images/heroimage1.png',
+        mobileImage: '/images/heroimage1.png',
         primaryCtaText: 'SHOP MEN',
         primaryCtaLink: '/shop?gender=MEN',
         secondaryCtaText: 'SHOP WOMEN',

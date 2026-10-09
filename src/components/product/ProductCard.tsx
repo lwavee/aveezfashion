@@ -6,13 +6,14 @@ import Image from 'next/image';
 import { Product } from '@/types';
 import { Badge } from '@/components/ui/Badge';
 import { IconHeart } from '@/components/ui/Icons';
+import { ShoppingBag, Heart } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import styles from './ProductCard.module.css';
 
 export interface ProductCardProps {
   product: Product;
-  variant?: 'default' | 'compact' | 'editorial';
+  variant?: 'default' | 'compact' | 'editorial' | 'curated';
   priority?: boolean;
   className?: string;
 }
@@ -38,6 +39,29 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     : 0;
 
   const isFavorited = isInWishlist(product.slug);
+
+  const handleBagClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const inStockVariant = product.variants?.find((v) => v.stock > 0) || product.variants?.[0];
+    if (!inStockVariant) return;
+
+    addToCart(
+      {
+        productId: product._id,
+        variantSku: inStockVariant.sku,
+        title: product.title,
+        slug: product.slug,
+        size: inStockVariant.size,
+        color: inStockVariant.color,
+        price: product.salePrice || product.basePrice,
+        originalPrice: product.basePrice,
+        image: primaryImage?.url || '/brand/clothing-label-mark.svg',
+      },
+      1
+    );
+  };
 
   const handleQuickAdd = (e: React.MouseEvent, size: string) => {
     e.preventDefault();
@@ -65,9 +89,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     setTimeout(() => setSelectedSize(null), 1000);
   };
 
+  const isCurated = variant === 'curated';
+
   const rootClass = [
     styles.card,
-    styles[variant],
+    isCurated ? styles.curatedCard : styles[variant],
     className,
   ]
     .filter(Boolean)
@@ -79,7 +105,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={styles.imageContainer}>
+      <div className={isCurated ? styles.curatedImageContainer : styles.imageContainer}>
         <Link href={`/product/${product.slug}`} className={styles.imageLink}>
           {/* Primary Image */}
           {primaryImage ? (
@@ -87,7 +113,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               src={primaryImage.url}
               alt={primaryImage.alt || product.title}
               width={600}
-              height={800}
+              height={isCurated ? 600 : 800}
               priority={priority}
               className={`${styles.image} ${isHovered && secondaryImage ? styles.imageHovered : ''}`}
             />
@@ -103,33 +129,58 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               src={secondaryImage.url}
               alt={secondaryImage.alt || `${product.title} Alternate View`}
               width={600}
-              height={800}
+              height={isCurated ? 600 : 800}
               className={`${styles.image} ${styles.secondaryImage} ${isHovered ? styles.secondaryVisible : ''}`}
             />
           ) : null}
         </Link>
 
         {/* Badges */}
-        <div className={styles.badgeGroup}>
-          {hasSale && <Badge variant="sale">-{discountPercent}%</Badge>}
-          {product.isNewArrival && !hasSale && <Badge variant="new">NEW</Badge>}
-          {product.isBestSeller && !product.isNewArrival && !hasSale && (
-            <Badge variant="best-seller">BESTSELLER</Badge>
-          )}
-          {product.isAveezOriginal && <Badge variant="aveez-original">ORIGINAL</Badge>}
-        </div>
+        {isCurated ? (
+          <div className={styles.curatedBadgeGroup}>
+            {hasSale && (
+              <span className={styles.curatedSaleTag}>-{discountPercent}%</span>
+            )}
+            {product.isAveezOriginal && (
+              <span className={styles.curatedOriginalTag}>ORIGINAL</span>
+            )}
+            {!hasSale && product.isNewArrival && (
+              <span className={styles.curatedNewTag}>NEW</span>
+            )}
+          </div>
+        ) : (
+          <div className={styles.badgeGroup}>
+            {hasSale && <Badge variant="sale">-{discountPercent}%</Badge>}
+            {product.isNewArrival && !hasSale && <Badge variant="new">NEW</Badge>}
+            {product.isBestSeller && !product.isNewArrival && !hasSale && (
+              <Badge variant="best-seller">BESTSELLER</Badge>
+            )}
+            {product.isAveezOriginal && <Badge variant="aveez-original">ORIGINAL</Badge>}
+          </div>
+        )}
 
         {/* Wishlist Button */}
         <button
           type="button"
-          className={`${styles.wishlistBtn} ${isFavorited ? styles.wishlistActive : ''}`}
+          className={`${isCurated ? styles.curatedWishlistBtn : styles.wishlistBtn} ${
+            isFavorited ? styles.wishlistActive : ''
+          }`}
           onClick={(e) => {
             e.preventDefault();
             toggleWishlist(product.slug);
           }}
           aria-label={isFavorited ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-          <IconHeart size={18} strokeWidth={1.5} filled={isFavorited} />
+          {isCurated ? (
+            <Heart
+              size={16}
+              strokeWidth={1.8}
+              fill={isFavorited ? '#0A0A0A' : 'none'}
+              color={isFavorited ? '#0A0A0A' : '#18181B'}
+            />
+          ) : (
+            <IconHeart size={18} strokeWidth={1.5} filled={isFavorited} />
+          )}
         </button>
 
         {/* Quick Add Size Bar (Revealed on hover) */}
@@ -160,30 +211,66 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Product Metadata */}
-      <div className={styles.details}>
-        {variant === 'editorial' && (
-          <span className={styles.categoryEyebrow}>AVEEZ ESSENTIAL</span>
-        )}
-        <Link href={`/product/${product.slug}`} className={styles.title}>
-          {product.title}
-        </Link>
-        <div className={styles.priceRow}>
-          {hasSale ? (
-            <>
-              <span className={styles.salePrice}>
-                ₹{product.salePrice?.toLocaleString('en-IN')}
-              </span>
-              <span className={styles.originalPrice}>
+      {isCurated ? (
+        <div className={styles.curatedDetails}>
+          <div className={styles.curatedMeta}>
+            <Link href={`/product/${product.slug}`} className={styles.curatedTitle}>
+              {product.title}
+            </Link>
+            <div className={styles.curatedPriceRow}>
+              {hasSale ? (
+                <>
+                  <span className={styles.curatedSalePrice}>
+                    ₹{product.salePrice?.toLocaleString('en-IN')}
+                  </span>
+                  <span className={styles.curatedOriginalPrice}>
+                    ₹{product.basePrice.toLocaleString('en-IN')}
+                  </span>
+                </>
+              ) : (
+                <span className={styles.curatedBasePrice}>
+                  ₹{product.basePrice.toLocaleString('en-IN')}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className={styles.curatedBagBtn}
+            onClick={handleBagClick}
+            aria-label={`Add ${product.title} to bag`}
+            title="Quick add to bag"
+          >
+            <ShoppingBag size={17} strokeWidth={1.8} />
+          </button>
+        </div>
+      ) : (
+        <div className={styles.details}>
+          {variant === 'editorial' && (
+            <span className={styles.categoryEyebrow}>AVEEZ ESSENTIAL</span>
+          )}
+          <Link href={`/product/${product.slug}`} className={styles.title}>
+            {product.title}
+          </Link>
+          <div className={styles.priceRow}>
+            {hasSale ? (
+              <>
+                <span className={styles.salePrice}>
+                  ₹{product.salePrice?.toLocaleString('en-IN')}
+                </span>
+                <span className={styles.originalPrice}>
+                  ₹{product.basePrice.toLocaleString('en-IN')}
+                </span>
+              </>
+            ) : (
+              <span className={styles.basePrice}>
                 ₹{product.basePrice.toLocaleString('en-IN')}
               </span>
-            </>
-          ) : (
-            <span className={styles.basePrice}>
-              ₹{product.basePrice.toLocaleString('en-IN')}
-            </span>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
