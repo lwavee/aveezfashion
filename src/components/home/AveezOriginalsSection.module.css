@@ -1,95 +1,167 @@
+/* ==================================================
+   AVEEZ ORIGINALS — EDITORIAL CAMPAIGN SECTION
+   Luxury fashion campaign layout & art direction
+   ================================================== */
+
 .section {
-  padding: var(--space-4xl) 0;
-  background-color: var(--color-white-off);
-  border-top: 1px solid var(--color-gray-200);
-  border-bottom: 1px solid var(--color-gray-200);
+  position: relative;
+  width: 100%;
+  padding: clamp(4.5rem, 8vw, 7.5rem) 0;
+  background-color: #FAF8F5; /* Warm luxury neutral / editorial ecru */
+  border-top: 1px solid var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+  overflow: hidden;
 }
 
 .container {
   width: 100%;
 }
 
-.grid {
+.editorialGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4xl);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(2.5rem, 6vw, 6rem);
   align-items: center;
 }
 
-.contentCol {
+/* ==================================================
+   LEFT COLUMN — BRAND STORY & EDITORIAL TEXT
+   ================================================== */
+
+.storyCol {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  justify-content: center;
 }
 
-.brandTagWrapper {
-  margin-bottom: var(--space-xs);
-}
-
-.textWrapper {
+.storyContent {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  max-width: 520px;
 }
 
-.tagline {
+/* Subtle Metadata / Label row */
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+  margin-bottom: var(--space-sm);
+}
+
+.brandTag {
+  color: var(--color-black-rich);
+  font-weight: var(--font-weight-semibold);
+}
+
+.metaDivider {
+  color: var(--color-neutral-300);
+  font-weight: var(--font-weight-regular);
+}
+
+.collectionIdentifier {
+  color: var(--color-neutral-500);
+}
+
+/* Small Eyebrow */
+.eyebrow {
   font-family: var(--font-family-body);
   font-size: var(--font-size-micro);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-widest);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-gray-500);
+  color: var(--color-neutral-600);
+  margin-bottom: var(--space-xs);
 }
 
+/* Main Editorial Headline */
 .headline {
   font-family: var(--font-family-display);
-  font-size: var(--font-size-h2);
-  letter-spacing: var(--letter-spacing-tight);
-  color: var(--color-black-rich);
-  line-height: 1.15;
-}
-
-.description {
-  font-size: var(--font-size-body-md);
-  color: var(--color-gray-600);
-  line-height: 1.6;
-}
-
-.specsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-md);
-  padding: var(--space-lg) 0;
-  border-top: 1px solid var(--color-gray-200);
-  border-bottom: 1px solid var(--color-gray-200);
-  margin: var(--space-sm) 0;
-}
-
-.specItem {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.specValue {
-  font-family: var(--font-family-display);
-  font-size: var(--font-size-h3);
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
   font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
+  line-height: 1.08;
   color: var(--color-black-rich);
+  text-transform: uppercase;
+  margin: 0 0 var(--space-lg) 0;
 }
 
-.specLabel {
-  font-size: var(--font-size-micro);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-wide);
-  color: var(--color-gray-500);
+/* Supporting Copy */
+.description {
+  font-family: var(--font-family-body);
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  line-height: 1.68;
+  color: var(--color-neutral-600);
+  max-width: 44ch;
+  margin: 0 0 var(--space-xl) 0;
 }
 
+/* Minimal Hairline Divider */
+.hairlineDivider {
+  width: 48px;
+  height: 1px;
+  background-color: var(--color-neutral-300);
+  margin-bottom: var(--space-xl);
+}
+
+/* Restrained CTA Text Link */
 .ctaWrapper {
-  margin-top: var(--space-sm);
+  display: inline-flex;
+  align-items: center;
 }
 
-.visualCol {
+.ctaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-black-rich);
+  text-decoration: none;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-black-rich);
+  transition: color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.ctaText {
+  display: inline-block;
+}
+
+.ctaArrow {
+  display: inline-block;
+  font-size: 1.1em;
+  line-height: 1;
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.ctaLink:hover {
+  color: var(--color-neutral-700);
+  border-color: var(--color-neutral-400);
+}
+
+.ctaLink:hover .ctaArrow {
+  transform: translateX(5px);
+}
+
+.ctaLink:focus-visible {
+  outline: 2px solid var(--color-black-rich);
+  outline-offset: 4px;
+}
+
+/* ==================================================
+   RIGHT COLUMN — CAMPAIGN PHOTOGRAPHY
+   ================================================== */
+
+.campaignCol {
   position: relative;
   width: 100%;
 }
@@ -97,39 +169,115 @@
 .imageCard {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 5;
-  border-radius: var(--radius-xs);
+  aspect-ratio: 3 / 4;
   overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  background-color: var(--color-gray-100);
+  border-radius: var(--radius-xs);
+  background-color: var(--color-neutral-200);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.08);
 }
 
 .image {
   object-fit: cover;
-  transition: transform 600ms ease;
+  object-position: center top;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 .imageCard:hover .image {
-  transform: scale(1.03);
+  transform: scale(1.025);
 }
 
-.badgeOverlay {
+/* Discreet Editorial Image Caption */
+.imageCaption {
   position: absolute;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(10, 10, 10, 0.85);
+  bottom: 16px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(10, 10, 10, 0.72);
   backdrop-filter: blur(8px);
-  color: var(--color-white-pure);
-  padding: 6px 14px;
-  font-size: var(--font-size-micro);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-widest);
+  -webkit-backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-family-mono, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   border-radius: var(--radius-xs);
+  pointer-events: none;
 }
+
+/* ==================================================
+   RESPONSIVE DESIGN (Tablet & Mobile)
+   ================================================== */
 
 @media (max-width: 1024px) {
-  .grid {
+  .editorialGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xl);
+  }
+
+  .headline {
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-3xl) 0;
+  }
+
+  .editorialGrid {
     grid-template-columns: 1fr;
-    gap: var(--space-3xl);
+    gap: var(--space-xl);
+  }
+
+  /* Photography placed first on mobile as visual anchor */
+  .campaignCol {
+    order: 1;
+  }
+
+  .storyCol {
+    order: 2;
+  }
+
+  .storyContent {
+    max-width: 100%;
+  }
+
+  .imageCard {
+    aspect-ratio: 4 / 5;
+    max-height: 480px;
+  }
+
+  .headline {
+    font-size: clamp(1.875rem, 6.5vw, 2.35rem);
+    margin-bottom: var(--space-md);
+  }
+
+  .description {
+    font-size: var(--font-size-body-sm);
+    margin-bottom: var(--space-lg);
+  }
+
+  .hairlineDivider {
+    margin-bottom: var(--space-lg);
+  }
+
+  .imageCaption {
+    bottom: 12px;
+    left: 12px;
+    padding: 5px 10px;
+    font-size: 0.5625rem;
+  }
+}
+
+/* Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .image,
+  .ctaArrow,
+  .ctaLink {
+    transition: none !important;
+    transform: none !important;
   }
 }

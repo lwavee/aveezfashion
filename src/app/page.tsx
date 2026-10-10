@@ -40,12 +40,14 @@ export default async function HomePage() {
 
       {/* 6. Aveez Originals Editorial */}
       <AveezOriginalsSection
-        tagline={content.aveezOriginals.tagline}
-        headline={content.aveezOriginals.headline}
-        description={content.aveezOriginals.description}
-        image={content.aveezOriginals.image}
-        ctaText={content.aveezOriginals.ctaText}
-        ctaLink={content.aveezOriginals.ctaLink}
+        eyebrow="THE AVEEZ SIGNATURE"
+        collectionId="01 / SIGNATURE COLLECTION"
+        headline="DESIGNED TO STAND APART."
+        description="Distinctive silhouettes. Considered details. A personal expression of modern style."
+        image="/images/originals/aveez-originals-campaign.jpg"
+        imageCaption="STUDIO ARCHIVE — VOL. 01"
+        ctaText="DISCOVER AVEEZ ORIGINALS"
+        ctaLink={content.aveezOriginals?.ctaLink || '/collections/aveez-originals'}
       />
 
       {/* 7. Best Sellers */}
