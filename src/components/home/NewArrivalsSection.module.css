@@ -164,7 +164,7 @@
   color: var(--color-black-rich);
 }
 
-.arrowBtnPrev:hover {
+.arrowBtnPrev:hover:not(:disabled) {
   background-color: var(--color-gray-100);
   border-color: var(--color-black-rich);
 }
@@ -175,18 +175,58 @@
   color: var(--color-white-pure);
 }
 
-.arrowBtnNext:hover {
+.arrowBtnNext:hover:not(:disabled) {
   background-color: #262626;
   transform: scale(1.05);
 }
 
-/* Grid / Scrollable Cards Track */
+.arrowBtn:disabled,
+.arrowBtnDisabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}
+
+/* Single Line Slider / Scrollable Cards Track */
 .cardsTrack {
   position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   gap: clamp(14px, 1.8vw, 24px);
   width: 100%;
+  padding-top: 6px;
+  padding-bottom: 22px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  user-select: none;
+}
+
+.cardsTrack.isDragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+.cardsTrack::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+/* Individual Card in Single Line (4 visible on desktop) */
+.cardItem {
+  flex: 0 0 calc((100% - 3 * clamp(14px, 1.8vw, 24px)) / 4);
+  width: calc((100% - 3 * clamp(14px, 1.8vw, 24px)) / 4);
+  min-width: 250px;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 1024px) {
@@ -202,36 +242,36 @@
     width: 100%;
   }
 
+  .actionsRow {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .watermark {
     display: none;
   }
 
-  .cardsTrack {
-    grid-template-columns: repeat(2, 1fr);
+  /* 2.3 cards visible on tablet so next card peeks into view */
+  .cardItem {
+    flex: 0 0 calc((100% - clamp(14px, 1.8vw, 20px)) / 2.35);
+    width: calc((100% - clamp(14px, 1.8vw, 20px)) / 2.35);
+    min-width: 230px;
   }
 }
 
 @media (max-width: 640px) {
   .cardsTrack {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: 12px;
     margin-left: calc(-1 * var(--container-padding-mobile));
     margin-right: calc(-1 * var(--container-padding-mobile));
     padding-left: var(--container-padding-mobile);
     padding-right: var(--container-padding-mobile);
     gap: 14px;
+    padding-bottom: 16px;
   }
 
-  .cardsTrack > * {
+  .cardItem {
     flex: 0 0 78%;
-    scroll-snap-align: start;
-  }
-
-  .cardsTrack::-webkit-scrollbar {
-    display: none;
+    width: 78%;
+    min-width: 210px;
   }
 }

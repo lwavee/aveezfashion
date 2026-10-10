@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { HeroSection } from '@/components/home/HeroSection';
 import { NewArrivalsSection } from '@/components/home/NewArrivalsSection';
+import { TogetherInStyleSection } from '@/components/home/TogetherInStyleSection';
 import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { AveezOriginalsSection } from '@/components/home/AveezOriginalsSection';
 import { BrandStorySection } from '@/components/home/BrandStorySection';
@@ -30,6 +31,9 @@ export default async function HomePage() {
 
       {/* 4. New Arrivals Showcase */}
       <NewArrivalsSection products={newArrivalsData.products} />
+
+      {/* 4.5 Together in Style — Men × Women Matching Styles */}
+      <TogetherInStyleSection />
 
       {/* 5. Shop By Category */}
       <CategoryGrid categories={categories} />

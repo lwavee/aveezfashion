@@ -1,0 +1,223 @@
+.section {
+  padding: clamp(3.5rem, 6vw, 5.5rem) var(--container-padding);
+  background-color: var(--color-white-pure);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: clamp(2rem, 3.5vw, 3rem);
+}
+
+.eyebrowRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 0.625rem;
+}
+
+.eyebrowLine {
+  width: 36px;
+  height: 1px;
+  background-color: var(--color-gray-300);
+}
+
+.eyebrow {
+  font-family: var(--font-family-body);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-gray-600);
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.85rem, 3.4vw, 2.65rem);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  color: var(--color-black-rich);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.15;
+}
+
+.subtitle {
+  font-family: var(--font-family-serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  font-weight: 400;
+  color: var(--color-gray-500);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(16px, 1.8vw, 24px);
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: #0A0A0A;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+}
+
+.imageWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-gray-100);
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover .image {
+  transform: scale(1.045);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 10, 10, 0) 0%,
+    rgba(10, 10, 10, 0.02) 42%,
+    rgba(10, 10, 10, 0.35) 68%,
+    rgba(10, 10, 10, 0.88) 100%
+  );
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+.card:hover .overlay {
+  opacity: 0.95;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.categoryLabel {
+  font-family: var(--font-family-body);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  margin-bottom: 2px;
+}
+
+.cardTitle {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.25rem, 1.8vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--color-white-pure);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.15;
+}
+
+.exploreLink {
+  font-family: var(--font-family-body);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  display: inline-flex;
+  align-items: center;
+  transition: color 200ms ease;
+}
+
+.card:hover .exploreLink {
+  color: var(--color-white-pure);
+}
+
+.arrow {
+  display: inline-block;
+  margin-left: 6px;
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover .arrow {
+  transform: translateX(5px);
+}
+
+/* Tablet Layout (2x2 grid) */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Mobile Layout (clean 2-column grid) */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .content {
+    padding: 0.875rem;
+  }
+
+  .categoryLabel {
+    font-size: 0.5625rem; /* 9px */
+    letter-spacing: 0.12em;
+  }
+
+  .cardTitle {
+    font-size: 0.95rem; /* 15px */
+    margin-bottom: 0.25rem;
+  }
+
+  .exploreLink {
+    font-size: 0.625rem; /* 10px */
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .image,
+  .arrow,
+  .overlay,
+  .exploreLink {
+    transition: none !important;
+    transform: none !important;
+  }
+}

@@ -1,95 +1,196 @@
-# AVEEZ FASHION — Luxury E-Commerce Platform
+<p align="center">
+  <img src="public/brand/primary-logo.svg" alt="AVEEZ FASHION Logo" width="320"/>
+</p>
 
-> **WEAR DIFFERENT.**  
-> Official repository for Aveez Fashion (`https://aveezfashion.com`). Contemporary luxury streetwear, architectural boxy silhouettes, and heavyweight essentials.
+<p align="center">
+  <strong>ARCHITECTURAL STREETWEAR • LUXURY HEAVYWEIGHT APPAREL</strong>
+</p>
 
----
+<p align="center">
+  <em>"WEAR DIFFERENT."</em>
+</p>
 
-## 🚀 Technology Stack
-
-- **Frontend:** Next.js 14 (App Router), React 18, TypeScript (Strict Mode).
-- **Styling:** Vanilla CSS Custom Properties & Design Tokens (`tokens.css`). Minimalist luxury monochrome visual language.
-- **Backend & Database:** Node.js REST API layer, MongoDB with Mongoose ODM.
-- **Cart & State:** Persistent Context (`CartContext`, `WishlistContext`), sliding drawer bag.
-- **Security & Payments:** Zero-client-trust pricing & discount engine, HMAC webhook validation.
-
----
-
-## 📁 Repository Structure
-
-```
-aveezfashion/
-├── docs/                     # Architectural blueprints & design specifications
-├── public/
-│   └── brand/                # Approved Aveez Fashion SVG brand marks
-├── src/
-│   ├── app/                  # Next.js 14 App Router routes & layouts
-│   ├── components/
-│   │   ├── ui/               # Reusable UI primitives (Button, Modal, Drawer, Toast...)
-│   │   ├── layout/           # Sticky Navbar, Announcement Bar, Footer
-│   │   ├── navigation/       # Desktop & Mobile navigation systems
-│   │   ├── product/          # Product card & PDP components
-│   │   └── cart/             # Shopping bag & checkout drawer
-│   ├── context/              # Cart & Wishlist persistence contexts
-│   ├── server/               # MongoDB models & catalog service layer
-│   ├── styles/               # Design tokens (tokens.css) & resets
-│   └── types/                # Strict TypeScript domain interfaces
-├── .env.example              # Sample environment configuration template
-└── package.json
-```
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-14_App_Router-black?style=for-the-badge&logo=next.js" alt="Next.js 14"/>
+  <img src="https://img.shields.io/badge/TypeScript-Strict_Mode-blue?style=for-the-badge&logo=typescript" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Aesthetic-Monochrome_Luxury-111111?style=for-the-badge" alt="Monochrome Luxury"/>
+  <img src="https://img.shields.io/badge/Origin-Crafted_in_India-orange?style=for-the-badge" alt="Made in India"/>
+</p>
 
 ---
 
-## ⚙️ Environment Configuration
+## 🏛️ About Aveez Fashion
 
-Copy `.env.example` to `.env.local` and populate your secrets:
+**AVEEZ FASHION** is a luxury direct-to-consumer fashion house founded on the principles of architectural silhouettes, substantial fabric density, and uncompromising craftsmanship. 
+
+Rejecting the cycle of disposable fast fashion, Aveez creates enduring wardrobe centerpieces characterized by bold drop-shoulder cuts, boxy drapes, custom fabric milling, and an austere monochrome design language. Every garment is cut, stitched, and finished with precision to hold its shape wash after wash.
+
+<p align="center">
+  <img src="public/images/heroimage1.png" alt="Aveez Fashion Editorial Campaign" width="100%"/>
+</p>
+
+---
+
+## 🧵 The Craft & Material Philosophy
+
+At the core of Aveez Fashion is an obsessive dedication to fabric engineering:
+
+- **450 GSM French Terry Cotton:** Custom-milled, luxury brushed interior for substantial body, structured drop shoulders, and seamless double-layered hoods.
+- **280 GSM Combed Single Jersey:** High-density single-jersey combed cotton with high-tension 1.25" rib knit collars that maintain their structure without sagging.
+- **Pre-Shrunk & Silicon Washed:** Pre-laundered for buttery hand-feel, zero post-purchase shrinkage, and long-term durability.
+- **Tailored Modernity:** Pleated architectural trousers and structured overshirts built for effortless drape and contemporary movement.
+
+---
+
+## 🖤 Curated Collections
+
+<table align="center" width="100%">
+  <tr>
+    <td width="50%" align="center">
+      <img src="public/images/CATEGORY/men.png" alt="Men's Collection" width="100%"/>
+      <br/>
+      <strong>MEN</strong>
+      <br/>
+      <em>Boxy silhouettes & heavyweight essentials</em>
+    </td>
+    <td width="50%" align="center">
+      <img src="public/images/CATEGORY/women.png" alt="Women's Collection" width="100%"/>
+      <br/>
+      <strong>WOMEN</strong>
+      <br/>
+      <em>Architectural tailoring & relaxed drapes</em>
+    </td>
+  </tr>
+</table>
+
+<table align="center" width="100%">
+  <tr>
+    <td width="25%" align="center">
+      <img src="public/images/CATEGORY/hoodies.png" alt="Hoodies" width="100%"/>
+      <br/>
+      <strong>HOODIES</strong>
+      <br/>
+      <sub>450 GSM French Terry</sub>
+    </td>
+    <td width="25%" align="center">
+      <img src="public/images/CATEGORY/oversizetshirt.png" alt="Oversized Tees" width="100%"/>
+      <br/>
+      <strong>OVERSIZED TEES</strong>
+      <br/>
+      <sub>280 GSM Combed Jersey</sub>
+    </td>
+    <td width="25%" align="center">
+      <img src="public/images/CATEGORY/bootom.png" alt="Bottoms" width="100%"/>
+      <br/>
+      <strong>BOTTOMS</strong>
+      <br/>
+      <sub>Pleated Wide-Leg Pants</sub>
+    </td>
+    <td width="25%" align="center">
+      <img src="public/images/CATEGORY/shirt.png" alt="Shirts" width="100%"/>
+      <br/>
+      <strong>SHIRTS</strong>
+      <br/>
+      <sub>Cuban Collar & Overshirts</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+## ✨ "Together in Style" — Coordinated Pairs
+
+*Two styles. One connection.* A dedicated high-fashion capsule celebrating coordinated couple styling across traditional, streetwear, and lounging contexts.
+
+<table align="center" width="100%">
+  <tr>
+    <td width="25%" align="center">
+      <img src="public/images/TOGETHER/royalpair.png" alt="Royal Pair" width="100%"/>
+      <br/>
+      <strong>ROYAL PAIR</strong>
+      <br/>
+      <sub>Poshak & Kurta Pajama</sub>
+    </td>
+    <td width="25%" align="center">
+      <img src="public/images/TOGETHER/sport.png" alt="Sport Together" width="100%"/>
+      <br/>
+      <strong>SPORT TOGETHER</strong>
+      <br/>
+      <sub>Matching Sportswear</sub>
+    </td>
+    <td width="25%" align="center">
+      <img src="public/images/TOGETHER/nightin.png" alt="Night In" width="100%"/>
+      <br/>
+      <strong>NIGHT IN</strong>
+      <br/>
+      <sub>Matching Nightwear</sub>
+    </td>
+    <td width="25%" align="center">
+      <img src="public/images/TOGETHER/madefor2.png" alt="Made For Two" width="100%"/>
+      <br/>
+      <strong>MADE FOR TWO</strong>
+      <br/>
+      <sub>Couple T-Shirts</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+## ⚡ Storefront Experience & Key Features
+
+- **Single-Line Interactive Showcase:** Smooth horizontal product slider for New Arrivals with smooth touch swipe and desktop drag navigation.
+- **Persistent Luxury Shopping Bag:** Seamless slide-out cart drawer with instant size modification, real-time totals, and free-shipping progress indicators.
+- **Wishlist & Curated Favorites:** One-tap save functionality with immediate state synchronization across pages.
+- **Multi-Facet Catalog Discovery:** Instant filtering by Category, Gender, Fit, Size, and Price on the Product Listing Page.
+- **Zero-Trust Pricing Architecture:** Server-authoritative calculation of item costs, applied discounts, and checkout totals to prevent client tampering.
+- **Pure Design Token System:** Built exclusively with vanilla CSS custom properties without third-party utility dependencies, ensuring pristine styling performance and ultra-fast page speeds.
+
+---
+
+## 🛠️ Getting Started
+
+### Prerequisites
+
+- Node.js 18.17+ or 20+
+- npm or yarn
+
+### Installation & Run
 
 ```bash
-cp .env.example .env.local
+# Clone the repository
+git clone https://github.com/lwavee/aveezfashion.git
+
+# Navigate to project directory
+cd aveezfashion
+
+# Install dependencies
+npm install
+
+# Start local development server
+npm run dev
 ```
 
-Required variables:
-- `MONGODB_URI` — MongoDB Atlas or local connection string
-- `JWT_SECRET` — Cryptographic signing key for customer sessions
-- `PAYMENT_GATEWAY_KEY` & `PAYMENT_GATEWAY_SECRET` — Razorpay / Cashfree API credentials
-- `NEXT_PUBLIC_SITE_URL` — Deployment URL (default: `https://aveezfashion.com`)
+Open [http://localhost:3000](http://localhost:3000) (or the port specified in terminal) to view the storefront.
 
-*(Note: `.env*` files are strictly gitignored to safeguard credentials).*
+### Production Build
 
----
+```bash
+# Compile and optimize production bundle
+npm run build
 
-## 🛠️ Local Development
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Run development server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) to view the storefront.
-
-3. **Compile production build:**
-   ```bash
-   npm run build
-   npm run start
-   ```
+# Start production server
+npm run start
+```
 
 ---
 
-## 🎨 Design System Showcase
+## 🏷️ Brand & Intellectual Property
 
-An interactive component harness is available at `/design-system` during development:
-- Colors, typography hierarchy, button variants
-- Form controls, checkboxes, radios, select dropdowns
-- Accessible modal, drawer, and toast notification demos
-- Product card variations (Default, Compact, Editorial)
+<p align="center">
+  <img src="public/brand/av-monogram.svg" alt="AV Monogram" width="70"/>
+</p>
 
----
+All brand marks, logos, typographies, photography, garment designs, and trademarks are the proprietary intellectual property of **AVEEZ FASHION**.
 
-## 📄 License & Attribution
-
-Copyright © 2026 Aveez Fashion. All rights reserved.
-Approved brand assets in `/public/brand/` are proprietary property of AVEEZ FASHION.
+*"Wear Different."* • Crafted with pride in India.
