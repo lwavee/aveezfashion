@@ -1,8 +1,18 @@
+'use client';
+
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import styles from './adminLayout.module.css';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  // If on admin login page, render clean login view without dashboard sidebar
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
   return (
     <div className={styles.adminContainer}>
       <AdminSidebar />

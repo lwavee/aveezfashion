@@ -24,11 +24,24 @@ const ShippingAddressSchema = new Schema(
   {
     recipientName: { type: String, required: true },
     phone: { type: String, required: true },
+    house: { type: String },
     streetAddress: { type: String, required: true },
     landmark: { type: String },
     city: { type: String, required: true },
     state: { type: String, required: true },
     pincode: { type: String, required: true },
+    addressType: { type: String, default: 'HOME' },
+  },
+  { _id: false }
+);
+
+const StatusHistorySchema = new Schema(
+  {
+    status: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now },
+    note: { type: String },
+    description: { type: String },
+    updatedBy: { type: String, default: 'SYSTEM' },
   },
   { _id: false }
 );
@@ -36,6 +49,7 @@ const ShippingAddressSchema = new Schema(
 const OrderSchema = new Schema<OrderDocument>(
   {
     orderNumber: { type: String, required: true, unique: true, index: true },
+    idempotencyKey: { type: String, sparse: true, index: true },
     user: { type: Schema.Types.ObjectId, ref: 'User', default: null, index: true },
     customerName: { type: String, required: true },
     customerEmail: { type: String, required: true, index: true },
@@ -64,8 +78,11 @@ const OrderSchema = new Schema<OrderDocument>(
     fulfillmentStatus: {
       type: String,
       enum: [
+        'PENDING_CONFIRMATION',
+        'CONFIRMED',
         'UNFULFILLED',
         'PROCESSING',
+        'PACKED',
         'SHIPPED',
         'OUT_FOR_DELIVERY',
         'DELIVERED',
@@ -75,14 +92,35 @@ const OrderSchema = new Schema<OrderDocument>(
       default: 'UNFULFILLED',
       index: true,
     },
+    returnStatus: {
+      type: String,
+      enum: [
+        'NONE',
+        'REQUESTED',
+        'APPROVED',
+        'PICKUP_SCHEDULED',
+        'INSPECTED',
+        'REFUNDED',
+        'EXCHANGED',
+        'REJECTED',
+      ],
+      default: 'NONE',
+      index: true,
+    },
+    statusHistory: { type: [StatusHistorySchema], default: [] },
+    cancellationReason: { type: String },
     trackingNumber: { type: String },
     trackingUrl: { type: String },
     courierName: { type: String },
+    carrier: { type: String },
+    estimatedDelivery: { type: Date },
   },
   { timestamps: true }
 );
 
-OrderSchema.index({ createdAt: -1 });
+if (process.env.NODE_ENV !== 'production' && mongoose.models.Order) {
+  delete (mongoose.models as any).Order;
+}
 
 export const Order: Model<OrderDocument> =
   mongoose.models.Order || mongoose.model<OrderDocument>('Order', OrderSchema);

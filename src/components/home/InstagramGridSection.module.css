@@ -1,87 +1,393 @@
+/* ==================================================
+   AVEEZ FASHION — COMMUNITY & EDITORIAL SECTION
+   Asymmetric High-Fashion Gallery & Reel Showcase
+   ================================================== */
+
 .section {
-  padding: var(--space-4xl) var(--container-padding);
+  width: 100%;
+  padding: clamp(3.5rem, 6vw, 5.5rem) 0;
+  background-color: var(--color-white-pure, #FFFFFF);
+  border-top: 1px solid var(--color-neutral-200, #E4E4E7);
 }
+
+.container {
+  width: 100%;
+}
+
+/* ==================================================
+   1. EDITORIAL SECTION HEADER
+   ================================================== */
 
 .header {
   display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-lg, 1.5rem);
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+  padding-bottom: var(--space-md, 1rem);
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.titleStack {
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  margin-bottom: var(--space-3xl);
+  gap: 4px;
 }
 
-.sectionSubtitle {
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-micro);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-widest);
+.eyebrow {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-micro, 0.6875rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-gray-500);
-  margin-bottom: var(--space-xs);
+  color: var(--color-neutral-500, #71717A);
 }
 
-.sectionTitle {
-  font-family: var(--font-family-display);
-  font-size: var(--font-size-h2);
-  letter-spacing: var(--letter-spacing-tight);
-  margin-bottom: var(--space-xs);
+.heading {
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
+  font-size: clamp(2rem, 3.2vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  text-transform: uppercase;
+  color: var(--color-black-rich, #0A0A0A);
+  margin: 0;
 }
 
-.handleLink {
+.supportingText {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: clamp(0.875rem, 1vw, 0.9375rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-neutral-500, #71717A);
+  margin-top: 4px;
+}
+
+.desktopCta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: var(--font-size-caption);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-widest);
-  color: var(--color-black-rich);
-  margin-top: var(--space-xs);
+  gap: 8px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-black-rich, #0A0A0A);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition-fast, 150ms ease),
+              opacity var(--transition-fast, 150ms ease);
+  white-space: nowrap;
 }
 
-.handleLink:hover {
-  opacity: 0.7;
+.desktopCta:hover {
+  border-bottom-color: var(--color-black-rich, #0A0A0A);
+  opacity: 0.85;
 }
 
-.grid {
+.ctaArrow {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+
+.desktopCta:hover .ctaArrow {
+  transform: translate(3px, -3px);
+}
+
+.desktopCta:focus-visible {
+  outline: 2px solid var(--color-black-rich, #0A0A0A);
+  outline-offset: 4px;
+}
+
+/* ==================================================
+   2. ASYMMETRIC EDITORIAL GRID (Desktop)
+   ================================================== */
+
+.editorialGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-md);
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(1rem, 1.5vw, 1.5rem);
+  align-items: stretch;
 }
 
-.postCard {
+/* Shared Card Wrapper */
+.dominantCard,
+.supportingTopCard,
+.supportingBottomCard {
   position: relative;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-none, 0px);
   overflow: hidden;
-  background-color: var(--color-gray-100);
+  background-color: var(--color-neutral-100, #F4F4F5);
 }
 
+/* Left Dominant Feature Look */
+.dominantCard {
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+}
+
+/* Right Column Stack */
+.supportingStack {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: clamp(1rem, 1.5vw, 1.5rem);
+  height: 100%;
+}
+
+.supportingTopCard {
+  width: 100%;
+  height: 100%;
+}
+
+.supportingBottomRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1rem, 1.5vw, 1.5rem);
+  height: 100%;
+}
+
+.supportingBottomCard {
+  width: 100%;
+  height: 100%;
+}
+
+/* Link wrapper filling the card */
+.cardLink {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-decoration: none;
+  outline: none;
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid var(--color-black-rich, #0A0A0A);
+  outline-offset: 2px;
+}
+
+/* Image Rendering & Hover Zoom */
 .image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  transition: transform 400ms ease;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
-.overlay {
+.dominantCard:hover .image,
+.supportingTopCard:hover .image,
+.supportingBottomCard:hover .image {
+  transform: scale(1.03);
+}
+
+/* ==================================================
+   3. EDITORIAL BADGES & SOCIAL DETAILS
+   ================================================== */
+
+.lookBadge {
   position: absolute;
-  inset: 0;
-  background: rgba(10, 10, 10, 0.4);
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #FAF8F5;
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 8px;
+  border-radius: var(--radius-xs, 2px);
+  pointer-events: none;
+}
+
+.socialIcon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--color-black-rich, #0A0A0A);
+  transition: transform 200ms ease, background-color 200ms ease;
+  pointer-events: none;
+}
+
+.dominantCard:hover .socialIcon,
+.supportingTopCard:hover .socialIcon,
+.supportingBottomCard:hover .socialIcon {
+  transform: scale(1.08);
+  background-color: #FFFFFF;
+}
+
+/* Restrained Hover Reveal Prompt */
+.hoverPrompt {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--color-black-rich, #0A0A0A);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 8px 0;
+  text-align: center;
+  border-radius: var(--radius-xs, 2px);
   opacity: 0;
-  transition: opacity var(--transition-fast);
+  transform: translateY(6px);
+  transition: opacity 250ms ease, transform 250ms ease;
+  pointer-events: none;
 }
 
-.postCard:hover .image {
-  transform: scale(1.05);
-}
-
-.postCard:hover .overlay {
+.dominantCard:hover .hoverPrompt,
+.supportingTopCard:hover .hoverPrompt,
+.supportingBottomCard:hover .hoverPrompt {
   opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================================================
+   4. MOBILE CTA
+   ================================================== */
+
+.mobileCtaWrapper {
+  display: none;
+  margin-top: var(--space-xl, 2rem);
+  text-align: center;
+}
+
+.mobileCtaLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 20px;
+  border: 1px solid var(--color-black-rich, #0A0A0A);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-black-rich, #0A0A0A);
+  text-decoration: none;
+  border-radius: var(--radius-xs, 2px);
+  transition: background-color var(--transition-fast, 150ms ease),
+              color var(--transition-fast, 150ms ease);
+}
+
+.mobileCtaLink:hover {
+  background-color: var(--color-black-rich, #0A0A0A);
+  color: #FFFFFF;
+}
+
+/* ==================================================
+   5. RESPONSIVE DESIGN (Tablet & Mobile)
+   ================================================== */
+
+@media (max-width: 1024px) {
+  .editorialGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md, 1rem);
+  }
+
+  .dominantCard {
+    min-height: 480px;
+  }
 }
 
 @media (max-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
+  .desktopCta {
+    display: none;
+  }
+
+  .mobileCtaWrapper {
+    display: block;
+  }
+
+  .editorialGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* Full-width dominant hero portrait */
+  .dominantCard {
+    grid-column: span 2;
+    aspect-ratio: 4 / 5;
+    min-height: 0;
+  }
+
+  /* Supporting stack: landscape feature followed by 2 side-by-side squares */
+  .supportingStack {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    height: auto;
+  }
+
+  .supportingTopCard {
+    grid-column: span 2;
+    aspect-ratio: 16 / 9;
+  }
+
+  .supportingBottomRow {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .supportingBottomCard {
+    aspect-ratio: 1 / 1;
+  }
+
+  .hoverPrompt {
+    display: none; /* Hide hover prompt on touch devices */
+  }
+
+  .socialIcon {
+    width: 28px;
+    height: 28px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .lookBadge {
+    top: 8px;
+    left: 8px;
+    font-size: 0.5625rem;
+    padding: 3px 6px;
+  }
+}
+
+/* Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .image,
+  .socialIcon,
+  .hoverPrompt,
+  .ctaArrow {
+    transition: none !important;
+    transform: none !important;
   }
 }

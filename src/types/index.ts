@@ -85,11 +85,13 @@ export interface Address {
   _id?: string;
   recipientName: string;
   phone: string;
+  house?: string;
   streetAddress: string;
   landmark?: string;
   city: string;
   state: string;
   pincode: string;
+  addressType?: 'HOME' | 'WORK' | 'OTHER';
   isDefault?: boolean;
 }
 
@@ -117,13 +119,24 @@ export interface Cart {
 
 export type OrderPaymentStatus = 'UNPAID' | 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 export type OrderFulfillmentStatus =
+  | 'PENDING_CONFIRMATION'
+  | 'CONFIRMED'
   | 'UNFULFILLED'
   | 'PROCESSING'
+  | 'PACKED'
   | 'SHIPPED'
   | 'OUT_FOR_DELIVERY'
   | 'DELIVERED'
   | 'CANCELLED'
   | 'RETURNED';
+
+export interface OrderStatusHistoryItem {
+  status: string;
+  timestamp: string | Date;
+  note?: string;
+  description?: string;
+  updatedBy?: string;
+}
 
 export interface OrderItem {
   productId: string;
@@ -140,6 +153,7 @@ export interface OrderItem {
 export interface Order {
   _id: string;
   orderNumber: string;
+  idempotencyKey?: string;
   user?: string | null;
   customerName: string;
   customerEmail: string;
@@ -157,9 +171,44 @@ export interface Order {
   paymentMethod: 'ONLINE_GATEWAY' | 'COD';
   paymentStatus: OrderPaymentStatus;
   fulfillmentStatus: OrderFulfillmentStatus;
+  orderStatus?: string;
+  returnStatus?: 'NONE' | 'REQUESTED' | 'APPROVED' | 'PICKUP_SCHEDULED' | 'INSPECTED' | 'REFUNDED' | 'EXCHANGED' | 'REJECTED';
+  statusHistory?: OrderStatusHistoryItem[];
+  cancellationReason?: string;
+  carrier?: string;
   trackingNumber?: string;
   trackingUrl?: string;
   courierName?: string;
+  estimatedDelivery?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReturnRequest {
+  _id: string;
+  requestId: string;
+  orderId: string;
+  orderNumber: string;
+  userId?: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  type: 'RETURN' | 'EXCHANGE';
+  items: {
+    productId: string;
+    variantSku: string;
+    title: string;
+    size: string;
+    exchangeSize?: string;
+    quantity: number;
+    unitPrice: number;
+  }[];
+  reason: string;
+  notes?: string;
+  status: 'PENDING' | 'APPROVED' | 'PICKUP_SCHEDULED' | 'INSPECTED' | 'COMPLETED' | 'REJECTED';
+  refundStatus: 'PENDING' | 'PROCESSED' | 'FAILED' | 'NOT_APPLICABLE';
+  refundAmount: number;
+  adminNotes?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -172,6 +221,7 @@ export interface User {
   phone?: string;
   role: 'CUSTOMER' | 'STAFF' | 'ADMIN';
   defaultShippingAddress?: Address;
+  addresses?: Address[];
   createdAt: string;
 }
 

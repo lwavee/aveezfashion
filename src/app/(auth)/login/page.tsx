@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/Input';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,8 +18,8 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    if (!email || !password) {
-      setError('Please provide your email and password.');
+    if (!identifier || !password) {
+      setError('Please provide your email address or mobile number and password.');
       return;
     }
 
@@ -29,17 +29,19 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ identifier, password }),
       });
 
       const data = await res.json();
       if (!data.success) {
-        throw new Error(data.error || 'Invalid email or password.');
+        throw new Error(data.error || 'Invalid email, mobile number, or password.');
       }
 
-      router.push('/account');
+      const redirectPath = data.data?.redirectUrl || '/account';
+      router.push(redirectPath);
+      router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Login failed.');
+      setError(err.message || 'Login failed. Please check your credentials.');
       setIsLoading(false);
     }
   };
@@ -80,7 +82,7 @@ export default function LoginPage() {
             ACCOUNT ACCESS
           </h1>
           <p style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-gray-500)', marginTop: 4 }}>
-            Enter your credentials to access your orders and saved addresses.
+            Sign in with your email or mobile number and password.
           </p>
         </div>
 
@@ -88,12 +90,13 @@ export default function LoginPage() {
           <div
             style={{
               width: '100%',
-              padding: '10px',
+              padding: '10px 14px',
               backgroundColor: '#FEF2F2',
               color: '#B91C1C',
               fontSize: 'var(--font-size-caption)',
               borderRadius: 'var(--radius-xs)',
               border: '1px solid #FCA5A5',
+              lineHeight: 1.4,
             }}
           >
             {error}
@@ -102,11 +105,11 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
           <Input
-            label="EMAIL ADDRESS"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="name@example.com"
+            label="EMAIL OR MOBILE NUMBER"
+            type="text"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            placeholder="vishu@gmail.com or 8955109628"
             required
           />
           <Input
@@ -123,11 +126,19 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-gray-600)', textAlign: 'center' }}>
-          New to Aveez Fashion?{' '}
-          <Link href="/register" style={{ fontWeight: 600, textDecoration: 'underline' }}>
-            Create an Account
-          </Link>
+        <div style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-gray-600)', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div>
+            New to Aveez Fashion?{' '}
+            <Link href="/register" style={{ fontWeight: 600, textDecoration: 'underline' }}>
+              Create an Account
+            </Link>
+          </div>
+          <div>
+            Staff or administrator?{' '}
+            <Link href="/admin/login" style={{ color: 'var(--color-gray-500)', textDecoration: 'underline' }}>
+              Admin Console Access
+            </Link>
+          </div>
         </div>
       </div>
     </div>

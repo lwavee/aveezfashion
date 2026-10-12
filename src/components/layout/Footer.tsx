@@ -149,16 +149,16 @@ export const Footer: React.FC = () => {
               <Link href="/contact">Contact Support</Link>
             </li>
             <li>
-              <Link href="/shipping-policy">Shipping & Delivery</Link>
+              <Link href="/shipping-delivery">Shipping & Delivery</Link>
             </li>
             <li>
-              <Link href="/returns-policy">Returns & Exchanges</Link>
+              <Link href="/returns-exchanges">Returns & Exchanges</Link>
             </li>
             <li>
-              <Link href="/faq">Frequently Asked Questions</Link>
+              <Link href="/faqs">Frequently Asked Questions</Link>
             </li>
             <li>
-              <Link href="/account">Track Your Order</Link>
+              <Link href="/track-order">Track Your Order</Link>
             </li>
           </ul>
         </div>

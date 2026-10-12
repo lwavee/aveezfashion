@@ -9,11 +9,11 @@ import { Input } from '@/components/ui/Input';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -21,8 +21,36 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
-    if (!firstName || !lastName || !email || !password) {
+    // Validation
+    if (!fullName.trim() || !email.trim() || !phone.trim() || !password || !confirmPassword) {
       setError('Please fill in all required fields.');
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setError('Please provide a valid email address.');
+      return;
+    }
+
+    // Phone format validation (10 digits)
+    const digitsOnly = phone.replace(/\D/g, '');
+    const normalizedPhone = digitsOnly.length > 10 ? digitsOnly.slice(-10) : digitsOnly;
+    if (!/^[6-9]\d{9}$/.test(normalizedPhone)) {
+      setError('Please provide a valid 10-digit mobile number.');
+      return;
+    }
+
+    // Password confirmation
+    if (password !== confirmPassword) {
+      setError('Passwords do not match. Please re-enter your password.');
+      return;
+    }
+
+    // Password strength
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
       return;
     }
 
@@ -32,15 +60,22 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, phone, password }),
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          email: email.trim(),
+          phone: normalizedPhone,
+          password,
+          confirmPassword,
+        }),
       });
 
       const data = await res.json();
       if (!data.success) {
-        throw new Error(data.error || 'Registration failed.');
+        throw new Error(data.error || 'Registration failed. Please check your details.');
       }
 
       router.push('/account');
+      router.refresh();
     } catch (err: any) {
       setError(err.message || 'Registration failed.');
       setIsLoading(false);
@@ -83,7 +118,7 @@ export default function RegisterPage() {
             CREATE ACCOUNT
           </h1>
           <p style={{ fontSize: 'var(--font-size-caption)', color: 'var(--color-gray-500)', marginTop: 4 }}>
-            Join Aveez Fashion for early capsule access and seamless checkout.
+            Direct password registration — no phone OTP required.
           </p>
         </div>
 
@@ -91,12 +126,13 @@ export default function RegisterPage() {
           <div
             style={{
               width: '100%',
-              padding: '10px',
+              padding: '10px 14px',
               backgroundColor: '#FEF2F2',
               color: '#B91C1C',
               fontSize: 'var(--font-size-caption)',
               borderRadius: 'var(--radius-xs)',
               border: '1px solid #FCA5A5',
+              lineHeight: 1.4,
             }}
           >
             {error}
@@ -104,38 +140,30 @@ export default function RegisterPage() {
         )}
 
         <form onSubmit={handleRegister} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-md)' }}>
-            <Input
-              label="FIRST NAME"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Arjun"
-              required
-            />
-            <Input
-              label="LAST NAME"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Mehta"
-              required
-            />
-          </div>
+          <Input
+            label="FULL NAME"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="Vishna Panchal"
+            required
+          />
 
           <Input
             label="EMAIL ADDRESS"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="arjun@example.com"
+            placeholder="vishu@gmail.com"
             required
           />
 
           <Input
-            label="PHONE NUMBER (OPTIONAL)"
+            label="MOBILE NUMBER"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="9876543210"
+            placeholder="8955109628"
+            required
           />
 
           <Input
@@ -143,6 +171,15 @@ export default function RegisterPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            required
+          />
+
+          <Input
+            label="CONFIRM PASSWORD"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="••••••••"
             required
           />

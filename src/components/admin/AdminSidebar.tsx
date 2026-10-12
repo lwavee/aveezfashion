@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   Shirt,
@@ -16,12 +16,24 @@ import {
   Mail,
   Settings,
   ArrowUpRight,
+  LogOut,
 } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import styles from './AdminSidebar.module.css';
 
 export const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // ignore
+    }
+    router.push('/admin/login');
+    router.refresh();
+  };
 
   const links = [
     { label: 'DASHBOARD', href: '/admin', icon: <LayoutDashboard size={18} /> },
@@ -29,6 +41,8 @@ export const AdminSidebar: React.FC = () => {
     { label: 'CATEGORIES', href: '/admin/categories', icon: <FolderTree size={18} /> },
     { label: 'COLLECTIONS', href: '/admin/collections', icon: <Sparkles size={18} /> },
     { label: 'ORDERS', href: '/admin/orders', icon: <ShoppingBag size={18} /> },
+    { label: 'RETURNS', href: '/admin/returns', icon: <Boxes size={18} /> },
+    { label: 'SUPPORT', href: '/admin/support', icon: <Mail size={18} /> },
     { label: 'CUSTOMERS', href: '/admin/customers', icon: <Users size={18} /> },
     { label: 'INVENTORY', href: '/admin/inventory', icon: <Boxes size={18} /> },
     { label: 'COUPONS', href: '/admin/coupons', icon: <Ticket size={18} /> },
@@ -69,6 +83,28 @@ export const AdminSidebar: React.FC = () => {
           <span>VIEW STOREFRONT</span>
           <ArrowUpRight size={16} />
         </Link>
+        <button
+          onClick={handleLogout}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            width: '100%',
+            background: 'transparent',
+            border: 'none',
+            color: '#EF4444',
+            padding: '8px 12px',
+            cursor: 'pointer',
+            fontSize: 'var(--font-size-caption)',
+            fontWeight: 600,
+            letterSpacing: 'var(--letter-spacing-wide)',
+            marginTop: '8px',
+            borderRadius: 'var(--radius-xs)',
+          }}
+        >
+          <LogOut size={16} />
+          <span>SIGN OUT</span>
+        </button>
       </div>
     </aside>
   );

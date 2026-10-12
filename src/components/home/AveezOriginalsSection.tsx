@@ -5,6 +5,7 @@ import styles from './AveezOriginalsSection.module.css';
 
 export interface AveezOriginalsProps {
   eyebrow?: string;
+  secondaryLabel?: string;
   tagline?: string;
   collectionId?: string;
   headline?: string;
@@ -16,109 +17,113 @@ export interface AveezOriginalsProps {
 }
 
 export const AveezOriginalsSection: React.FC<AveezOriginalsProps> = ({
-  eyebrow = 'THE AVEEZ SIGNATURE',
+  eyebrow = 'AVEEZ ORIGINALS — 01 / SIGNATURE COLLECTION',
+  secondaryLabel = 'THE AVEEZ SIGNATURE',
   tagline,
-  collectionId = '01 / SIGNATURE COLLECTION',
-  headline = 'DESIGNED TO STAND APART.',
-  description = 'Distinctive silhouettes. Considered details. A personal expression of modern style.',
-  image = '/images/originals/aveez-originals-campaign.jpg',
-  imageCaption = 'STUDIO ARCHIVE — VOL. 01',
-  ctaText = 'DISCOVER AVEEZ ORIGINALS',
+  collectionId,
+  headline = 'NOT MADE TO BLEND IN.',
+  description = 'Distinctive style. Individual expression. A different point of view.',
+  image = '/images/signature.png',
+  ctaText = 'EXPLORE THE COLLECTION ↗',
   ctaLink = '/collections/aveez-originals',
 }) => {
-  // Graceful fallback to guarantee editorial excellence even if legacy content strings are provided
+  // Editorial content resolution — guarantees design fidelity while respecting intentional overrides
   const resolvedEyebrow =
-    eyebrow && eyebrow !== 'CHAPTER 01 / SIGNATURE DROP'
+    eyebrow && !eyebrow.includes('CHAPTER 01') && eyebrow !== 'THE AVEEZ SIGNATURE'
       ? eyebrow
-      : tagline && tagline !== 'CHAPTER 01 / SIGNATURE DROP'
+      : tagline && !tagline.includes('CHAPTER 01')
       ? tagline
-      : 'THE AVEEZ SIGNATURE';
+      : 'AVEEZ ORIGINALS — 01 / SIGNATURE COLLECTION';
+
+  const resolvedSecondaryLabel =
+    secondaryLabel || (collectionId ? collectionId : 'THE AVEEZ SIGNATURE');
 
   const resolvedHeadline =
-    headline && headline !== 'THE ARCHITECTURAL SILHOUETTE'
+    headline &&
+    headline !== 'THE ARCHITECTURAL SILHOUETTE' &&
+    headline !== 'DESIGNED TO STAND APART.'
       ? headline
-      : 'DESIGNED TO STAND APART.';
+      : 'NOT MADE TO BLEND IN.';
 
   const resolvedDescription =
-    description && !description.includes('450 GSM')
+    description &&
+    !description.includes('450 GSM') &&
+    !description.includes('silhouettes. Considered details')
       ? description
-      : 'Distinctive silhouettes. Considered details. A personal expression of modern style.';
+      : 'Distinctive style. Individual expression. A different point of view.';
 
-  const resolvedCtaText =
-    ctaText && ctaText !== 'EXPLORE AVEEZ ORIGINALS'
-      ? ctaText
-      : 'DISCOVER AVEEZ ORIGINALS';
+  // Standardize CTA text label and arrow handling
+  const cleanCtaLabel =
+    ctaText &&
+    ctaText !== 'DISCOVER AVEEZ ORIGINALS' &&
+    ctaText !== 'EXPLORE AVEEZ ORIGINALS'
+      ? ctaText.replace('↗', '').trim()
+      : 'EXPLORE THE COLLECTION';
 
   const resolvedCtaLink = ctaLink || '/collections/aveez-originals';
 
   const resolvedImage =
-    image && !image.includes('photo-1552374196-1ab2a1c593e8')
+    image &&
+    !image.includes('aveez-originals-campaign') &&
+    !image.includes('photo-1552374196')
       ? image
-      : '/images/originals/aveez-originals-campaign.jpg';
+      : '/images/signature.png';
 
   return (
-    <section className={styles.section} aria-label="Aveez Originals Editorial Campaign">
+    <section
+      className={styles.section}
+      aria-label="Aveez Originals — Signature Collection"
+    >
+      {/* 1. Full-Bleed Campaign Image Background */}
+      <div className={styles.imageBackground} aria-hidden="true">
+        <Image
+          src={resolvedImage}
+          alt=""
+          fill
+          priority={false}
+          sizes="100vw"
+          quality={90}
+          className={styles.bgImage}
+        />
+        {/* Subtle Directional Scrim (preserves model and architecture) */}
+        <div className={styles.scrimOverlay} />
+      </div>
+
+      {/* 2. Editorial Typography & Content Block */}
       <div className={`container ${styles.container}`}>
-        <div className={styles.editorialGrid}>
-          {/* Left Column — Editorial Brand Story */}
-          <div className={styles.storyCol}>
-            <div className={styles.storyContent}>
-              {/* Subtle Label & Collection Identifier */}
-              <div className={styles.metaRow}>
-                <span className={styles.brandTag}>AVEEZ ORIGINALS</span>
-                <span className={styles.metaDivider} aria-hidden="true">
-                  /
-                </span>
-                <span className={styles.collectionIdentifier}>{collectionId}</span>
-              </div>
-
-              {/* Small Eyebrow */}
-              <span className={styles.eyebrow}>{resolvedEyebrow}</span>
-
-              {/* Main Headline */}
-              <h2 className={styles.headline}>{resolvedHeadline}</h2>
-
-              {/* Supporting Copy */}
-              <p className={styles.description}>{resolvedDescription}</p>
-
-              {/* Minimal Divider */}
-              <div className={styles.hairlineDivider} aria-hidden="true" />
-
-              {/* Restrained Text Link CTA */}
-              <div className={styles.ctaWrapper}>
-                <Link
-                  href={resolvedCtaLink}
-                  className={styles.ctaLink}
-                  aria-label={`${resolvedCtaText} — View Aveez Originals collection`}
-                >
-                  <span className={styles.ctaText}>{resolvedCtaText}</span>
-                  <span className={styles.ctaArrow} aria-hidden="true">
-                    →
-                  </span>
-                </Link>
-              </div>
-            </div>
+        <div className={styles.contentBlock}>
+          {/* Metadata Stack: Secondary Label & Small Eyebrow */}
+          <div className={styles.metaStack}>
+            {resolvedSecondaryLabel && (
+              <span className={styles.secondaryLabel}>
+                <span className={styles.labelIndicator} aria-hidden="true" />
+                {resolvedSecondaryLabel}
+              </span>
+            )}
+            <span className={styles.eyebrow}>{resolvedEyebrow}</span>
           </div>
 
-          {/* Right Column — Dominant Campaign Photography */}
-          <div className={styles.campaignCol}>
-            <div className={styles.imageCard}>
-              <Image
-                src={resolvedImage}
-                alt="Aveez Originals Editorial Campaign — Designed to Stand Apart"
-                fill
-                priority={false}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 650px"
-                className={styles.image}
-              />
+          {/* Main Editorial Headline */}
+          <h2 className={styles.headline}>{resolvedHeadline}</h2>
 
-              {/* Discreet Image Caption */}
-              {imageCaption && (
-                <div className={styles.imageCaption}>
-                  <span>{imageCaption}</span>
-                </div>
-              )}
-            </div>
+          {/* Minimal Editorial Divider */}
+          <div className={styles.divider} aria-hidden="true" />
+
+          {/* Supporting Copy */}
+          <p className={styles.description}>{resolvedDescription}</p>
+
+          {/* Primary CTA Link */}
+          <div className={styles.ctaWrapper}>
+            <Link
+              href={resolvedCtaLink}
+              className={styles.ctaLink}
+              aria-label={`${cleanCtaLabel} — Explore Aveez Originals signature collection`}
+            >
+              <span className={styles.ctaText}>{cleanCtaLabel}</span>
+              <span className={styles.ctaArrow} aria-hidden="true">
+                ↗
+              </span>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,15 +1,40 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Heart, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useWishlist } from '@/context/WishlistContext';
 import { Button } from '@/components/ui/Button';
+import { ProductCard } from '@/components/product/ProductCard';
+import { Product } from '@/types';
 
 export default function WishlistPage() {
   const { wishlistSlugs, totalWishlist } = useWishlist();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (totalWishlist === 0) {
+  useEffect(() => {
+    async function loadCatalog() {
+      try {
+        const res = await fetch('/api/products?limit=50');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data?.products)) {
+            setProducts(json.data.products);
+          }
+        }
+      } catch {
+        // error handling
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadCatalog();
+  }, []);
+
+  const savedProducts = products.filter((p) => wishlistSlugs.includes(p.slug));
+
+  if (!loading && totalWishlist === 0) {
     return (
       <div
         style={{
@@ -42,11 +67,11 @@ export default function WishlistPage() {
             marginBottom: 'var(--space-xl)',
           }}
         >
-          Save pieces you love while browsing to keep track of seasonal drops and capsule releases.
+          Save pieces you love while browsing to keep track of seasonal drops, capsule releases, and tailored silhouettes.
         </p>
         <Link href="/shop">
           <Button variant="primary" size="lg">
-            EXPLORE THE SHOP
+            EXPLORE THE CATALOG
           </Button>
         </Link>
       </div>
@@ -54,25 +79,71 @@ export default function WishlistPage() {
   }
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'var(--space-3xl) var(--container-padding)' }}>
-      <div style={{ borderBottom: '1px solid var(--color-gray-200)', paddingBottom: 'var(--space-md)', marginBottom: 'var(--space-2xl)' }}>
-        <h1 style={{ fontFamily: 'var(--font-family-display)', fontSize: 'var(--font-size-h2)', letterSpacing: 'var(--letter-spacing-tight)' }}>
-          SAVED PIECES ({totalWishlist})
-        </h1>
-      </div>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'var(--space-3xl) var(--container-padding) 5rem' }}>
+      <div
+        style={{
+          borderBottom: '1px solid var(--color-gray-200)',
+          paddingBottom: 'var(--space-md)',
+          marginBottom: 'var(--space-2xl)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          flexWrap: 'wrap',
+          gap: '1rem',
+        }}
+      >
+        <div>
+          <h1
+            style={{
+              fontFamily: 'var(--font-family-display)',
+              fontSize: 'var(--font-size-h2)',
+              letterSpacing: 'var(--letter-spacing-tight)',
+              margin: 0,
+            }}
+          >
+            SAVED PIECES ({totalWishlist})
+          </h1>
+          <p
+            style={{
+              color: 'var(--color-gray-500)',
+              fontSize: 'var(--font-size-body-sm)',
+              marginTop: '4px',
+              margin: 0,
+            }}
+          >
+            Curated personal selection. Add directly to bag with instant size selection.
+          </p>
+        </div>
 
-      <p style={{ color: 'var(--color-gray-600)', fontSize: 'var(--font-size-body-sm)', marginBottom: 'var(--space-xl)' }}>
-        You have {totalWishlist} saved item(s) in your personal wishlist. Click below to view and add to bag.
-      </p>
-
-      <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
         <Link href="/shop">
-          <Button variant="primary" size="md">
+          <Button variant="outline" size="sm">
             <span>CONTINUE SHOPPING</span>
-            <ArrowRight size={16} style={{ marginLeft: 6 }} />
+            <ArrowRight size={14} style={{ marginLeft: 6 }} />
           </Button>
         </Link>
       </div>
+
+      {loading ? (
+        <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--color-gray-500)', fontSize: '0.875rem' }}>
+          Loading saved products...
+        </div>
+      ) : savedProducts.length === 0 && totalWishlist > 0 ? (
+        <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--color-gray-500)' }}>
+          Syncing saved pieces with current atelier catalog...
+        </div>
+      ) : (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '2rem',
+          }}
+        >
+          {savedProducts.map((product) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

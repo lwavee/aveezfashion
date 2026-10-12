@@ -313,3 +313,156 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Auth Banner */
+.authBanner {
+  background-color: var(--color-white-off);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xs);
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.authBannerText {
+  font-size: var(--font-size-caption);
+  color: var(--color-gray-700);
+}
+
+.authBannerLink {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-bold);
+  text-decoration: underline;
+  color: var(--color-black-rich);
+}
+
+/* Saved Address Selected Card */
+.selectedAddressBox {
+  background-color: var(--color-white-off);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-xs);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.addressHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.addressTypeBadge {
+  font-size: var(--font-size-micro);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-widest);
+  padding: 2px 8px;
+  background-color: var(--color-gray-200);
+  border-radius: var(--radius-xs);
+}
+
+.addressActionsRow {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.linkActionBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-black-rich);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.linkActionBtn:hover {
+  color: var(--color-gray-600);
+}
+
+/* Modal Backdrop & Drawer */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-md);
+}
+
+.modalContent {
+  background-color: var(--color-white-pure);
+  border-radius: var(--radius-xs);
+  max-width: 560px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-gray-200);
+  padding-bottom: var(--space-sm);
+}
+
+.modalTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.addressOptionsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.addressOptionItem {
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-xs);
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.addressOptionItem:hover {
+  border-color: var(--color-black-rich);
+}
+
+.addressOptionSelected {
+  border-color: var(--color-black-rich);
+  background-color: var(--color-white-off);
+}
+

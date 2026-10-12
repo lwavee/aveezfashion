@@ -10,8 +10,14 @@ import styles from './confirmation.module.css';
 
 export default function OrderConfirmationPage() {
   const searchParams = useSearchParams();
-  const orderNumber = searchParams.get('orderNumber') || 'AVZ-2026-CONFIRMED';
-  const total = searchParams.get('total') || '3,499';
+  const orderNumber = searchParams.get('orderNumber');
+
+  if (orderNumber) {
+    if (typeof window !== 'undefined') {
+      window.location.replace(`/order-confirmation/${encodeURIComponent(orderNumber)}`);
+    }
+  }
+
 
   return (
     <div className={`container ${styles.pageWrapper}`}>
@@ -23,9 +29,11 @@ export default function OrderConfirmationPage() {
         <div className={styles.statusRow}>
           <CheckCircle2 size={44} color="var(--color-black-rich)" />
           <h1 className={styles.heading}>ORDER CONFIRMED</h1>
-          <p className={styles.orderRef}>
-            ORDER IDENTIFIER: <strong>{orderNumber}</strong>
-          </p>
+          {orderNumber && (
+            <p className={styles.orderRef}>
+              ORDER IDENTIFIER: <strong>{orderNumber}</strong>
+            </p>
+          )}
         </div>
 
         <div className={styles.messageBox}>

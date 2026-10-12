@@ -1,0 +1,723 @@
+/* ==================================================
+   AVEEZ FASHION — ABOUT US EDITORIAL STYLESHEET
+   Brand Manifesto, Philosophy & Style Showcase
+   ================================================== */
+
+.pageWrapper {
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--color-white-pure, #FFFFFF);
+}
+
+/* ==================================================
+   1. HERO — THE AVEEZ MANIFESTO
+   ================================================== */
+
+.heroSection {
+  padding-top: clamp(3rem, 6vw, 5.5rem);
+  padding-bottom: clamp(3rem, 5vw, 4.5rem);
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.heroHeader {
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.eyebrow {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: var(--font-size-micro, 0.6875rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500, #71717A);
+  margin-bottom: var(--space-xs, 0.5rem);
+}
+
+.heroTitle {
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
+  font-size: clamp(2.75rem, 6.5vw, 5.25rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  text-transform: uppercase;
+  color: var(--color-black-rich, #0A0A0A);
+  margin: 0 0 var(--space-md, 1rem) 0;
+}
+
+.heroSubtitle {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: clamp(1rem, 1.25vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-neutral-600, #52525B);
+  max-width: 42ch;
+  margin: 0 auto;
+}
+
+.heroImageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 640px;
+  min-height: 380px;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  background-color: var(--color-neutral-100, #F4F4F5);
+  overflow: hidden;
+  border-radius: var(--radius-none, 0px);
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 32%;
+}
+
+/* ==================================================
+   2. BRAND STORY — MORE THAN WHAT YOU WEAR
+   ================================================== */
+
+.storySection {
+  padding: clamp(4rem, 7vw, 6.5rem) 0;
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.storyGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2.5rem, 6vw, 6rem);
+  align-items: center;
+}
+
+.storyContent {
+  display: flex;
+  flex-direction: column;
+  max-width: 540px;
+}
+
+.sectionHeading {
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--color-black-rich, #0A0A0A);
+  margin: 0 0 var(--space-lg, 1.5rem) 0;
+}
+
+.storyParagraph {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  line-height: 1.75;
+  color: var(--color-neutral-600, #52525B);
+  margin-bottom: var(--space-md, 1rem);
+}
+
+.storyParagraph:last-of-type {
+  margin-bottom: 0;
+}
+
+.storyImageCard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background-color: var(--color-neutral-100, #F4F4F5);
+  overflow: hidden;
+  border-radius: var(--radius-none, 0px);
+}
+
+.storyImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.storyImageCard:hover .storyImage {
+  transform: scale(1.025);
+}
+
+/* ==================================================
+   3. BRAND PHILOSOPHY — DESIGNED WITH INTENTION
+   ================================================== */
+
+.philosophySection {
+  padding: clamp(4rem, 7vw, 6.5rem) 0;
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.philosophyHeader {
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  max-width: 620px;
+}
+
+.principlesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.principleColumn {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-lg, 1.5rem);
+  border-top: 1px solid var(--color-neutral-300, #D4D4D8);
+  transition: border-color var(--transition-normal, 250ms ease);
+}
+
+.principleColumn:hover {
+  border-top-color: var(--color-black-rich, #0A0A0A);
+}
+
+.principleNumber {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--color-neutral-400, #A1A1AA);
+  margin-bottom: var(--space-sm, 0.75rem);
+}
+
+.principleTitle {
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
+  font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  color: var(--color-black-rich, #0A0A0A);
+  margin: 0 0 var(--space-xs, 0.5rem) 0;
+}
+
+.principleDesc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--color-neutral-600, #52525B);
+  margin: 0;
+}
+
+/* ==================================================
+   4. THE AVEEZ STYLE EDIT — FASHION VISUALS
+   ================================================== */
+
+.styleEditSection {
+  padding: clamp(4rem, 7vw, 6.5rem) 0;
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.styleEditHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  padding-bottom: var(--space-md, 1rem);
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.galleryCollage {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr;
+  grid-template-rows: repeat(2, 280px);
+  gap: clamp(1rem, 1.5vw, 1.5rem);
+}
+
+.collageCard {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-neutral-100, #F4F4F5);
+}
+
+.collageDominant {
+  grid-row: span 2;
+}
+
+.collageItem2 {
+  grid-column: span 2;
+}
+
+.collageItem3,
+.collageItem4 {
+  grid-column: span 1;
+}
+
+.collageImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.collageCard:hover .collageImage {
+  transform: scale(1.03);
+}
+
+.collageCaption {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(10, 10, 10, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FAF8F5;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs, 2px);
+  pointer-events: none;
+}
+
+/* ==================================================
+   5. MATCHING STYLES CONNECTION
+   ================================================== */
+
+.matchingSection {
+  padding: clamp(4rem, 7vw, 6.5rem) 0;
+  background-color: #FAF8F5; /* Warm luxury ivory neutral */
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.matchingGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2.5rem, 6vw, 6rem);
+  align-items: center;
+}
+
+.matchingImageCard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background-color: var(--color-neutral-200, #E4E4E7);
+}
+
+.matchingImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.matchingImageCard:hover .matchingImage {
+  transform: scale(1.03);
+}
+
+.matchingContent {
+  display: flex;
+  flex-direction: column;
+  max-width: 520px;
+}
+
+.matchingDesc {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: clamp(0.9375rem, 1.1vw, 1.0625rem);
+  line-height: 1.7;
+  color: var(--color-neutral-600, #52525B);
+  margin-bottom: var(--space-xl, 2rem);
+}
+
+/* ==================================================
+   6. BRAND STATEMENT — FULL-WIDTH EDITORIAL MOMENT
+   ================================================== */
+
+.statementSection {
+  position: relative;
+  width: 100%;
+  min-height: clamp(520px, 68vh, 680px);
+  display: flex;
+  align-items: center;
+  background-color: var(--color-black-rich, #0A0A0A);
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.statementBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.statementBgImage {
+  object-fit: cover;
+  object-position: 72% 35%;
+  opacity: 0.38;
+}
+
+.statementOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 10, 10, 0.88) 0%,
+    rgba(10, 10, 10, 0.72) 40%,
+    rgba(10, 10, 10, 0.35) 75%,
+    rgba(10, 10, 10, 0.2) 100%
+  );
+}
+
+.statementContainer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.statementBlock {
+  max-width: 620px;
+}
+
+.statementEyebrow {
+  color: #D4CFC7;
+}
+
+.statementHeading {
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #FAF8F5;
+  margin: 0 0 var(--space-lg, 1.5rem) 0;
+}
+
+.statementDivider {
+  width: 44px;
+  height: 1px;
+  background-color: rgba(250, 248, 245, 0.35);
+  margin-bottom: var(--space-lg, 1.5rem);
+}
+
+.statementCopy {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.65;
+  color: rgba(245, 245, 240, 0.82);
+  margin: 0 0 var(--space-2xl, 2.5rem) 0;
+  max-width: 44ch;
+}
+
+.statementCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #FAF8F5;
+  text-decoration: none;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(250, 248, 245, 0.6);
+  transition: border-color var(--transition-normal, 250ms ease),
+              color var(--transition-normal, 250ms ease);
+}
+
+.statementCta:hover {
+  color: #FFFFFF;
+  border-bottom-color: #FFFFFF;
+}
+
+.statementArrow {
+  display: inline-block;
+  transition: transform 250ms ease;
+}
+
+.statementCta:hover .statementArrow {
+  transform: translate(3px, -3px);
+}
+
+/* ==================================================
+   7. INSTAGRAM INTEGRATION — OFFICIAL BRAND PROFILE
+   ================================================== */
+
+.instagramSection {
+  padding: clamp(4rem, 7vw, 6.5rem) 0;
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.instagramHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  padding-bottom: var(--space-md, 1rem);
+  border-bottom: 1px solid var(--color-neutral-200, #E4E4E7);
+}
+
+.instagramGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 1.5vw, 1.5rem);
+}
+
+.instagramCard {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  max-height: 480px;
+  background-color: var(--color-neutral-100, #F4F4F5);
+  overflow: hidden;
+  display: block;
+  text-decoration: none;
+}
+
+.instagramCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.instagramCard:hover .instagramCardImage {
+  transform: scale(1.03);
+}
+
+.instagramBadge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FAF8F5;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  padding: 3px 7px;
+  border-radius: var(--radius-xs, 2px);
+  text-transform: uppercase;
+}
+
+.instagramIcon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-black-rich, #0A0A0A);
+  transition: transform 200ms ease, background-color 200ms ease;
+}
+
+.instagramCard:hover .instagramIcon {
+  transform: scale(1.08);
+  background-color: #FFFFFF;
+}
+
+.instagramPrompt {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  color: var(--color-black-rich, #0A0A0A);
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 8px 0;
+  text-align: center;
+  border-radius: var(--radius-xs, 2px);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 250ms ease, transform 250ms ease;
+  pointer-events: none;
+}
+
+.instagramCard:hover .instagramPrompt {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================================================
+   8. FINAL CTA — FIND YOUR OWN POINT OF VIEW
+   ================================================== */
+
+.finalCtaSection {
+  padding: clamp(5rem, 9vw, 8rem) 0;
+  text-align: center;
+}
+
+.finalCtaContent {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.finalHeading {
+  font-family: var(--font-family-display, 'Outfit', sans-serif);
+  font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  text-transform: uppercase;
+  color: var(--color-black-rich, #0A0A0A);
+  margin: 0 0 var(--space-sm, 0.75rem) 0;
+}
+
+.finalSub {
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.6;
+  color: var(--color-neutral-600, #52525B);
+  margin: 0 0 var(--space-2xl, 2.5rem) 0;
+}
+
+/* Shared Editorial Link */
+.editorialLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-body, 'Inter', sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-black-rich, #0A0A0A);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--transition-fast, 150ms ease),
+              opacity var(--transition-fast, 150ms ease);
+}
+
+.editorialLink:hover {
+  border-bottom-color: var(--color-black-rich, #0A0A0A);
+  opacity: 0.85;
+}
+
+.linkArrow {
+  display: inline-block;
+  transition: transform 200ms ease;
+}
+
+.editorialLink:hover .linkArrow {
+  transform: translate(3px, -3px);
+}
+
+/* ==================================================
+   9. RESPONSIVE DESIGN (Tablet & Mobile)
+   ================================================== */
+
+@media (max-width: 1024px) {
+  .storyGrid,
+  .matchingGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl, 2.5rem);
+  }
+
+  .matchingGrid {
+    /* Text first on tablet/mobile */
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .galleryCollage {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+
+  .collageDominant {
+    grid-column: span 2;
+    aspect-ratio: 16 / 10;
+  }
+
+  .collageItem2 {
+    grid-column: span 2;
+    aspect-ratio: 16 / 9;
+  }
+
+  .collageItem3,
+  .collageItem4 {
+    aspect-ratio: 1 / 1;
+  }
+
+  .principlesGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl, 2rem);
+  }
+
+  .instagramGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .heroImageContainer {
+    aspect-ratio: 4 / 3;
+    min-height: 260px;
+  }
+
+  .styleEditHeader,
+  .instagramHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm, 0.75rem);
+  }
+
+  .galleryCollage {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .collageDominant,
+  .collageItem2,
+  .collageItem3,
+  .collageItem4 {
+    grid-column: span 1;
+    aspect-ratio: 4 / 3;
+  }
+
+  .instagramGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .instagramPrompt {
+    display: none;
+  }
+
+  .statementSection {
+    min-height: 440px;
+  }
+}
+
+/* Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .heroImage,
+  .storyImage,
+  .collageImage,
+  .matchingImage,
+  .instagramCardImage,
+  .statementCta,
+  .editorialLink,
+  .linkArrow,
+  .statementArrow {
+    transition: none !important;
+    transform: none !important;
+  }
+}

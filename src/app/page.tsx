@@ -1,15 +1,13 @@
 import React from 'react';
-import Link from 'next/link';
 import { HeroSection } from '@/components/home/HeroSection';
 import { NewArrivalsSection } from '@/components/home/NewArrivalsSection';
 import { TogetherInStyleSection } from '@/components/home/TogetherInStyleSection';
 import { CategoryGrid } from '@/components/home/CategoryGrid';
 import { AveezOriginalsSection } from '@/components/home/AveezOriginalsSection';
+import { BestSellersSection } from '@/components/home/BestSellersSection';
 import { BrandStorySection } from '@/components/home/BrandStorySection';
 import { WhyAveezSection } from '@/components/home/WhyAveezSection';
 import { InstagramGridSection } from '@/components/home/InstagramGridSection';
-import { ProductCard } from '@/components/product/ProductCard';
-import { Button } from '@/components/ui/Button';
 import { CatalogService } from '@/server/services/catalogService';
 import styles from './page.module.css';
 
@@ -40,44 +38,17 @@ export default async function HomePage() {
 
       {/* 6. Aveez Originals Editorial */}
       <AveezOriginalsSection
-        eyebrow="THE AVEEZ SIGNATURE"
-        collectionId="01 / SIGNATURE COLLECTION"
-        headline="DESIGNED TO STAND APART."
-        description="Distinctive silhouettes. Considered details. A personal expression of modern style."
-        image="/images/originals/aveez-originals-campaign.jpg"
-        imageCaption="STUDIO ARCHIVE — VOL. 01"
-        ctaText="DISCOVER AVEEZ ORIGINALS"
+        eyebrow="AVEEZ ORIGINALS — 01 / SIGNATURE COLLECTION"
+        secondaryLabel="THE AVEEZ SIGNATURE"
+        headline="NOT MADE TO BLEND IN."
+        description="Distinctive style. Individual expression. A different point of view."
+        image="/images/signature.png"
+        ctaText="EXPLORE THE COLLECTION ↗"
         ctaLink={content.aveezOriginals?.ctaLink || '/collections/aveez-originals'}
       />
 
       {/* 7. Best Sellers */}
-      <section className={`container ${styles.productSection}`} aria-label="Best Sellers">
-        <div className={styles.sectionHeader}>
-          <div className={styles.titleStack}>
-            <span className={styles.sectionSub}>MOST WANTED</span>
-            <h2 className={styles.sectionHeading}>BEST SELLERS</h2>
-          </div>
-          <Link href="/shop?filter=bestseller" className={styles.desktopViewAll}>
-            <Button variant="ghost" size="sm">
-              VIEW ALL (POPULAR) →
-            </Button>
-          </Link>
-        </div>
-
-        <div className={styles.productGrid}>
-          {bestSellersData.products.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </div>
-
-        <div className={styles.mobileViewAll}>
-          <Link href="/shop?filter=bestseller">
-            <Button variant="outline" size="md" fullWidth>
-              EXPLORE ALL BEST SELLERS
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <BestSellersSection products={bestSellersData.products} />
 
       {/* 8. Brand Story */}
       <BrandStorySection
