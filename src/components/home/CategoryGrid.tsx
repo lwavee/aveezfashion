@@ -86,7 +86,9 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ categories }) => {
             {cat.name}
           </h3>
           <span className={styles.exploreLink}>
-            EXPLORE {cat.name.toUpperCase()} <span className={styles.arrow} aria-hidden="true">→</span>
+            <span className={styles.desktopExploreText}>EXPLORE {cat.name.toUpperCase()}</span>
+            <span className={styles.mobileExploreText}>EXPLORE</span>
+            <span className={styles.arrow} aria-hidden="true">→</span>
           </span>
         </div>
       </Link>

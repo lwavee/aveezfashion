@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Heart, Star, ShieldCheck, Truck, RotateCcw, ChevronDown, Check, Ruler } from 'lucide-react';
@@ -26,17 +26,84 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
   // Active Selected States
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedColor, setSelectedColor] = useState<string>(
+    product.variants[0]?.color || ''
+  );
   const [selectedSize, setSelectedSize] = useState<string>(
     product.variants.find((v) => v.stock > 0)?.size || product.variants[0]?.size || 'M'
   );
   const [quantity, setQuantity] = useState(1);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const [pincode, setPincode] = useState('');
+  const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
+
+  // Swipe handling
+  const touchStartX = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diffX = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diffX) > 40 && product.images.length > 1) {
+      if (diffX > 0) {
+        setSelectedImageIndex((prev) => (prev + 1) % product.images.length);
+      } else {
+        setSelectedImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+      }
+    }
+    touchStartX.current = null;
+  };
+
+  // Lock body scroll when size guide modal is open
+  useEffect(() => {
+    if (sizeGuideOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [sizeGuideOpen]);
 
   // Accordion Toggles
   const [openAccordion, setOpenAccordion] = useState<string | null>('fabric');
 
+  // Extract unique color variants
+  const availableColors = product.variants.filter(
+    (v, i, self) =>
+      Boolean(v.color) &&
+      i === self.findIndex((t) => t.color.toLowerCase() === v.color.toLowerCase())
+  );
+
   const activeVariant =
-    product.variants.find((v) => v.size === selectedSize) || product.variants[0];
+    product.variants.find((v) => 
+      (selectedColor ? v.color.toLowerCase() === selectedColor.toLowerCase() : true) &&
+      v.size === selectedSize
+    ) ||
+    product.variants.find((v) => v.size === selectedSize) ||
+    product.variants[0];
+
+  const handleColorChange = (newColor: string) => {
+    setSelectedColor(newColor);
+    const inStockForColor = product.variants.find(
+      (v) => v.color.toLowerCase() === newColor.toLowerCase() && v.stock > 0
+    );
+    if (inStockForColor) {
+      setSelectedSize(inStockForColor.size);
+    }
+  };
+
+  const handleCheckPincode = () => {
+    if (pincode.length === 6) {
+      setPincodeStatus(`Delivering to ${pincode}: 2–4 business days • Free shipping eligible • COD available`);
+    } else {
+      setPincodeStatus('Please enter a valid 6-digit Indian PIN code.');
+    }
+  };
 
   const isFavorited = isInWishlist(product.slug);
   const isOutOfStock = !activeVariant || activeVariant.stock <= 0;
@@ -82,6 +149,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             {product.images.map((img, idx) => (
               <button
                 key={idx}
+                type="button"
                 className={`${styles.thumbBtn} ${selectedImageIndex === idx ? styles.activeThumb : ''}`}
                 onClick={() => setSelectedImageIndex(idx)}
                 aria-label={`View photo ${idx + 1}`}
@@ -89,8 +157,8 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 <Image
                   src={img.url}
                   alt={img.alt || `${product.title} preview ${idx + 1}`}
-                  width={72}
-                  height={96}
+                  fill
+                  sizes="80px"
                   className={styles.thumbImage}
                 />
               </button>
@@ -98,13 +166,17 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           </div>
 
           {/* Main Stage Image */}
-          <div className={styles.mainStage}>
+          <div
+            className={styles.mainStage}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <Image
               src={currentImage.url}
               alt={currentImage.alt || product.title}
-              width={900}
-              height={1200}
+              fill
               priority
+              sizes="(max-width: 1024px) 100vw, 55vw"
               className={styles.mainImage}
             />
             {hasSale ? (
@@ -112,6 +184,19 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 <Badge variant="sale">SAVE {discountPercent}%</Badge>
               </div>
             ) : null}
+
+            {product.images.length > 1 && (
+              <div className={styles.mobileDotsTrack} aria-hidden="true">
+                {product.images.map((_, dotIdx) => (
+                  <span
+                    key={dotIdx}
+                    className={`${styles.mobileDot} ${
+                      dotIdx === selectedImageIndex ? styles.mobileDotActive : ''
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -158,19 +243,43 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             </div>
           </div>
 
-          {/* Color Details */}
+          {/* Color Details & Selection */}
           <div className={styles.sectionBlock}>
             <div className={styles.sectionHeader}>
               <span className={styles.sectionLabel}>COLOR:</span>
               <span className={styles.selectedValue}>{activeVariant.color}</span>
             </div>
-            <div className={styles.colorPill}>
-              <span
-                className={styles.colorSwatch}
-                style={{ backgroundColor: activeVariant.colorHex }}
-              />
-              <span>{activeVariant.color}</span>
-            </div>
+            {availableColors.length > 1 ? (
+              <div className={styles.colorSwatchesList} aria-label="Choose color">
+                {availableColors.map((colorObj) => {
+                  const isSelected = activeVariant.color.toLowerCase() === colorObj.color.toLowerCase();
+                  return (
+                    <button
+                      key={colorObj.color}
+                      type="button"
+                      onClick={() => handleColorChange(colorObj.color)}
+                      className={`${styles.colorSwatchBtn} ${isSelected ? styles.selectedColorBtn : ''}`}
+                      title={colorObj.color}
+                      aria-pressed={isSelected}
+                    >
+                      <span
+                        className={styles.colorSwatchDot}
+                        style={{ backgroundColor: colorObj.colorHex }}
+                      />
+                      <span>{colorObj.color}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className={styles.colorPill}>
+                <span
+                  className={styles.colorSwatch}
+                  style={{ backgroundColor: activeVariant.colorHex }}
+                />
+                <span>{activeVariant.color}</span>
+              </div>
+            )}
           </div>
 
           {/* Sizing Selection & Size Guide */}
@@ -282,6 +391,38 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               <ShieldCheck size={18} />
               <span>Authentic 100% Combed Heavy Cotton</span>
             </div>
+          </div>
+
+          {/* Delivery & Pincode Checker */}
+          <div className={styles.pincodeSection}>
+            <div className={styles.pincodeHeader}>
+              <Truck size={16} />
+              <span className={styles.pincodeTitle}>ESTIMATE DELIVERY & AVAILABILITY</span>
+            </div>
+            <div className={styles.pincodeInputRow}>
+              <input
+                type="text"
+                maxLength={6}
+                placeholder="Enter 6-digit Pincode"
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
+                className={styles.pincodeInput}
+                aria-label="Enter pincode"
+              />
+              <button
+                type="button"
+                onClick={handleCheckPincode}
+                className={styles.pincodeCheckBtn}
+              >
+                CHECK
+              </button>
+            </div>
+            {pincodeStatus && (
+              <div className={styles.pincodeResult}>
+                <Check size={14} className={styles.pincodeCheckIcon} />
+                <span>{pincodeStatus}</span>
+              </div>
+            )}
           </div>
 
           {/* Product Description */}

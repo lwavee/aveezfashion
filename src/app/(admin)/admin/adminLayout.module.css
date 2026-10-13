@@ -51,3 +51,16 @@
   padding: var(--space-2xl);
   flex: 1;
 }
+
+@media (max-width: 1024px) {
+  .adminContainer {
+    flex-direction: column;
+  }
+  .topBar {
+    padding: 0 var(--space-md);
+    height: 54px;
+  }
+  .contentArea {
+    padding: var(--space-md);
+  }
+}

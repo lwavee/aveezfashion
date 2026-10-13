@@ -1,0 +1,154 @@
+.trackPage {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--container-padding) var(--space-4xl);
+}
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--color-gray-600);
+  font-size: var(--font-size-body-sm);
+  max-width: 540px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.lookupCard {
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xs);
+  padding: clamp(1.25rem, 4vw, 2rem);
+  margin-bottom: var(--space-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.resultCard {
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-xs);
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.resultHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-gray-100);
+  padding-bottom: var(--space-md);
+}
+
+.desktopTimeline {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin: 1.5rem 0 1rem;
+}
+
+.mobileTimeline {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .trackPage {
+    padding: var(--space-xl) var(--container-padding) var(--space-3xl);
+  }
+
+  .desktopTimeline {
+    display: none;
+  }
+
+  .mobileTimeline {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+    padding-left: 8px;
+  }
+
+  .mobileStepItem {
+    display: flex;
+    gap: 14px;
+    position: relative;
+    padding-bottom: 24px;
+  }
+
+  .mobileStepItem:last-child {
+    padding-bottom: 0;
+  }
+
+  .stepConnector {
+    position: absolute;
+    left: 8px;
+    top: 20px;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--color-gray-200);
+  }
+
+  .stepConnectorCompleted {
+    background-color: var(--color-black-pure);
+  }
+
+  .stepDot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--color-gray-300);
+    background-color: var(--color-white-pure);
+    flex-shrink: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stepDotCompleted {
+    border-color: var(--color-black-pure);
+    background-color: var(--color-black-pure);
+  }
+
+  .stepDotCurrent {
+    border-color: var(--color-black-pure);
+    background-color: var(--color-white-pure);
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.15);
+  }
+
+  .stepInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stepLabel {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-gray-600);
+  }
+
+  .stepLabelActive {
+    color: var(--color-black-pure);
+    font-weight: 700;
+  }
+
+  .stepStatusText {
+    font-size: 0.75rem;
+    color: var(--color-gray-500);
+  }
+}

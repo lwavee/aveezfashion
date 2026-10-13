@@ -81,6 +81,8 @@ export class CatalogService {
     categorySlug?: string;
     gender?: string;
     size?: string;
+    color?: string;
+    colour?: string;
     minPrice?: number;
     maxPrice?: number;
     sort?: string;
@@ -119,6 +121,11 @@ export class CatalogService {
 
       if (params.size) {
         filter['variants.size'] = params.size.toUpperCase();
+      }
+
+      const activeColor = params.color || params.colour;
+      if (activeColor) {
+        filter['variants.color'] = { $regex: new RegExp(activeColor, 'i') };
       }
 
       if (params.minPrice !== undefined || params.maxPrice !== undefined) {
@@ -195,6 +202,38 @@ export class CatalogService {
     if (params.isBestSeller) filtered = filtered.filter((p) => p.isBestSeller);
     if (params.isNewArrival) filtered = filtered.filter((p) => p.isNewArrival);
     if (params.isAveezOriginal) filtered = filtered.filter((p) => p.isAveezOriginal);
+    if (params.categorySlug) {
+      const catSlug = params.categorySlug.toLowerCase();
+      filtered = filtered.filter(
+        (p) =>
+          p.tags?.some((t) => t.toLowerCase() === catSlug) ||
+          p.title.toLowerCase().includes(catSlug) ||
+          p.slug.toLowerCase().includes(catSlug)
+      );
+    }
+    if (params.size) {
+      const sUpper = params.size.toUpperCase();
+      filtered = filtered.filter((p) =>
+        p.variants?.some((v) => v.size.toUpperCase() === sUpper)
+      );
+    }
+    const fallbackColor = params.color || params.colour;
+    if (fallbackColor) {
+      const cLower = fallbackColor.toLowerCase();
+      filtered = filtered.filter((p) =>
+        p.variants?.some(
+          (v) =>
+            v.color.toLowerCase().includes(cLower) ||
+            cLower.includes(v.color.toLowerCase())
+        )
+      );
+    }
+    if (params.minPrice !== undefined) {
+      filtered = filtered.filter((p) => (p.salePrice || p.basePrice) >= params.minPrice!);
+    }
+    if (params.maxPrice !== undefined) {
+      filtered = filtered.filter((p) => (p.salePrice || p.basePrice) <= params.maxPrice!);
+    }
     if (params.search) {
       const q = params.search.toLowerCase();
       filtered = filtered.filter(
@@ -205,6 +244,12 @@ export class CatalogService {
       filtered.sort((a, b) => (a.salePrice || a.basePrice) - (b.salePrice || b.basePrice));
     } else if (params.sort === 'price_desc') {
       filtered.sort((a, b) => (b.salePrice || b.basePrice) - (a.salePrice || a.basePrice));
+    } else if (params.sort === 'best_selling') {
+      filtered.sort(
+        (a, b) =>
+          (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0) ||
+          (b.averageRating || 0) - (a.averageRating || 0)
+      );
     }
 
     const total = filtered.length;

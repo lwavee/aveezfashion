@@ -98,28 +98,28 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       </section>
 
       {/* Capsule Product Grid */}
-      <section className="container" style={{ padding: 'var(--space-4xl) var(--container-padding)' }}>
-        <div style={{ borderBottom: '1px solid var(--color-gray-200)', paddingBottom: 'var(--space-md)', marginBottom: 'var(--space-2xl)' }}>
-          <h2
-            style={{
-              fontFamily: 'var(--font-family-body)',
-              fontSize: 'var(--font-size-caption)',
-              fontWeight: 'bold',
-              letterSpacing: 'var(--letter-spacing-widest)',
-              textTransform: 'uppercase',
-            }}
-          >
-            PIECES IN THIS CAPSULE ({productsData.products.length})
-          </h2>
+      <section className="container" style={{ padding: 'var(--space-3xl) var(--container-padding) var(--space-4xl)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--color-gray-200)', paddingBottom: 'var(--space-md)', marginBottom: 'var(--space-2xl)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <span style={{ fontSize: 'var(--font-size-micro)', color: 'var(--color-gray-500)', letterSpacing: 'var(--letter-spacing-widest)', textTransform: 'uppercase' }}>
+              COLLECTIONS / {collection.title.toUpperCase()}
+            </span>
+            <h2
+              style={{
+                fontFamily: 'var(--font-family-body)',
+                fontSize: 'var(--font-size-caption)',
+                fontWeight: 'bold',
+                letterSpacing: 'var(--letter-spacing-widest)',
+                textTransform: 'uppercase',
+                margin: 0,
+              }}
+            >
+              PIECES IN THIS CAPSULE ({productsData.products.length})
+            </h2>
+          </div>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: 'var(--space-xl)',
-          }}
-        >
+        <div className="aveezProductGrid">
           {productsData.products.map((p) => (
             <ProductCard key={p._id} product={p} />
           ))}

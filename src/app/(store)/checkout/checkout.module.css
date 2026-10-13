@@ -312,6 +312,23 @@
   .twoCol {
     grid-template-columns: 1fr;
   }
+  .formCard {
+    padding: clamp(14px, 4vw, 20px);
+  }
+  .paymentOption {
+    padding: clamp(12px, 3.5vw, 18px);
+  }
+  .authBanner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .summaryCard {
+    padding: clamp(16px, 4vw, 22px);
+  }
+  .modalContent {
+    padding: clamp(16px, 4vw, 20px);
+  }
 }
 
 /* Auth Banner */

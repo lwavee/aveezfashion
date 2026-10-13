@@ -87,7 +87,7 @@ export const initialProducts: Partial<Product>[] = [
     salePrice: 3499,
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=1000&auto=format&fit=crop',
+        url: '/images/CATEGORY/hoodies.png',
         alt: 'Aveez Signature Boxy Heavyweight Hoodie in Onyx Black - Front View',
         isPrimary: true,
         sortOrder: 0,
@@ -131,13 +131,13 @@ export const initialProducts: Partial<Product>[] = [
     salePrice: 1699,
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=1000&auto=format&fit=crop',
+        url: '/images/CATEGORY/oversizetshirt.png',
         alt: 'Aveez Minimalist Relaxed Heavyweight Tee in Chalk White - Front',
         isPrimary: true,
         sortOrder: 0,
       },
       {
-        url: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=1000&auto=format&fit=crop',
+        url: '/images/CATEGORY/men.png',
         alt: 'Aveez Minimalist Relaxed Heavyweight Tee in Chalk White - Detail',
         isPrimary: false,
         sortOrder: 1,
@@ -175,13 +175,13 @@ export const initialProducts: Partial<Product>[] = [
     salePrice: 3899,
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?q=80&w=1000&auto=format&fit=crop',
+        url: '/images/CATEGORY/bootom.png',
         alt: 'Aveez Architectural Wide-Leg Pleated Trouser in Slate Gray',
         isPrimary: true,
         sortOrder: 0,
       },
       {
-        url: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?q=80&w=1000&auto=format&fit=crop',
+        url: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?q=80&w=1000&auto=format&fit=crop',
         alt: 'Aveez Architectural Wide-Leg Pleated Trouser - Texture',
         isPrimary: false,
         sortOrder: 1,
@@ -219,7 +219,7 @@ export const initialProducts: Partial<Product>[] = [
     salePrice: 2499,
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000&auto=format&fit=crop',
+        url: '/images/CATEGORY/shirt.png',
         alt: 'Aveez Relaxed Cuban Collar Resort Shirt in Raw Ecru',
         isPrimary: true,
         sortOrder: 0,
@@ -257,7 +257,7 @@ export const initialProducts: Partial<Product>[] = [
     salePrice: 4299,
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1000&auto=format&fit=crop',
+        url: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?q=80&w=1000&auto=format&fit=crop',
         alt: 'Aveez Cropped Structured Zip Jacket in Charcoal',
         isPrimary: true,
         sortOrder: 0,
@@ -294,7 +294,7 @@ export const initialProducts: Partial<Product>[] = [
     salePrice: 3499,
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop',
+        url: 'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?q=80&w=1000&auto=format&fit=crop',
         alt: 'Aveez Signature Boxy Heavyweight Hoodie in Vintage Bone',
         isPrimary: true,
         sortOrder: 0,

@@ -24,17 +24,17 @@ export default async function HomePage() {
 
   return (
     <div className={styles.homeContainer}>
-      {/* 3. Hero Section Slider */}
+      {/* 1. Hero Section Slider */}
       <HeroSection />
 
-      {/* 4. New Arrivals Showcase */}
+      {/* 2. Shop By Category (Immediate visual category discovery) */}
+      <CategoryGrid categories={categories} />
+
+      {/* 3. New Arrivals Showcase */}
       <NewArrivalsSection products={newArrivalsData.products} />
 
-      {/* 4.5 Together in Style — Men × Women Matching Styles */}
+      {/* 4. Together in Style — Men × Women Matching Styles */}
       <TogetherInStyleSection />
-
-      {/* 5. Shop By Category */}
-      <CategoryGrid categories={categories} />
 
       {/* 6. Aveez Originals Editorial */}
       <AveezOriginalsSection

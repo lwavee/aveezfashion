@@ -259,19 +259,44 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .section {
+    padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+  }
+
+  .headerWrapper {
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .titleWordNew,
+  .titleWordArrivals {
+    font-size: clamp(2rem, 6.5vw, 2.75rem);
+  }
+
+  .tagline {
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+  }
+
+  .blurbText {
+    display: none;
+  }
+
   .cardsTrack {
     margin-left: calc(-1 * var(--container-padding-mobile));
     margin-right: calc(-1 * var(--container-padding-mobile));
     padding-left: var(--container-padding-mobile);
     padding-right: var(--container-padding-mobile);
-    gap: 14px;
-    padding-bottom: 16px;
+    gap: 12px;
+    padding-top: 4px;
+    padding-bottom: 14px;
   }
 
+  /* 2 product cards per row with an intentional subtle peek of the 3rd card */
   .cardItem {
-    flex: 0 0 78%;
-    width: 78%;
-    min-width: 210px;
+    flex: 0 0 calc((100% - 12px) / 2.18);
+    width: calc((100% - 12px) / 2.18);
+    min-width: 148px;
   }
 }

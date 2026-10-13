@@ -26,6 +26,7 @@
 }
 
 .thumbBtn {
+  position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
   border: 1px solid var(--color-gray-200);
@@ -468,6 +469,132 @@
   color: var(--color-black-rich);
 }
 
+/* Color Swatches Selection */
+.colorSwatchesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.colorSwatchBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-caption);
+  font-weight: 500;
+  color: var(--color-gray-800);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.colorSwatchBtn:hover {
+  border-color: var(--color-black-rich);
+}
+
+.selectedColorBtn {
+  border-color: var(--color-black-rich);
+  background-color: var(--color-warm-bg);
+  font-weight: 700;
+  box-shadow: 0 0 0 1px var(--color-black-rich);
+}
+
+.colorSwatchDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+/* Pincode Delivery Checker */
+.pincodeSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background-color: var(--color-warm-bg);
+  border: 1px solid var(--color-warm-border);
+  border-radius: var(--radius-xs);
+}
+
+.pincodeHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-black-rich);
+}
+
+.pincodeTitle {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-micro);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pincodeInputRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pincodeInput {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-body-sm);
+  letter-spacing: 0.05em;
+  color: var(--color-black-rich);
+}
+
+.pincodeInput:focus {
+  border-color: var(--color-black-rich);
+}
+
+.pincodeCheckBtn {
+  padding: 8px 16px;
+  background-color: var(--color-black-rich);
+  color: var(--color-white-pure);
+  border: none;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-micro);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.pincodeCheckBtn:hover {
+  opacity: 0.85;
+}
+
+.pincodeResult {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-caption);
+  color: var(--color-success);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.pincodeCheckIcon {
+  flex-shrink: 0;
+}
+
+.mobileDotsTrack {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .productGrid {
     grid-template-columns: 1fr;
@@ -481,9 +608,75 @@
     flex-direction: row;
     width: 100%;
     overflow-x: auto;
+    padding-bottom: 4px;
+    gap: var(--space-xs);
   }
   .thumbBtn {
-    width: 70px;
+    width: 68px;
     flex-shrink: 0;
+  }
+  .mobileDotsTrack {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(10, 10, 10, 0.45);
+    backdrop-filter: blur(4px);
+    padding: 4px 8px;
+    border-radius: var(--radius-full);
+    z-index: 5;
+    pointer-events: none;
+  }
+  .mobileDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.45);
+    transition: all var(--transition-fast);
+  }
+  .mobileDotActive {
+    background-color: #FFFFFF;
+    width: 14px;
+    border-radius: 3px;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: clamp(1.4rem, 5vw, 1.85rem);
+  }
+  .priceRow {
+    gap: 8px;
+  }
+  .basePrice, .salePrice {
+    font-size: 1.35rem;
+  }
+  .modalCard {
+    padding: var(--space-lg);
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .trustBadges {
+    padding: var(--space-sm) var(--space-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .sizeGrid {
+    gap: 6px;
+  }
+  .sizeBox {
+    min-width: 44px;
+    height: 44px;
+    padding: 0 8px;
+  }
+  .pincodeInputRow {
+    flex-direction: row;
+  }
+  .pincodeCheckBtn {
+    padding: 8px 12px;
   }
 }

@@ -15,6 +15,9 @@
   --color-white-pure:       #FFFFFF; /* Primary light background & inverted text */
   --color-white-off:        #FBFBFB; /* Subtle off-white card/filter background */
   --color-white-surface:    #F4F4F5; /* Neutral hover and pill background */
+  --color-warm-bg:          #FAFAF9; /* Warm editorial off-white */
+  --color-warm-surface:     #F5F5F4; /* Warm card & panel surface */
+  --color-warm-border:      #E7E5E4; /* Subtle warm border */
 
   /* Neutral Scale (50 - 950) */
   --color-neutral-50:       #FAFAFA;
@@ -133,9 +136,9 @@
   --container-md:           768px;
   --container-lg:           1024px;
   --container-xl:           1280px;
-  --container-max-width:    1400px;
-  --container-padding:      1.5rem;
-  --container-padding-mobile: 1.0rem;
+  --container-max-width:    1600px;
+  --container-padding:      2.5rem; /* 40px desktop padding (32-48px range) */
+  --container-padding-mobile: 1.125rem; /* 18px mobile padding (16-20px range) */
 
   --header-height:          72px;
   --header-height-mobile:   60px;

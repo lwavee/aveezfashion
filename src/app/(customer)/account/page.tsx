@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { AccountNav } from '@/components/customer/AccountNav';
+import styles from './account.module.css';
 
 interface CustomerOrder {
   id?: string;
@@ -96,20 +97,9 @@ export default function AccountPage() {
   const displayRole = user?.role || 'CUSTOMER';
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: 'var(--space-3xl) var(--container-padding)' }}>
+    <div className={styles.accountWrapper}>
       {/* Top Header */}
-      <div
-        style={{
-          borderBottom: '1px solid var(--color-gray-200)',
-          paddingBottom: 'var(--space-lg)',
-          marginBottom: 'var(--space-xl)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
+      <div className={styles.topHeader}>
         <div>
           <h1
             style={{
@@ -142,7 +132,7 @@ export default function AccountPage() {
       <AccountNav />
 
       {/* Main Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 'var(--space-3xl)' }}>
+      <div className={styles.mainGrid}>
         {/* Left: Profile Summary Card */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)' }}>
           <div

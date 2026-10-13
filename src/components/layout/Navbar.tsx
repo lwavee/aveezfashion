@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Search, User, Heart, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, User, Heart, ShoppingBag, Menu, X, ChevronRight, ChevronDown } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -14,13 +14,16 @@ function NavbarContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeDropdown, setActiveDropdown] = useState<'women' | 'men' | null>(null);
+  const [mobileWomenOpen, setMobileWomenOpen] = useState(false);
+  const [mobileMenOpen, setMobileMenOpen] = useState(false);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { totalItems, openCart } = useCart();
   const { totalWishlist } = useWishlist();
 
-  // Scroll listener for sticky compact header
+  // Scroll listener for compact sticky header
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -33,13 +36,30 @@ function NavbarContent() {
   useEffect(() => {
     setMobileMenuOpen(false);
     setSearchOpen(false);
+    setActiveDropdown(null);
   }, [pathname, searchParams]);
+
+  // Lock body scroll when mobile menu drawer is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       window.location.href = `/shop?search=${encodeURIComponent(searchQuery.trim())}`;
     }
+  };
+
+  const handleQuickSearch = (term: string) => {
+    window.location.href = `/shop?search=${encodeURIComponent(term)}`;
   };
 
   // Active state calculations
@@ -74,9 +94,10 @@ function NavbarContent() {
       <header
         className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`}
         role="banner"
+        onMouseLeave={() => setActiveDropdown(null)}
       >
         <div className={`container ${styles.navContainer}`}>
-          {/* Left Column: Mobile Menu & Logo */}
+          {/* Left Column: Mobile Menu Trigger & Logo */}
           <div className={styles.logoCol}>
             <button
               className={styles.mobileMenuBtn}
@@ -91,7 +112,7 @@ function NavbarContent() {
             </Link>
           </div>
 
-          {/* Center Column: Desktop Navigation */}
+          {/* Center Column: Desktop Navigation with Mega-Menu Dropdowns */}
           <nav className={styles.desktopNav} role="navigation" aria-label="Main Navigation">
             <Link
               href="/shop?filter=new"
@@ -99,18 +120,98 @@ function NavbarContent() {
             >
               NEW ARRIVALS
             </Link>
-            <Link
-              href="/shop?gender=WOMEN"
-              className={`${styles.navLink} ${isWomenActive ? styles.active : ''}`}
+
+            {/* Women with Dropdown */}
+            <div
+              className={styles.navItemWithDropdown}
+              onMouseEnter={() => setActiveDropdown('women')}
             >
-              WOMEN
-            </Link>
-            <Link
-              href="/shop?gender=MEN"
-              className={`${styles.navLink} ${isMenActive ? styles.active : ''}`}
+              <Link
+                href="/shop?gender=WOMEN"
+                className={`${styles.navLink} ${isWomenActive ? styles.active : ''}`}
+              >
+                WOMEN
+              </Link>
+
+              {activeDropdown === 'women' && (
+                <div className={styles.megaDropdown} role="menu">
+                  <div className={styles.megaDropdownContent}>
+                    <div className={styles.dropdownCol}>
+                      <span className={styles.dropdownColTitle}>CATEGORIES</span>
+                      <Link href="/shop?gender=WOMEN&category=oversized-tees" className={styles.dropdownLink}>
+                        Oversized Tees
+                      </Link>
+                      <Link href="/shop?gender=WOMEN&category=hoodies" className={styles.dropdownLink}>
+                        Luxury Heavyweight Hoodies
+                      </Link>
+                      <Link href="/shop?gender=WOMEN&category=bottoms" className={styles.dropdownLink}>
+                        Tailored Trousers & Bottoms
+                      </Link>
+                      <Link href="/shop?gender=WOMEN" className={styles.dropdownLinkViewAll}>
+                        View All Women&apos;s Collection →
+                      </Link>
+                    </div>
+                    <div className={styles.dropdownFeaturedCol}>
+                      <span className={styles.dropdownColTitle}>CURATED EDIT</span>
+                      <p className={styles.dropdownFeaturedDesc}>
+                        Relaxed architectural cuts engineered in premium natural cottons.
+                      </p>
+                      <Link href="/shop?gender=WOMEN" className={styles.dropdownFeaturedCta}>
+                        EXPLORE WOMEN&apos;S DROP ↗
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Men with Dropdown */}
+            <div
+              className={styles.navItemWithDropdown}
+              onMouseEnter={() => setActiveDropdown('men')}
             >
-              MEN
-            </Link>
+              <Link
+                href="/shop?gender=MEN"
+                className={`${styles.navLink} ${isMenActive ? styles.active : ''}`}
+              >
+                MEN
+              </Link>
+
+              {activeDropdown === 'men' && (
+                <div className={styles.megaDropdown} role="menu">
+                  <div className={styles.megaDropdownContent}>
+                    <div className={styles.dropdownCol}>
+                      <span className={styles.dropdownColTitle}>CATEGORIES</span>
+                      <Link href="/shop?gender=MEN&category=hoodies" className={styles.dropdownLink}>
+                        450 GSM Heavyweight Hoodies
+                      </Link>
+                      <Link href="/shop?gender=MEN&category=oversized-tees" className={styles.dropdownLink}>
+                        280 GSM Boxy Tees
+                      </Link>
+                      <Link href="/shop?gender=MEN&category=bottoms" className={styles.dropdownLink}>
+                        Wide-Leg Pleated Trousers
+                      </Link>
+                      <Link href="/shop?gender=MEN&category=shirts" className={styles.dropdownLink}>
+                        Resort Cuban Collar Shirts
+                      </Link>
+                      <Link href="/shop?gender=MEN" className={styles.dropdownLinkViewAll}>
+                        View All Men&apos;s Collection →
+                      </Link>
+                    </div>
+                    <div className={styles.dropdownFeaturedCol}>
+                      <span className={styles.dropdownColTitle}>CURATED EDIT</span>
+                      <p className={styles.dropdownFeaturedDesc}>
+                        Heavyweight streetwear designed with boxy proportions and seamless drapes.
+                      </p>
+                      <Link href="/shop?gender=MEN" className={styles.dropdownFeaturedCta}>
+                        EXPLORE MEN&apos;S DROP ↗
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <Link
               href="/collections/aveez-originals"
               className={`${styles.navLink} ${styles.originalsLink} ${
@@ -119,12 +220,14 @@ function NavbarContent() {
             >
               AVEEZ ORIGINALS
             </Link>
+
             <Link
               href="/shop"
               className={`${styles.navLink} ${isShopAllActive ? styles.active : ''}`}
             >
               SHOP ALL
             </Link>
+
             <Link
               href="/shop?filter=sale"
               className={`${styles.navLink} ${styles.saleLink} ${
@@ -135,21 +238,22 @@ function NavbarContent() {
             </Link>
           </nav>
 
-          {/* Right Column: Action Icons */}
+          {/* Right Column: Search, Account, Wishlist, Cart */}
           <div className={styles.actionIcons}>
             <button
               className={styles.iconBtn}
               onClick={() => setSearchOpen((prev) => !prev)}
               aria-label="Search Catalog"
+              title="Search"
             >
               <Search size={20} strokeWidth={1.5} />
             </button>
 
-            <Link href="/account" className={styles.iconBtn} aria-label="Customer Account">
+            <Link href="/account" className={styles.iconBtn} aria-label="Customer Account" title="My Account">
               <User size={20} strokeWidth={1.5} />
             </Link>
 
-            <Link href="/wishlist" className={styles.iconBtn} aria-label="Wishlist">
+            <Link href="/wishlist" className={styles.iconBtn} aria-label="Wishlist" title="Wishlist">
               <Heart size={20} strokeWidth={1.5} />
               {totalWishlist > 0 && (
                 <span className={styles.badge} aria-label={`${totalWishlist} items in wishlist`}>
@@ -162,6 +266,7 @@ function NavbarContent() {
               className={styles.iconBtn}
               onClick={openCart}
               aria-label="Shopping Bag"
+              title="Shopping Bag"
             >
               <ShoppingBag size={20} strokeWidth={1.5} />
               {totalItems > 0 && (
@@ -181,11 +286,12 @@ function NavbarContent() {
                 <Search size={20} className={styles.searchFormIcon} />
                 <input
                   type="text"
-                  placeholder="SEARCH HOODIES, TEES, OVERSIZED, TROUSERS..."
+                  placeholder="SEARCH HOODIES, OVERSIZED TEES, TROUSERS, SHIRTS..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   autoFocus
                   className={styles.searchInput}
+                  aria-label="Search products"
                 />
                 <button
                   type="button"
@@ -196,6 +302,26 @@ function NavbarContent() {
                   <X size={20} />
                 </button>
               </form>
+
+              {/* Quick Discovery Tags */}
+              <div className={styles.quickTagsRow}>
+                <span className={styles.quickTagsLabel}>POPULAR SEARCHES:</span>
+                <button type="button" onClick={() => handleQuickSearch('Hoodies')} className={styles.quickTag}>
+                  Hoodies
+                </button>
+                <button type="button" onClick={() => handleQuickSearch('Oversized')} className={styles.quickTag}>
+                  Oversized Tees
+                </button>
+                <button type="button" onClick={() => handleQuickSearch('Trousers')} className={styles.quickTag}>
+                  Pleated Trousers
+                </button>
+                <button type="button" onClick={() => handleQuickSearch('Linen')} className={styles.quickTag}>
+                  Resort Shirts
+                </button>
+                <button type="button" onClick={() => handleQuickSearch('Black')} className={styles.quickTag}>
+                  Onyx Black
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -220,46 +346,120 @@ function NavbarContent() {
               </button>
             </div>
 
+            {/* Mobile Search Input */}
+            <form onSubmit={handleSearchSubmit} className={styles.mobileSearchForm}>
+              <Search size={18} className={styles.mobileSearchIcon} />
+              <input
+                type="text"
+                placeholder="Search catalog..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles.mobileSearchInput}
+              />
+            </form>
+
             <nav className={styles.mobileNavLinks}>
               <Link
                 href="/shop?filter=new"
                 className={`${styles.mobileNavLink} ${isNewArrivalsActive ? styles.active : ''}`}
               >
-                NEW ARRIVALS
+                <span>NEW ARRIVALS</span>
+                <ChevronRight size={16} />
               </Link>
-              <Link
-                href="/shop?gender=WOMEN"
-                className={`${styles.mobileNavLink} ${isWomenActive ? styles.active : ''}`}
-              >
-                WOMEN
-              </Link>
-              <Link
-                href="/shop?gender=MEN"
-                className={`${styles.mobileNavLink} ${isMenActive ? styles.active : ''}`}
-              >
-                MEN
-              </Link>
+
+              {/* Collapsible Women Section */}
+              <div className={styles.mobileCollapsible}>
+                <button
+                  type="button"
+                  className={styles.mobileCollapsibleTrigger}
+                  onClick={() => setMobileWomenOpen((p) => !p)}
+                  aria-expanded={mobileWomenOpen}
+                >
+                  <span className={isWomenActive ? styles.active : ''}>WOMEN</span>
+                  <ChevronDown
+                    size={16}
+                    style={{ transform: mobileWomenOpen ? 'rotate(180deg)' : 'none', transition: 'transform 200ms' }}
+                  />
+                </button>
+                {mobileWomenOpen && (
+                  <div className={styles.mobileSubLinks}>
+                    <Link href="/shop?gender=WOMEN&category=oversized-tees" className={styles.mobileSubLink}>
+                      Oversized Tees
+                    </Link>
+                    <Link href="/shop?gender=WOMEN&category=hoodies" className={styles.mobileSubLink}>
+                      Heavyweight Hoodies
+                    </Link>
+                    <Link href="/shop?gender=WOMEN&category=bottoms" className={styles.mobileSubLink}>
+                      Trousers & Bottoms
+                    </Link>
+                    <Link href="/shop?gender=WOMEN" className={styles.mobileSubLinkBold}>
+                      All Women&apos;s Pieces →
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Collapsible Men Section */}
+              <div className={styles.mobileCollapsible}>
+                <button
+                  type="button"
+                  className={styles.mobileCollapsibleTrigger}
+                  onClick={() => setMobileMenOpen((p) => !p)}
+                  aria-expanded={mobileMenOpen}
+                >
+                  <span className={isMenActive ? styles.active : ''}>MEN</span>
+                  <ChevronDown
+                    size={16}
+                    style={{ transform: mobileMenOpen ? 'rotate(180deg)' : 'none', transition: 'transform 200ms' }}
+                  />
+                </button>
+                {mobileMenOpen && (
+                  <div className={styles.mobileSubLinks}>
+                    <Link href="/shop?gender=MEN&category=hoodies" className={styles.mobileSubLink}>
+                      Boxy Hoodies
+                    </Link>
+                    <Link href="/shop?gender=MEN&category=oversized-tees" className={styles.mobileSubLink}>
+                      Heavyweight Tees
+                    </Link>
+                    <Link href="/shop?gender=MEN&category=bottoms" className={styles.mobileSubLink}>
+                      Wide-Leg Trousers
+                    </Link>
+                    <Link href="/shop?gender=MEN&category=shirts" className={styles.mobileSubLink}>
+                      Resort Shirts
+                    </Link>
+                    <Link href="/shop?gender=MEN" className={styles.mobileSubLinkBold}>
+                      All Men&apos;s Pieces →
+                    </Link>
+                  </div>
+                )}
+              </div>
+
               <Link
                 href="/collections/aveez-originals"
                 className={`${styles.mobileNavLink} ${styles.originalsLink} ${
                   isOriginalsActive ? styles.active : ''
                 }`}
               >
-                AVEEZ ORIGINALS
+                <span>AVEEZ ORIGINALS</span>
+                <ChevronRight size={16} />
               </Link>
+
               <Link
                 href="/shop"
                 className={`${styles.mobileNavLink} ${isShopAllActive ? styles.active : ''}`}
               >
-                SHOP ALL
+                <span>SHOP ALL</span>
+                <ChevronRight size={16} />
               </Link>
+
               <Link
                 href="/shop?filter=sale"
                 className={`${styles.mobileNavLink} ${styles.saleLink} ${
                   isSaleActive ? styles.active : ''
                 }`}
               >
-                SALE
+                <span>SALE</span>
+                <ChevronRight size={16} />
               </Link>
             </nav>
 
@@ -270,8 +470,11 @@ function NavbarContent() {
               <Link href="/wishlist" className={styles.mobileFooterLink}>
                 WISHLIST {totalWishlist > 0 ? `(${totalWishlist})` : ''}
               </Link>
-              <Link href="/about" className={styles.mobileFooterLink}>
-                OUR STORY
+              <Link href="/track-order" className={styles.mobileFooterLink}>
+                TRACK ORDER
+              </Link>
+              <Link href="/contact" className={styles.mobileFooterLink}>
+                CUSTOMER SUPPORT
               </Link>
             </div>
           </aside>

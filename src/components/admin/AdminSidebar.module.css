@@ -96,3 +96,40 @@
 .storefrontLink:hover {
   color: var(--color-white-pure);
 }
+
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    padding: var(--space-md);
+    border-right: none;
+    border-bottom: 1px solid var(--color-black-border);
+  }
+
+  .brandRow {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+  }
+
+  .navList {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .navList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navItem {
+    white-space: nowrap;
+    padding: 8px 12px;
+    font-size: var(--font-size-micro);
+  }
+
+  .footerLink {
+    display: none;
+  }
+}

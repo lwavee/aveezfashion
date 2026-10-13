@@ -294,3 +294,39 @@
     display: none;
   }
 }
+
+@media (max-width: 640px) {
+  .tableHeader {
+    display: none;
+  }
+  .cartRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "product product"
+      "qty total";
+    gap: var(--space-sm);
+    align-items: center;
+    padding: var(--space-lg) 0;
+  }
+  .productCell {
+    grid-area: product;
+    gap: var(--space-md);
+    align-items: flex-start;
+  }
+  .imgWrap {
+    width: 76px;
+    height: 102px;
+  }
+  .qtyCell {
+    grid-area: qty;
+  }
+  .totalCell {
+    grid-area: total;
+    display: block;
+    text-align: right;
+  }
+  .summaryCard {
+    padding: var(--space-lg);
+  }
+}

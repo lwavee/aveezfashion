@@ -77,11 +77,70 @@ ul, ol {
 /* --- Container Utility --- */
 .container {
   width: 100%;
-  max-width: var(--container-max-width);
+  max-width: var(--container-max-width, 1600px);
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--container-padding);
-  padding-right: var(--container-padding);
+  padding-left: clamp(32px, 2.5vw, 48px);
+  padding-right: clamp(32px, 2.5vw, 48px);
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding-left: clamp(16px, 4vw, 20px);
+    padding-right: clamp(16px, 4vw, 20px);
+  }
+}
+
+/* ==================================================
+   AVEEZ FASHION — SHARED RESPONSIVE PRODUCT GRID
+   - Large desktop (1440px and above): 5 products per row
+   - Standard desktop (1200-1439px): 4 products per row
+   - Tablet (768-1199px): 3 products per row
+   - Mobile (below 768px): 2 products per row
+   - Very narrow screens: 2 products per row without overflow
+   - Gaps: 16-20px horizontal, 24-30px vertical
+   ================================================== */
+.aveezProductGrid {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  row-gap: 28px;
+  column-gap: 18px;
+}
+
+@media (max-width: 1439px) {
+  .aveezProductGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    row-gap: 26px;
+    column-gap: 16px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .aveezProductGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 24px;
+    column-gap: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .aveezProductGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 20px;
+    column-gap: 12px;
+  }
+}
+
+@media (max-width: 380px) {
+  .aveezProductGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 16px;
+    column-gap: 8px;
+  }
 }
 
 /* --- Accessibility Focus Ring --- */

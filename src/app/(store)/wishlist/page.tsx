@@ -79,7 +79,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'var(--space-3xl) var(--container-padding) 5rem' }}>
+    <div className="container" style={{ paddingTop: 'var(--space-3xl)', paddingBottom: '5rem' }}>
       <div
         style={{
           borderBottom: '1px solid var(--color-gray-200)',
@@ -132,13 +132,7 @@ export default function WishlistPage() {
           Syncing saved pieces with current atelier catalog...
         </div>
       ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '2rem',
-          }}
-        >
+        <div className="aveezProductGrid">
           {savedProducts.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}

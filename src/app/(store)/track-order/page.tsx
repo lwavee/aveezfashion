@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import styles from './trackOrder.module.css';
 
 const TIMELINE_STEPS = [
   { key: 'CONFIRMED', label: 'Confirmed' },
@@ -105,20 +106,13 @@ export default function TrackOrderPage() {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '3rem var(--container-padding) 5rem' }}>
+    <div className={styles.trackPage}>
       {/* Page Header */}
-      <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-        <h1
-          style={{
-            fontFamily: 'var(--font-family-display)',
-            fontSize: '2.25rem',
-            letterSpacing: '-0.02em',
-            marginBottom: '0.5rem',
-          }}
-        >
+      <div className={styles.pageHeader}>
+        <h1 className={styles.title}>
           TRACK YOUR SHIPMENT
         </h1>
-        <p style={{ color: 'var(--color-gray-600)', fontSize: '0.9375rem', maxWidth: '540px', margin: '0 auto' }}>
+        <p className={styles.subtitle}>
           Enter your Aveez order identifier to inspect real-time fulfillment progress, dispatch details, and verified courier tracking.
         </p>
       </div>
@@ -126,14 +120,7 @@ export default function TrackOrderPage() {
       {/* Lookup Form */}
       <form
         onSubmit={handleSubmit}
-        style={{
-          backgroundColor: 'var(--color-white-pure)',
-          border: '1px solid var(--color-gray-200)',
-          borderRadius: 'var(--radius-xs)',
-          padding: '2rem',
-          marginBottom: '2.5rem',
-          boxShadow: 'var(--shadow-sm)',
-        }}
+        className={styles.lookupCard}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div>
@@ -228,19 +215,9 @@ export default function TrackOrderPage() {
 
       {/* Tracking Results View */}
       {orderData && (
-        <div
-          style={{
-            backgroundColor: 'var(--color-white-pure)',
-            border: '1px solid var(--color-gray-200)',
-            borderRadius: 'var(--radius-xs)',
-            padding: '2.5rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2rem',
-          }}
-        >
+        <div className={styles.resultCard}>
           {/* Header Status Row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+          <div className={styles.resultHeader}>
             <div>
               <span style={{ fontSize: '0.75rem', color: 'var(--color-gray-500)', letterSpacing: '0.05em' }}>
                 ORDER IDENTIFIER
@@ -270,14 +247,8 @@ export default function TrackOrderPage() {
           {/* Stepper Timeline */}
           {orderData.fulfillmentStatus !== 'CANCELLED' ? (
             <div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(6, 1fr)',
-                  gap: '8px',
-                  margin: '1.5rem 0 1rem',
-                }}
-              >
+              {/* Desktop Horizontal Timeline */}
+              <div className={styles.desktopTimeline}>
                 {TIMELINE_STEPS.map((step) => {
                   const status = getStepStatus(step.key, orderData.fulfillmentStatus);
                   const isDone = status === 'completed';
@@ -303,6 +274,55 @@ export default function TrackOrderPage() {
                       >
                         {step.label}
                       </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Mobile Vertical Timeline */}
+              <div className={styles.mobileTimeline}>
+                {TIMELINE_STEPS.map((step, idx) => {
+                  const status = getStepStatus(step.key, orderData.fulfillmentStatus);
+                  const isDone = status === 'completed';
+                  const isCurrent = status === 'current';
+                  const isLast = idx === TIMELINE_STEPS.length - 1;
+
+                  return (
+                    <div key={step.key} className={styles.mobileStepItem}>
+                      {!isLast && (
+                        <div
+                          className={`${styles.stepConnector} ${
+                            isDone ? styles.stepConnectorCompleted : ''
+                          }`}
+                        />
+                      )}
+                      <div
+                        className={`${styles.stepDot} ${
+                          isDone
+                            ? styles.stepDotCompleted
+                            : isCurrent
+                            ? styles.stepDotCurrent
+                            : ''
+                        }`}
+                      >
+                        {isDone && <CheckCircle2 size={12} color="#FFFFFF" />}
+                      </div>
+                      <div className={styles.stepInfo}>
+                        <span
+                          className={`${styles.stepLabel} ${
+                            isCurrent || isDone ? styles.stepLabelActive : ''
+                          }`}
+                        >
+                          {step.label}
+                        </span>
+                        <span className={styles.stepStatusText}>
+                          {isCurrent
+                            ? 'In Progress'
+                            : isDone
+                            ? 'Completed'
+                            : 'Pending'}
+                        </span>
+                      </div>
                     </div>
                   );
                 })}

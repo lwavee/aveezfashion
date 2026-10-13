@@ -275,13 +275,13 @@
 
 @media (max-width: 768px) {
   .section {
-    min-height: clamp(560px, 86vh, 680px);
+    min-height: clamp(440px, 62svh, 520px);
     align-items: flex-end; /* Reposition text toward bottom so model remains visible above */
   }
 
   .container {
-    padding-top: var(--space-2xl, 3rem);
-    padding-bottom: clamp(2.5rem, 6vw, 3.5rem);
+    padding-top: var(--space-xl, 2rem);
+    padding-bottom: clamp(2rem, 5vw, 2.75rem);
   }
 
   .contentBlock {

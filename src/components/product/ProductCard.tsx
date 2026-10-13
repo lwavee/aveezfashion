@@ -112,8 +112,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <Image
               src={primaryImage.url}
               alt={primaryImage.alt || product.title}
-              width={600}
-              height={isCurated ? 600 : 800}
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
               priority={priority}
               className={`${styles.image} ${isHovered && secondaryImage ? styles.imageHovered : ''}`}
             />
@@ -128,8 +128,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <Image
               src={secondaryImage.url}
               alt={secondaryImage.alt || `${product.title} Alternate View`}
-              width={600}
-              height={isCurated ? 600 : 800}
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
               className={`${styles.image} ${styles.secondaryImage} ${isHovered ? styles.secondaryVisible : ''}`}
             />
           ) : null}
@@ -250,7 +250,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {variant === 'editorial' && (
             <span className={styles.categoryEyebrow}>AVEEZ ESSENTIAL</span>
           )}
-          <Link href={`/product/${product.slug}`} className={styles.title}>
+          <Link href={`/product/${product.slug}`} className={styles.title} title={product.title}>
             {product.title}
           </Link>
           <div className={styles.priceRow}>
@@ -262,6 +262,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <span className={styles.originalPrice}>
                   ₹{product.basePrice.toLocaleString('en-IN')}
                 </span>
+                <span className={styles.discountBadge}>-{discountPercent}%</span>
               </>
             ) : (
               <span className={styles.basePrice}>
@@ -269,6 +270,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               </span>
             )}
           </div>
+
+          {/* Color Swatches if multiple real variants exist */}
+          {product.variants && (
+            (() => {
+              const uniqueVariants = product.variants.filter(
+                (v, i, self) =>
+                  Boolean(v.colorHex) &&
+                  i === self.findIndex((t) => t.colorHex.toLowerCase() === v.colorHex.toLowerCase())
+              );
+              if (uniqueVariants.length <= 1) return null;
+              return (
+                <div className={styles.colorSwatchesRow} aria-label="Available colors">
+                  {uniqueVariants.slice(0, 4).map((v) => (
+                    <span
+                      key={v.sku || v.color}
+                      className={styles.colorDot}
+                      style={{ backgroundColor: v.colorHex }}
+                      title={v.color}
+                    />
+                  ))}
+                  {uniqueVariants.length > 4 && (
+                    <span className={styles.colorMoreCount}>+{uniqueVariants.length - 4}</span>
+                  )}
+                </div>
+              );
+            })()
+          )}
         </div>
       )}
     </div>

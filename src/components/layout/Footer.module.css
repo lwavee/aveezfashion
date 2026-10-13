@@ -187,8 +187,25 @@
 }
 
 @media (max-width: 640px) {
+  .newsletterSection {
+    padding: var(--space-2xl) 0;
+  }
+  .newsletterTitle {
+    font-size: clamp(1.4rem, 5vw, 1.75rem);
+  }
+  .newsletterFormWrapper {
+    max-width: 100%;
+  }
   .mainLinksContainer {
     grid-template-columns: 1fr;
+    padding: var(--space-2xl) var(--container-padding);
+    gap: var(--space-xl);
+  }
+  .brandCol {
+    max-width: 100%;
+  }
+  .colHeader {
+    margin-bottom: var(--space-sm);
   }
   .bottomContainer {
     flex-direction: column;

@@ -74,6 +74,18 @@ export default function CustomerAddressesPage() {
     fetchAddresses();
   }, [router]);
 
+  // Lock body scroll when address form modal is open
+  useEffect(() => {
+    if (isFormOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isFormOpen]);
+
   const handleOpenAddForm = () => {
     setEditingAddress(null);
     setForm({
@@ -245,7 +257,7 @@ export default function CustomerAddressesPage() {
           </Button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '1.5rem' }}>
           {addresses.map((addr) => (
             <div
               key={addr._id}
@@ -382,7 +394,7 @@ export default function CustomerAddressesPage() {
               width: '100%',
               maxHeight: '90vh',
               overflowY: 'auto',
-              padding: '2rem',
+              padding: 'clamp(1rem, 4vw, 2rem)',
               display: 'flex',
               flexDirection: 'column',
               gap: '1.25rem',
@@ -436,7 +448,7 @@ export default function CustomerAddressesPage() {
                 placeholder="e.g. 9876543210"
               />
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '1rem' }}>
                 <Input
                   label="HOUSE / FLAT"
                   id="house"

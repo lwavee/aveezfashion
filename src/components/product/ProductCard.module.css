@@ -3,34 +3,50 @@
   flex-direction: column;
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .imageContainer {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   aspect-ratio: 3 / 4;
   background-color: var(--color-gray-100);
   border-radius: var(--radius-none);
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .imageLink {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  position: relative;
+  display: block;
+  overflow: hidden;
 }
 
 .image {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: opacity 250ms ease, transform 350ms ease;
+  display: block;
 }
 
 .secondaryImage {
   position: absolute;
   inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: center;
   opacity: 0;
 }
 
@@ -58,8 +74,8 @@
 
 .badgeGroup {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 8px;
+  left: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -68,12 +84,12 @@
 
 .wishlistBtn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 34px;
-  height: 34px;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-full);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(4px);
   border: none;
   display: flex;
@@ -166,6 +182,10 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .categoryEyebrow {
@@ -178,7 +198,7 @@
 }
 
 .title {
-  font-size: var(--font-size-body-sm);
+  font-size: 0.8125rem; /* 13px */
   font-weight: var(--font-weight-medium);
   color: var(--color-black-rich);
   line-height: 1.35;
@@ -186,6 +206,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-decoration: none;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   transition: opacity var(--transition-fast);
 }
 
@@ -195,26 +219,61 @@
 
 .priceRow {
   display: flex;
-  align-items: center;
-  gap: var(--space-xs, 0.5rem);
+  align-items: baseline;
+  gap: 6px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 
 .basePrice {
-  font-size: var(--font-size-body-sm);
+  font-size: 0.875rem; /* 14px prominent */
   font-weight: var(--font-weight-bold);
   color: var(--color-black-rich);
 }
 
 .salePrice {
-  font-size: var(--font-size-body-sm);
+  font-size: 0.875rem; /* 14px prominent */
   font-weight: var(--font-weight-bold);
   color: var(--color-black-pure);
 }
 
 .originalPrice {
-  font-size: var(--font-size-caption);
-  color: var(--color-gray-400);
+  font-size: 0.75rem; /* 12px smaller and muted */
+  color: var(--color-neutral-400);
   text-decoration: line-through;
+}
+
+.discountBadge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  padding: 1px 5px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.02em;
+}
+
+.colorSwatchesRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.colorDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  display: inline-block;
+}
+
+.colorMoreCount {
+  font-size: 10px;
+  color: var(--color-gray-500);
+  font-weight: 600;
 }
 
 /* Variant: Compact */
@@ -445,4 +504,49 @@
 .curatedBagBtn:focus-visible {
   outline: 2px solid #0A0A0A;
   outline-offset: 2px;
+}
+
+/* ==================================================
+   MOBILE RESPONSIVE CARD OPTIMIZATIONS (<768px)
+   ================================================== */
+@media (max-width: 767px) {
+  .details {
+    padding-top: 6px;
+    gap: 2px;
+  }
+
+  .title {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1.3;
+  }
+
+  .basePrice,
+  .salePrice {
+    font-size: 0.8125rem; /* 13px */
+  }
+
+  .originalPrice {
+    font-size: 0.6875rem; /* 11px */
+  }
+
+  .discountBadge {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+
+  .wishlistBtn {
+    width: 28px;
+    height: 28px;
+    top: 6px;
+    right: 6px;
+  }
+
+  .badgeGroup {
+    top: 6px;
+    left: 6px;
+  }
+
+  .quickAddBar {
+    display: none;
+  }
 }
