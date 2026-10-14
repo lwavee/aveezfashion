@@ -3,6 +3,7 @@ import { HeroSection } from '@/components/home/HeroSection';
 import { NewArrivalsSection } from '@/components/home/NewArrivalsSection';
 import { TogetherInStyleSection } from '@/components/home/TogetherInStyleSection';
 import { CategoryGrid } from '@/components/home/CategoryGrid';
+import { HomeAccessoriesSection } from '@/components/home/HomeAccessoriesSection';
 import { AveezOriginalsSection } from '@/components/home/AveezOriginalsSection';
 import { BestSellersSection } from '@/components/home/BestSellersSection';
 import { BrandStorySection } from '@/components/home/BrandStorySection';
@@ -15,11 +16,12 @@ export const revalidate = 60; // Incremental Static Regeneration every 60s
 
 export default async function HomePage() {
   // Fetch real catalog data from database/service layer
-  const [content, categories, newArrivalsData, bestSellersData] = await Promise.all([
+  const [content, categories, newArrivalsData, bestSellersData, accessoriesData] = await Promise.all([
     CatalogService.getHomepageContent(),
     CatalogService.getCategories(),
     CatalogService.getProducts({ isNewArrival: true, limit: 8 }),
     CatalogService.getProducts({ isBestSeller: true, limit: 4 }),
+    CatalogService.getAccessories({ limit: 4 }),
   ]);
 
   return (
@@ -30,10 +32,13 @@ export default async function HomePage() {
       {/* 2. Shop By Category (Immediate visual category discovery) */}
       <CategoryGrid categories={categories} />
 
-      {/* 3. New Arrivals Showcase */}
+      {/* 3. Accessories Showcase — The Finishing Touch */}
+      <HomeAccessoriesSection products={accessoriesData.products} />
+
+      {/* 4. New Arrivals Showcase */}
       <NewArrivalsSection products={newArrivalsData.products} />
 
-      {/* 4. Together in Style — Men × Women Matching Styles */}
+      {/* 5. Together in Style — Men × Women Matching Styles */}
       <TogetherInStyleSection />
 
       {/* 6. Aveez Originals Editorial */}

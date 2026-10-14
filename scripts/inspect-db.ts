@@ -32,12 +32,18 @@ async function inspect() {
   console.log('\nUsers in DB:', users.length);
   users.forEach((u) => console.log('  User:', u.email, u.role, u.firstName, u.lastName));
 
+  // Check categories in DB
+  const categories = await mongoose.connection.db!.collection('categories').find({}).toArray();
+  console.log('\nCategories in DB:');
+  categories.forEach((c) => console.log(` - [${c._id}] ${c.name} (slug: ${c.slug})`));
+
   // Check products in DB
   const products = await mongoose.connection.db!.collection('products').find({}).toArray();
   console.log('\nProducts in DB:', products.length);
   let totalVariants = 0;
   products.forEach((p) => {
     totalVariants += p.variants?.length || 0;
+    console.log(` - [${p._id}] ${p.title} (slug: ${p.slug}, catId: ${p.category})`);
   });
   console.log('Total Product Variants in DB:', totalVariants);
 

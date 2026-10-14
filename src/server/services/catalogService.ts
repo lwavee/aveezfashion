@@ -115,7 +115,24 @@ export class CatalogService {
       if (params.categorySlug) {
         const cat = await Category.findOne({ slug: params.categorySlug });
         if (cat) {
-          filter.category = cat._id;
+          const children = await Category.find({ parentCategory: cat._id }).select('_id');
+          if (children.length > 0) {
+            const catIds = [cat._id, ...children.map((c) => c._id)];
+            filter.$or = [
+              { category: { $in: catIds } },
+              { subCategory: { $in: catIds } },
+              { tags: { $in: [params.categorySlug] } },
+            ];
+          } else {
+            filter.$or = [
+              { category: cat._id },
+              { subCategory: cat._id },
+              { tags: { $in: [params.categorySlug] } },
+            ];
+          }
+        } else {
+          // If category slug not in DB directly, filter by tag or title
+          filter.tags = { $in: [params.categorySlug] };
         }
       }
 
@@ -389,5 +406,121 @@ export class CatalogService {
       codFee: 49,
       gstPercentage: 12,
     };
+  }
+
+  /**
+   * Retrieves products belonging to Accessories or its subcategories
+   */
+  static async getAccessories(params: {
+    categorySlug?: string;
+    sort?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ products: IProduct[]; total: number; page: number; totalPages: number }> {
+    const slug =
+      params.categorySlug && params.categorySlug !== 'all' ? params.categorySlug : 'accessories';
+    return this.getProducts({
+      categorySlug: slug,
+      sort: params.sort,
+      page: params.page,
+      limit: params.limit || 20,
+    });
+  }
+
+  /**
+   * Complete The Look — Transparent, configurable matching rule
+   * - If clothing: Recommends genuine in-stock accessories that complement clothing colors
+   * - If accessory: Recommends genuine clothing pieces that match the accessory
+   */
+  static async getCompleteTheLook(product: IProduct, limit = 4): Promise<IProduct[]> {
+    try {
+      await connectToDatabase();
+      const accessoriesCat = await Category.findOne({ slug: 'accessories' });
+      const accessorySubCats = accessoriesCat
+        ? await Category.find({ parentCategory: accessoriesCat._id }).select('_id')
+        : [];
+      const accessoryCatIds = accessoriesCat
+        ? [accessoriesCat._id, ...accessorySubCats.map((c) => c._id)]
+        : [];
+
+      const isAccessory =
+        accessoriesCat &&
+        (accessoryCatIds.some((id) => String(id) === String(product.category)) ||
+          product.tags?.some((t) =>
+            [
+              'accessories',
+              'hairband',
+              'hairbands',
+              'hair-clip',
+              'hair-clips',
+              'claw-clip',
+              'claw-clips',
+              'keychain',
+              'keychains',
+              'bag-charm',
+              'bag-charms',
+              'matching-sets',
+            ].includes(t.toLowerCase())
+          ));
+
+      // If clothing: Find accessories that match or complement the clothing item
+      if (!isAccessory && accessoriesCat) {
+        const colors = (product.variants || []).map((v) => v.color.toLowerCase());
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const query: any = {
+          _id: { $ne: product._id },
+          status: 'PUBLISHED',
+          $or: [
+            { category: { $in: accessoryCatIds } },
+            { subCategory: { $in: accessoryCatIds } },
+            {
+              tags: {
+                $in: [
+                  'accessories',
+                  'hairbands',
+                  'hair-clips',
+                  'claw-clips',
+                  'keychains',
+                  'bag-charms',
+                  'matching-sets',
+                ],
+              },
+            },
+          ],
+          'variants.stock': { $gt: 0 },
+        };
+
+        if (colors.length > 0) {
+          query.$or.push({
+            'variants.color': { $in: colors.map((c) => new RegExp(c, 'i')) },
+          });
+        }
+
+        const items = await Product.find(query).limit(limit).lean();
+        if (items && items.length > 0) {
+          return JSON.parse(JSON.stringify(items));
+        }
+      }
+
+      // If accessory: Find matching apparel pieces
+      if (isAccessory) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const query: any = {
+          _id: { $ne: product._id },
+          status: 'PUBLISHED',
+          category: { $nin: accessoryCatIds },
+          'variants.stock': { $gt: 0 },
+        };
+        const items = await Product.find(query).limit(limit).lean();
+        if (items && items.length > 0) {
+          return JSON.parse(JSON.stringify(items));
+        }
+      }
+    } catch {
+      // Fallback
+    }
+
+    return [];
   }
 }

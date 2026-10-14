@@ -14,9 +14,10 @@ function NavbarContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeDropdown, setActiveDropdown] = useState<'women' | 'men' | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<'women' | 'men' | 'accessories' | null>(null);
   const [mobileWomenOpen, setMobileWomenOpen] = useState(false);
   const [mobileMenOpen, setMobileMenOpen] = useState(false);
+  const [mobileAccessoriesOpen, setMobileAccessoriesOpen] = useState(false);
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -76,6 +77,8 @@ function NavbarContent() {
     !isHome && (genderParam === 'WOMEN' || pathname.startsWith('/collections/women'));
   const isMenActive =
     !isHome && (genderParam === 'MEN' || pathname.startsWith('/collections/men'));
+  const isAccessoriesActive =
+    !isHome && (pathname === '/accessories' || pathname.startsWith('/accessories'));
   const isOriginalsActive =
     !isHome &&
     (pathname.startsWith('/collections/aveez-originals') ||
@@ -205,6 +208,59 @@ function NavbarContent() {
                       </p>
                       <Link href="/shop?gender=MEN" className={styles.dropdownFeaturedCta}>
                         EXPLORE MEN&apos;S DROP ↗
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Accessories with Dropdown */}
+            <div
+              className={styles.navItemWithDropdown}
+              onMouseEnter={() => setActiveDropdown('accessories')}
+            >
+              <Link
+                href="/accessories"
+                className={`${styles.navLink} ${isAccessoriesActive ? styles.active : ''}`}
+              >
+                ACCESSORIES
+              </Link>
+
+              {activeDropdown === 'accessories' && (
+                <div className={styles.megaDropdown} role="menu">
+                  <div className={styles.megaDropdownContent}>
+                    <div className={styles.dropdownCol}>
+                      <span className={styles.dropdownColTitle}>COLLECTIONS</span>
+                      <Link href="/accessories?category=hairbands" className={styles.dropdownLink}>
+                        Handmade Hairbands
+                      </Link>
+                      <Link href="/accessories?category=hair-clips" className={styles.dropdownLink}>
+                        Floral & Minimal Hair Clips
+                      </Link>
+                      <Link href="/accessories?category=claw-clips" className={styles.dropdownLink}>
+                        Sculpted Claw Clips
+                      </Link>
+                      <Link href="/accessories?category=keychains" className={styles.dropdownLink}>
+                        Handmade Keychains
+                      </Link>
+                      <Link href="/accessories?category=bag-charms" className={styles.dropdownLink}>
+                        Everyday Bag Charms
+                      </Link>
+                      <Link href="/accessories?category=matching-sets" className={styles.dropdownLink}>
+                        Matching Sets
+                      </Link>
+                      <Link href="/accessories" className={styles.dropdownLinkViewAll}>
+                        View All Accessories →
+                      </Link>
+                    </div>
+                    <div className={styles.dropdownFeaturedCol}>
+                      <span className={styles.dropdownColTitle}>THE FINISHING TOUCH</span>
+                      <p className={styles.dropdownFeaturedDesc}>
+                        Artisan floral headbands, sculpted clips, and styling charms handcrafted to complete the look.
+                      </p>
+                      <Link href="/accessories" className={styles.dropdownFeaturedCta}>
+                        EXPLORE ACCESSORIES ↗
                       </Link>
                     </div>
                   </div>
@@ -429,6 +485,50 @@ function NavbarContent() {
                     </Link>
                     <Link href="/shop?gender=MEN" className={styles.mobileSubLinkBold}>
                       All Men&apos;s Pieces →
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Collapsible Accessories Section */}
+              <div className={styles.mobileCollapsible}>
+                <button
+                  type="button"
+                  className={styles.mobileCollapsibleTrigger}
+                  onClick={() => setMobileAccessoriesOpen((p) => !p)}
+                  aria-expanded={mobileAccessoriesOpen}
+                >
+                  <span className={isAccessoriesActive ? styles.active : ''}>ACCESSORIES</span>
+                  <ChevronDown
+                    size={16}
+                    style={{
+                      transform: mobileAccessoriesOpen ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 200ms',
+                    }}
+                  />
+                </button>
+                {mobileAccessoriesOpen && (
+                  <div className={styles.mobileSubLinks}>
+                    <Link href="/accessories" className={styles.mobileSubLinkBold}>
+                      All Accessories →
+                    </Link>
+                    <Link href="/accessories?category=hairbands" className={styles.mobileSubLink}>
+                      Handmade Hairbands
+                    </Link>
+                    <Link href="/accessories?category=hair-clips" className={styles.mobileSubLink}>
+                      Floral & Minimal Hair Clips
+                    </Link>
+                    <Link href="/accessories?category=claw-clips" className={styles.mobileSubLink}>
+                      Sculpted Claw Clips
+                    </Link>
+                    <Link href="/accessories?category=keychains" className={styles.mobileSubLink}>
+                      Handmade Keychains
+                    </Link>
+                    <Link href="/accessories?category=bag-charms" className={styles.mobileSubLink}>
+                      Everyday Bag Charms
+                    </Link>
+                    <Link href="/accessories?category=matching-sets" className={styles.mobileSubLink}>
+                      Matching Sets
                     </Link>
                   </div>
                 )}

@@ -77,20 +77,20 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
               </NextLink>
             </li>
             <li>
-              <NextLink href="/shop?category=men" className={styles.navLink}>
-                <span>MEN</span>
-                <IconArrowRight size={16} />
-              </NextLink>
-            </li>
-            <li>
               <NextLink href="/shop?category=women" className={styles.navLink}>
                 <span>WOMEN</span>
                 <IconArrowRight size={16} />
               </NextLink>
             </li>
             <li>
-              <NextLink href="/collections/curated" className={styles.navLink}>
-                <span>COLLECTIONS</span>
+              <NextLink href="/shop?category=men" className={styles.navLink}>
+                <span>MEN</span>
+                <IconArrowRight size={16} />
+              </NextLink>
+            </li>
+            <li>
+              <NextLink href="/accessories" className={styles.navLink}>
+                <span>ACCESSORIES</span>
                 <IconArrowRight size={16} />
               </NextLink>
             </li>

@@ -1,0 +1,117 @@
+.barContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.pillScrollWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  -webkit-overflow-scrolling: touch;
+}
+
+.pillScrollWrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.pillBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-family: var(--font-family-body);
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-gray-700);
+  background-color: var(--color-white-pure);
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.pillBtn:hover {
+  color: var(--color-black-pure);
+  border-color: var(--color-black-rich);
+  background-color: var(--color-white-off);
+}
+
+.pillActive {
+  color: var(--color-white-pure) !important;
+  background-color: var(--color-black-rich) !important;
+  border-color: var(--color-black-rich) !important;
+  font-weight: 600;
+}
+
+.metaControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.productCount {
+  font-family: var(--font-family-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gray-500);
+}
+
+.sortWrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.sortIcon {
+  color: var(--color-gray-500);
+  pointer-events: none;
+}
+
+.sortSelect {
+  font-family: var(--font-family-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-black-rich);
+  background-color: transparent;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-xs);
+  padding: 6px 10px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.sortSelect:focus {
+  border-color: var(--color-black-rich);
+}
+
+@media (max-width: 640px) {
+  .pillBtn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .metaControls {
+    font-size: 0.6875rem;
+  }
+
+  .sortSelect {
+    font-size: 0.6875rem;
+    padding: 4px 8px;
+  }
+}

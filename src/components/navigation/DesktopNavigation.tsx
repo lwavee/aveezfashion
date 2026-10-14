@@ -13,10 +13,11 @@ export interface NavItem {
 
 export const DEFAULT_NAV_ITEMS: NavItem[] = [
   { label: 'NEW ARRIVALS', href: '/shop?filter=new' },
-  { label: 'MEN', href: '/shop?category=men' },
   { label: 'WOMEN', href: '/shop?category=women' },
-  { label: 'COLLECTIONS', href: '/collections/curated' },
+  { label: 'MEN', href: '/shop?category=men' },
+  { label: 'ACCESSORIES', href: '/accessories' },
   { label: 'AVEEZ ORIGINALS', href: '/collections/aveez-originals', highlight: true },
+  { label: 'SHOP ALL', href: '/shop' },
   { label: 'SALE', href: '/shop?filter=sale' },
 ];
 

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ProductDetailView } from '@/components/product/ProductDetailView';
 import { ProductCard } from '@/components/product/ProductCard';
+import { CompleteTheLookSection } from '@/components/accessories/CompleteTheLookSection';
 import { CatalogService } from '@/server/services/catalogService';
 import styles from './product.module.css';
 
@@ -52,11 +53,33 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   // Fetch related products for "You May Also Like"
-  const relatedResult = await CatalogService.getProducts({
-    gender: product.gender,
-    limit: 4,
-  });
+  const [relatedResult, completeTheLookItems] = await Promise.all([
+    CatalogService.getProducts({
+      gender: product.gender,
+      limit: 4,
+    }),
+    CatalogService.getCompleteTheLook(product, 4),
+  ]);
   const relatedProducts = relatedResult.products.filter((p) => p._id !== product._id);
+
+  const isAccessory = Boolean(
+    product.tags?.some((t) =>
+      [
+        'accessories',
+        'hairband',
+        'hairbands',
+        'hair-clip',
+        'hair-clips',
+        'claw-clip',
+        'claw-clips',
+        'keychain',
+        'keychains',
+        'bag-charm',
+        'bag-charms',
+        'matching-sets',
+      ].includes(t.toLowerCase())
+    )
+  );
 
   // Structured Data (JSON-LD) for Google Rich Results
   const jsonLd = {
@@ -102,15 +125,31 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <nav className={styles.breadcrumb} aria-label="Breadcrumb">
         <Link href="/">HOME</Link>
         <span className={styles.slash}>/</span>
-        <Link href="/shop">SHOP</Link>
-        <span className={styles.slash}>/</span>
-        <Link href={`/shop?gender=${product.gender}`}>{product.gender}</Link>
-        <span className={styles.slash}>/</span>
+        {isAccessory ? (
+          <>
+            <Link href="/accessories">ACCESSORIES</Link>
+            <span className={styles.slash}>/</span>
+          </>
+        ) : (
+          <>
+            <Link href="/shop">SHOP</Link>
+            <span className={styles.slash}>/</span>
+            <Link href={`/shop?gender=${product.gender}`}>{product.gender}</Link>
+            <span className={styles.slash}>/</span>
+          </>
+        )}
         <span className={styles.current}>{product.title.toUpperCase()}</span>
       </nav>
 
       {/* Main Interactive Product View */}
       <ProductDetailView product={product} relatedProducts={relatedProducts} />
+
+      {/* Complete The Look Section */}
+      <CompleteTheLookSection
+        parentProduct={product}
+        recommendedItems={completeTheLookItems}
+        isAccessoryView={isAccessory}
+      />
 
       {/* "You May Also Like" / Related Products Section */}
       {relatedProducts.length > 0 && (

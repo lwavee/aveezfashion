@@ -19,10 +19,12 @@ next-env.d.ts
 
 # Environment variables & Sensitive data (CRITICAL - NEVER COMMIT)
 .env
+.env*
 .env*.local
 .env.local
 .env.development.local
 .env.test.local
+.env.production
 .env.production.local
 *.env
 *.pem

@@ -48,6 +48,12 @@ export interface Product {
   isBestSeller?: boolean;
   isNewArrival?: boolean;
   isAveezOriginal?: boolean;
+  matchingColors?: string[];
+  accessoryType?: string;
+  isBundle?: boolean;
+  bundleProductIds?: string[];
+  stylingTips?: string;
+  relatedAccessories?: string[] | Product[];
   metaTitle?: string;
   metaDescription?: string;
   createdAt: string;

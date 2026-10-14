@@ -68,3 +68,110 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = getSessionFromRequest(req);
+
+    if (!session || !session.userId) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized: Authentication required.' },
+        { status: 401 }
+      );
+    }
+
+    if (session.role !== 'ADMIN' && session.role !== 'STAFF') {
+      return NextResponse.json(
+        { success: false, error: 'Forbidden: Administrator privileges required.' },
+        { status: 403 }
+      );
+    }
+
+    const body = await req.json();
+    const {
+      title,
+      slug,
+      sku,
+      description,
+      gender = 'UNISEX',
+      category,
+      subCategory,
+      basePrice,
+      salePrice,
+      images = [],
+      variants = [],
+      attributes = {},
+      tags = [],
+      status = 'PUBLISHED',
+      isFeatured = false,
+      isBestSeller = false,
+      isNewArrival = true,
+      accessoryType,
+      matchingColors = [],
+    } = body;
+
+    if (!title || !description || !category || basePrice === undefined) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required fields: title, description, category, and basePrice are required.' },
+        { status: 400 }
+      );
+    }
+
+    await connectToDatabase();
+
+    const normalizedSlug = (slug || title)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+
+    const generatedSku = (sku || `AVZ-${Date.now().toString(36)}`).toUpperCase();
+
+    // Ensure variants have at least 1 entry if none passed
+    const defaultVariants =
+      variants.length > 0
+        ? variants
+        : [
+            {
+              sku: `${generatedSku}-ONE`,
+              size: 'ONESIZE',
+              color: 'Default',
+              colorHex: '#0A0A0A',
+              stock: 10,
+            },
+          ];
+
+    const newProduct = await Product.create({
+      title: title.trim(),
+      slug: normalizedSlug,
+      sku: generatedSku,
+      description: description.trim(),
+      gender,
+      category,
+      subCategory: subCategory || undefined,
+      basePrice: Number(basePrice),
+      salePrice: salePrice ? Number(salePrice) : undefined,
+      images,
+      variants: defaultVariants,
+      attributes,
+      tags: Array.isArray(tags) ? tags : [],
+      status,
+      isFeatured,
+      isBestSeller,
+      isNewArrival,
+      accessoryType,
+      matchingColors,
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Product created successfully.',
+      data: newProduct,
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, error: error.message || 'Failed to create product.' },
+      { status: 500 }
+    );
+  }
+}
+

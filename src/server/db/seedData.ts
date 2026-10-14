@@ -49,6 +49,56 @@ export const initialCategories: Partial<Category>[] = [
     displayOrder: 6,
     isActive: true,
   },
+  {
+    name: 'Accessories',
+    slug: 'accessories',
+    description: 'The Finishing Touch — Handcrafted hair accessories, floral headbands, clips, and styling charms.',
+    image: '/images/CATEGORY/accessories.png',
+    displayOrder: 7,
+    isActive: true,
+  },
+  {
+    name: 'Hairbands',
+    slug: 'hairbands',
+    description: 'Handmade floral headbands and sculpted hair bands designed to complete your silhouette.',
+    displayOrder: 8,
+    isActive: true,
+  },
+  {
+    name: 'Hair Clips',
+    slug: 'hair-clips',
+    description: 'Minimalist statement clips, floral accents, and curated clip sets.',
+    displayOrder: 9,
+    isActive: true,
+  },
+  {
+    name: 'Claw Clips',
+    slug: 'claw-clips',
+    description: 'Architectural matte and tortoiseshell claw clips for effortless hair styling.',
+    displayOrder: 10,
+    isActive: true,
+  },
+  {
+    name: 'Keychains',
+    slug: 'keychains',
+    description: 'Handmade floral charm keychains and engraved metal hardware.',
+    displayOrder: 11,
+    isActive: true,
+  },
+  {
+    name: 'Bag Charms',
+    slug: 'bag-charms',
+    description: 'Tactile accessory accents and signature Aveez charms for everyday carry.',
+    displayOrder: 12,
+    isActive: true,
+  },
+  {
+    name: 'Matching Sets',
+    slug: 'matching-sets',
+    description: 'Curated accessory bundles and paired colorway styling sets.',
+    displayOrder: 13,
+    isActive: true,
+  },
 ];
 
 export const initialCollections: Partial<Collection>[] = [
