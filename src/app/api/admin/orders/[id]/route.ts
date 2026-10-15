@@ -118,11 +118,49 @@ export async function PATCH(
     if (orderStatus && orderStatus !== order.orderStatus) {
       updates.orderStatus = orderStatus;
       order.orderStatus = orderStatus;
+      if (!order.statusHistory) order.statusHistory = [];
+      order.statusHistory.push({
+        status: orderStatus,
+        timestamp: new Date().toISOString(),
+        description: `Order status set to ${orderStatus} by administrator (${session.email})`,
+        updatedBy: session.email,
+      });
     }
 
     if (paymentStatus && paymentStatus !== order.paymentStatus) {
+      if (paymentStatus === 'PAID') {
+        if (order.paymentMethod === 'ONLINE_GATEWAY') {
+          const paymentRef = body.gatewayPaymentId || body.paymentReference || order.gatewayPaymentId;
+          if (!paymentRef) {
+            return NextResponse.json(
+              {
+                success: false,
+                error: 'Cannot mark online gateway order as PAID without a verified payment transaction reference.',
+              },
+              { status: 400 }
+            );
+          }
+          order.gatewayPaymentId = paymentRef;
+        } else if (order.paymentMethod === 'COD' && order.fulfillmentStatus !== 'DELIVERED') {
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'Cannot mark Cash on Delivery order as PAID until fulfillment status is DELIVERED.',
+            },
+            { status: 400 }
+          );
+        }
+      }
+
       updates.paymentStatus = paymentStatus;
       order.paymentStatus = paymentStatus;
+      if (!order.statusHistory) order.statusHistory = [];
+      order.statusHistory.push({
+        status: `PAYMENT_${paymentStatus}`,
+        timestamp: new Date().toISOString(),
+        description: `Payment status updated to ${paymentStatus} by administrator (${session.email})`,
+        updatedBy: session.email,
+      });
     }
 
     if (carrier !== undefined) order.carrier = carrier;

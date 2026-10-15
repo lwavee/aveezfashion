@@ -178,6 +178,8 @@ export interface Order {
   paymentStatus: OrderPaymentStatus;
   fulfillmentStatus: OrderFulfillmentStatus;
   orderStatus?: string;
+  gatewayPaymentId?: string;
+  gatewayOrderId?: string;
   returnStatus?: 'NONE' | 'REQUESTED' | 'APPROVED' | 'PICKUP_SCHEDULED' | 'INSPECTED' | 'REFUNDED' | 'EXCHANGED' | 'REJECTED';
   statusHistory?: OrderStatusHistoryItem[];
   cancellationReason?: string;

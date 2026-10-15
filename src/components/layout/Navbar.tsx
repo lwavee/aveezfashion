@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { Search, User, Heart, ShoppingBag, Menu, X, ChevronRight, ChevronDown } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { useCart } from '@/context/CartContext';
@@ -10,6 +10,7 @@ import { useWishlist } from '@/context/WishlistContext';
 import styles from './Navbar.module.css';
 
 function NavbarContent() {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -55,12 +56,14 @@ function NavbarContent() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/shop?search=${encodeURIComponent(searchQuery.trim())}`;
+      setSearchOpen(false);
+      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
   const handleQuickSearch = (term: string) => {
-    window.location.href = `/shop?search=${encodeURIComponent(term)}`;
+    setSearchOpen(false);
+    router.push(`/shop?search=${encodeURIComponent(term)}`);
   };
 
   // Active state calculations
@@ -599,6 +602,7 @@ export const Navbar: React.FC = () => {
               <span className={styles.navLink}>NEW ARRIVALS</span>
               <span className={styles.navLink}>WOMEN</span>
               <span className={styles.navLink}>MEN</span>
+              <span className={styles.navLink}>ACCESSORIES</span>
               <span className={`${styles.navLink} ${styles.originalsLink}`}>AVEEZ ORIGINALS</span>
               <span className={styles.navLink}>SHOP ALL</span>
               <span className={`${styles.navLink} ${styles.saleLink}`}>SALE</span>

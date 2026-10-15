@@ -16,21 +16,34 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!gatewayOrderId || !gatewayPaymentId || !gatewaySignature) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Missing required payment verification parameters (gatewayOrderId, gatewayPaymentId, gatewaySignature).',
+        },
+        { status: 400 }
+      );
+    }
+
     const secret = process.env.PAYMENT_GATEWAY_SECRET || 'rzp_test_aveez_secret_mock';
 
-    // Verify HMAC-SHA256 signature if in production mode
-    let isSignatureValid = false;
-    if (gatewayOrderId && gatewayPaymentId && gatewaySignature) {
-      const generated = crypto
-        .createHmac('sha256', secret)
-        .update(`${gatewayOrderId}|${gatewayPaymentId}`)
-        .digest('hex');
+    // Verify HMAC-SHA256 signature
+    const generated = crypto
+      .createHmac('sha256', secret)
+      .update(`${gatewayOrderId}|${gatewayPaymentId}`)
+      .digest('hex');
 
-      // Check match or test sandbox token
-      isSignatureValid =
-        generated === gatewaySignature || gatewaySignature.startsWith('sig_test_');
-    } else {
-      // Mock test authorization
+    const isTestEnvironment =
+      process.env.NODE_ENV !== 'production' ||
+      secret === 'rzp_test_aveez_secret_mock' ||
+      !process.env.PAYMENT_GATEWAY_KEY;
+
+    let isSignatureValid = generated === gatewaySignature;
+
+    // Only allow simulated test token in sandbox/development mode
+    if (!isSignatureValid && isTestEnvironment && gatewaySignature.startsWith('sig_test_')) {
       isSignatureValid = true;
     }
 
@@ -41,26 +54,67 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Connect to database and update order status
-    try {
-      await connectToDatabase();
-      const order = await Order.findOne({ orderNumber });
+    await connectToDatabase();
+    const order = await Order.findOne({ orderNumber });
 
-      if (order) {
-        order.paymentStatus = 'PAID';
-        order.fulfillmentStatus = 'PROCESSING';
-        await order.save();
+    if (!order) {
+      return NextResponse.json(
+        { success: false, error: `Order "${orderNumber}" not found.` },
+        { status: 404 }
+      );
+    }
 
-        // Atomically decrement stock
-        for (const item of order.items) {
-          await Product.updateOne(
-            { _id: item.productId, 'variants.sku': item.variantSku },
-            { $inc: { 'variants.$.stock': -item.quantity } }
-          );
-        }
-      }
-    } catch (e) {
-      console.warn('Database update in verification:', e);
+    // Guard 1: If order is COD, it should not be processed by online gateway verifier
+    if (order.paymentMethod === 'COD') {
+      return NextResponse.json(
+        { success: false, error: 'Order was placed via Cash on Delivery and cannot be verified via gateway.' },
+        { status: 400 }
+      );
+    }
+
+    // Guard 2: Idempotency — If already PAID, return success without re-decrementing stock
+    if (order.paymentStatus === 'PAID') {
+      return NextResponse.json({
+        success: true,
+        data: {
+          orderNumber,
+          status: 'PAID',
+          fulfillmentStatus: order.fulfillmentStatus,
+          message: 'Order was already verified and settled.',
+        },
+      });
+    }
+
+    // Update order status to PAID and PROCESSING
+    order.paymentStatus = 'PAID';
+    order.orderStatus = 'CONFIRMED';
+    order.fulfillmentStatus = 'PROCESSING';
+    order.gatewayPaymentId = gatewayPaymentId;
+    order.gatewayOrderId = gatewayOrderId;
+
+    if (!order.statusHistory) {
+      order.statusHistory = [];
+    }
+
+    order.statusHistory.push({
+      status: 'PAID',
+      timestamp: new Date(),
+      note: `Payment verified via gateway. Transaction Ref: ${gatewayPaymentId}`,
+      updatedBy: 'GATEWAY_VERIFIER',
+    });
+
+    await order.save();
+
+    // Atomically decrement stock with safety guard against negative counts
+    for (const item of order.items) {
+      await Product.updateOne(
+        {
+          _id: item.productId,
+          'variants.sku': item.variantSku,
+          'variants.stock': { $gte: item.quantity },
+        },
+        { $inc: { 'variants.$.stock': -item.quantity } }
+      );
     }
 
     return NextResponse.json({

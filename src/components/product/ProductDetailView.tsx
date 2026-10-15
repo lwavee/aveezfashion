@@ -79,6 +79,30 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
       i === self.findIndex((t) => t.color.toLowerCase() === v.color.toLowerCase())
   );
 
+  const isAccessory = Boolean(
+    product.tags?.some((t) =>
+      [
+        'accessories',
+        'hairband',
+        'hairbands',
+        'hair-clip',
+        'hair-clips',
+        'claw-clip',
+        'claw-clips',
+        'keychain',
+        'keychains',
+        'bag-charm',
+        'bag-charms',
+        'matching-sets',
+      ].includes(t.toLowerCase())
+    ) || product.accessoryType
+  );
+
+  const currentColorVariants = product.variants.filter((v) =>
+    selectedColor ? v.color.toLowerCase() === selectedColor.toLowerCase() : true
+  );
+  const displayedVariants = currentColorVariants.length > 0 ? currentColorVariants : product.variants;
+
   const activeVariant =
     product.variants.find((v) => 
       (selectedColor ? v.color.toLowerCase() === selectedColor.toLowerCase() : true) &&
@@ -292,12 +316,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 onClick={() => setSizeGuideOpen(true)}
               >
                 <Ruler size={14} />
-                <span>SIZE GUIDE</span>
+                <span>{isAccessory ? 'DIMENSIONS GUIDE' : 'SIZE GUIDE'}</span>
               </button>
             </div>
 
             <div className={styles.sizeGrid}>
-              {product.variants.map((variant) => {
+              {displayedVariants.map((variant) => {
                 const isSelected = selectedSize === variant.size;
                 const outOfStock = variant.stock <= 0;
 
@@ -308,7 +332,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     onClick={() => setSelectedSize(variant.size)}
                     className={`${styles.sizeBox} ${isSelected ? styles.selectedBox : ''} ${outOfStock ? styles.outBox : ''}`}
                   >
-                    <span>{variant.size}</span>
+                    <span>{variant.size === 'ONESIZE' ? 'ONE SIZE' : variant.size}</span>
                     {outOfStock ? <span className={styles.outNotice}>SOLD</span> : null}
                   </button>
                 );
@@ -518,7 +542,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         <div className={styles.modalOverlay} onClick={() => setSizeGuideOpen(false)}>
           <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>SIZE & FIT GUIDE</h3>
+              <h3 className={styles.modalTitle}>
+                {isAccessory ? 'ACCESSORY SPECIFICATIONS & DIMENSIONS' : 'SIZE & FIT GUIDE'}
+              </h3>
               <button
                 onClick={() => setSizeGuideOpen(false)}
                 className={styles.modalClose}
@@ -527,49 +553,93 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 ✕
               </button>
             </div>
-            <p className={styles.modalNote}>
-              All garment measurements are listed in inches. Designed with an intentional
-              oversized drop-shoulder silhouette. Choose your standard size for the intended
-              boxy drape.
-            </p>
-            <div className={styles.tableWrapper}>
-              <table className={styles.sizeTable}>
-                <thead>
-                  <tr>
-                    <th>SIZE</th>
-                    <th>CHEST (INCHES)</th>
-                    <th>LENGTH (INCHES)</th>
-                    <th>SHOULDER (INCHES)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><strong>S</strong></td>
-                    <td>44</td>
-                    <td>27.5</td>
-                    <td>22</td>
-                  </tr>
-                  <tr>
-                    <td><strong>M</strong></td>
-                    <td>46</td>
-                    <td>28.5</td>
-                    <td>23</td>
-                  </tr>
-                  <tr>
-                    <td><strong>L</strong></td>
-                    <td>48</td>
-                    <td>29.5</td>
-                    <td>24</td>
-                  </tr>
-                  <tr>
-                    <td><strong>XL</strong></td>
-                    <td>50</td>
-                    <td>30.5</td>
-                    <td>25</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            {isAccessory ? (
+              <>
+                <p className={styles.modalNote}>
+                  All AVEEZ handcrafted accessories are engineered in versatile One-Size silhouettes
+                  crafted with ergonomic proportions for everyday comfort and universal styling.
+                </p>
+                <div className={styles.tableWrapper}>
+                  <table className={styles.sizeTable}>
+                    <thead>
+                      <tr>
+                        <th>ACCESSORY TYPE</th>
+                        <th>DIMENSIONS</th>
+                        <th>FIT & STYLING NOTE</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Hairbands</strong></td>
+                        <td>Width: 3.5 cm • Arc: 38 cm</td>
+                        <td>Pinch-free ergonomic flex band (Fits 52–58 cm circumference)</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Claw Clips</strong></td>
+                        <td>Length: 10.5 cm • Height: 4.5 cm</td>
+                        <td>High-tension spring; all hair densities (fine to thick)</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Hair Clips (Duo)</strong></td>
+                        <td>Length: 6.0 cm • Width: 1.5 cm</td>
+                        <td>Alligator grip back; accent and face-framing placement</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Keychains & Charms</strong></td>
+                        <td>Total Drop: 12–15 cm</td>
+                        <td>Standard carabiner snap hook for belt loops, totes, & carry</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className={styles.modalNote}>
+                  All garment measurements are listed in inches. Designed with an intentional
+                  oversized drop-shoulder silhouette. Choose your standard size for the intended
+                  boxy drape.
+                </p>
+                <div className={styles.tableWrapper}>
+                  <table className={styles.sizeTable}>
+                    <thead>
+                      <tr>
+                        <th>SIZE</th>
+                        <th>CHEST (INCHES)</th>
+                        <th>LENGTH (INCHES)</th>
+                        <th>SHOULDER (INCHES)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>S</strong></td>
+                        <td>44</td>
+                        <td>27.5</td>
+                        <td>22</td>
+                      </tr>
+                      <tr>
+                        <td><strong>M</strong></td>
+                        <td>46</td>
+                        <td>28.5</td>
+                        <td>23</td>
+                      </tr>
+                      <tr>
+                        <td><strong>L</strong></td>
+                        <td>48</td>
+                        <td>29.5</td>
+                        <td>24</td>
+                      </tr>
+                      <tr>
+                        <td><strong>XL</strong></td>
+                        <td>50</td>
+                        <td>30.5</td>
+                        <td>25</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
             <Button
               variant="primary"
               size="md"

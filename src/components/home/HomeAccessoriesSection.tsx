@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, Layers } from 'lucide-react';
+import { ArrowRight, Sparkles, X } from 'lucide-react';
 import { Product } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
 import styles from './HomeAccessoriesSection.module.css';
@@ -18,23 +18,90 @@ interface CategoryPill {
 }
 
 const ACCESSORY_CATEGORIES: CategoryPill[] = [
-  { id: 'hairbands', name: 'Hairbands', slug: 'hairbands' },
-  { id: 'hair-clips', name: 'Hair Clips', slug: 'hair-clips' },
-  { id: 'claw-clips', name: 'Claw Clips', slug: 'claw-clips' },
-  { id: 'keychains', name: 'Keychains', slug: 'keychains' },
-  { id: 'bag-charms', name: 'Bag Charms', slug: 'bag-charms' },
-  { id: 'matching-sets', name: 'Matching Sets', slug: 'matching-sets' },
+  { id: 'hairbands', name: 'HAIRBANDS', slug: 'hairbands' },
+  { id: 'hair-clips', name: 'HAIR CLIPS', slug: 'hair-clips' },
+  { id: 'claw-clips', name: 'CLAW CLIPS', slug: 'claw-clips' },
+  { id: 'keychains', name: 'KEYCHAINS', slug: 'keychains' },
+  { id: 'bag-charms', name: 'BAG CHARMS', slug: 'bag-charms' },
+  { id: 'matching-sets', name: 'MATCHING SETS', slug: 'matching-sets' },
 ];
 
 export const HomeAccessoriesSection: React.FC<HomeAccessoriesSectionProps> = ({
   products = [],
 }) => {
-  const hasProducts = products && products.length > 0;
-  const displayProducts = products.slice(0, 4);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const filteredProducts = useMemo(() => {
+    if (!selectedCategory) return products;
+    return products.filter((p) => {
+      const tags = (p.tags || []).map((t) => t.toLowerCase());
+      const slug = (p.slug || '').toLowerCase();
+      const title = (p.title || '').toLowerCase();
+
+      switch (selectedCategory) {
+        case 'hairbands':
+          return (
+            tags.includes('hairbands') ||
+            tags.includes('hairband') ||
+            slug.includes('hairband') ||
+            title.includes('hairband')
+          );
+        case 'hair-clips':
+          return (
+            tags.includes('hair-clips') ||
+            tags.includes('hair-clip') ||
+            slug.includes('hair-clip') ||
+            title.includes('hair clip')
+          );
+        case 'claw-clips':
+          return (
+            tags.includes('claw-clips') ||
+            tags.includes('claw-clip') ||
+            slug.includes('claw-clip') ||
+            title.includes('claw clip')
+          );
+        case 'keychains':
+          return (
+            tags.includes('keychains') ||
+            tags.includes('keychain') ||
+            slug.includes('keychain') ||
+            title.includes('keychain')
+          );
+        case 'bag-charms':
+          return (
+            tags.includes('bag-charms') ||
+            tags.includes('bag-charm') ||
+            slug.includes('bag-charm') ||
+            title.includes('bag charm')
+          );
+        case 'matching-sets':
+          return (
+            tags.includes('matching-sets') ||
+            tags.includes('bundle') ||
+            slug.includes('set') ||
+            slug.includes('duo') ||
+            title.includes('set')
+          );
+        default:
+          return true;
+      }
+    });
+  }, [products, selectedCategory]);
+
+  const handleCategoryClick = (slug: string) => {
+    setSelectedCategory((prev) => (prev === slug ? null : slug));
+  };
+
+  const activeCategoryObject = ACCESSORY_CATEGORIES.find(
+    (c) => c.slug === selectedCategory
+  );
 
   return (
-    <section className={`container ${styles.section}`} aria-label="Accessories — The Finishing Touch">
-      {/* 1. Section Header */}
+    <section
+      className={`container ${styles.section}`}
+      aria-label="Accessories — The Finishing Touch"
+    >
+      {/* 1. Section Header — Matches visual design */}
       <div className={styles.header}>
         <div className={styles.eyebrowRow}>
           <span className={styles.eyebrowLine} aria-hidden="true" />
@@ -47,25 +114,54 @@ export const HomeAccessoriesSection: React.FC<HomeAccessoriesSectionProps> = ({
         </p>
       </div>
 
-      {/* 2. Category Quick Navigation Showcase */}
-      <div className={styles.categoryNavWrapper} role="navigation" aria-label="Accessories Categories">
+      {/* 2. Interactive Category Filter Pills */}
+      <div
+        className={styles.categoryNavWrapper}
+        role="region"
+        aria-label="Accessories Category Filters"
+      >
         <div className={styles.categoryPills}>
-          {ACCESSORY_CATEGORIES.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/accessories?category=${cat.slug}`}
-              className={styles.categoryPill}
-            >
-              <span>{cat.name}</span>
-            </Link>
-          ))}
+          {ACCESSORY_CATEGORIES.map((cat) => {
+            const isActive = selectedCategory === cat.slug;
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => handleCategoryClick(cat.slug)}
+                className={`${styles.categoryPill} ${
+                  isActive ? styles.categoryPillActive : ''
+                }`}
+                aria-pressed={isActive}
+              >
+                <span>{cat.name}</span>
+              </button>
+            );
+          })}
         </div>
+
+        {/* Filter Indicator / Reset */}
+        {selectedCategory && (
+          <div className={styles.filterStatus}>
+            <span className={styles.filterStatusText}>
+              Showing items in <strong>{activeCategoryObject?.name}</strong> ({filteredProducts.length})
+            </span>
+            <button
+              type="button"
+              onClick={() => setSelectedCategory(null)}
+              className={styles.clearFilterBtn}
+              aria-label="Clear active filter"
+            >
+              <X size={13} />
+              <span>Show All</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* 3. Product Display (Real DB Products or Curated Category Spotlight) */}
-      {hasProducts ? (
+      {/* 3. Product Display (Real MongoDB Accessories) */}
+      {filteredProducts.length > 0 ? (
         <div className={styles.productGrid}>
-          {displayProducts.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard
               key={product._id}
               product={product}
@@ -73,8 +169,21 @@ export const HomeAccessoriesSection: React.FC<HomeAccessoriesSectionProps> = ({
             />
           ))}
         </div>
+      ) : products.length > 0 ? (
+        <div className={styles.emptyFilteredState}>
+          <p className={styles.emptyFilteredText}>
+            No products currently in this specific category.
+          </p>
+          <button
+            type="button"
+            onClick={() => setSelectedCategory(null)}
+            className={styles.resetButton}
+          >
+            VIEW ALL ACCESSORIES
+          </button>
+        </div>
       ) : (
-        /* Curated Category Spotlight Cards when DB products are being uploaded */
+        /* Curated Spotlight Cards fallback if catalog is loading */
         <div className={styles.editorialGrid}>
           <Link href="/accessories?category=hairbands" className={styles.spotlightCard}>
             <div className={styles.spotlightContent}>

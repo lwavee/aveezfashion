@@ -1,7 +1,15 @@
+/* ==================================================
+   AVEEZ FASHION — ADMIN SHELL LAYOUT
+   Clean, Professional, SaaS Workspace Container
+   ================================================== */
+
 .adminContainer {
   display: flex;
   min-height: 100vh;
-  background-color: var(--color-white-off);
+  background-color: #F8F9FA;
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .adminMain {
@@ -9,58 +17,242 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 100vh;
 }
 
+/* ==================================================
+   COMPACT ADMIN TOPBAR
+   ================================================== */
 .topBar {
-  height: 64px;
-  background-color: var(--color-white-pure);
-  border-bottom: 1px solid var(--color-gray-200);
+  height: 56px;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid #E4E4E7;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--space-2xl);
+  padding: 0 clamp(1rem, 2vw, 1.75rem);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebarToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  color: #0A0A0A;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sidebarToggle:hover {
+  background-color: #F4F4F5;
 }
 
 .breadcrumb {
-  font-size: var(--font-size-caption);
-  letter-spacing: var(--letter-spacing-wide);
-  color: var(--color-gray-600);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-family-body, -apple-system, sans-serif);
 }
 
-.adminBadge {
+.breadcrumbSection {
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #71717A;
+  font-weight: 600;
+}
+
+.breadcrumbDivider {
+  color: #D4D4D8;
+  font-size: 0.75rem;
+}
+
+.breadcrumbTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #0A0A0A;
+  letter-spacing: -0.01em;
+}
+
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #52525B;
+  user-select: none;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10B981;
+}
+
+.viewStorefrontBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  font-family: var(--font-family-body, -apple-system, sans-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0A0A0A;
+  background-color: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.viewStorefrontBtn:hover {
+  background-color: #F4F4F5;
+  border-color: #D4D4D8;
+}
+
+.adminPill {
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--color-white-off);
-  border: 1px solid var(--color-gray-200);
-  padding: 6px 12px;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-micro);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--letter-spacing-wide);
+  padding: 3px 8px 3px 4px;
+  background-color: #FAFAFA;
+  border: 1px solid #E4E4E7;
+  border-radius: 9999px;
 }
 
-.liveIndicator {
-  width: 8px;
-  height: 8px;
+.avatarMini {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  background-color: var(--color-success);
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.adminDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.adminName {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0A0A0A;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.adminRole {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #71717A;
+}
+
+.topbarLogoutBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid #E4E4E7;
+  color: #71717A;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.topbarLogoutBtn:hover {
+  color: #EF4444;
+  border-color: #FCA5A5;
+  background-color: #FEF2F2;
+}
+
+/* ==================================================
+   CONTENT AREA
+   ================================================== */
 .contentArea {
-  padding: var(--space-2xl);
+  padding: clamp(1.25rem, 2vw, 2rem);
   flex: 1;
+  width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
 }
 
+/* ==================================================
+   RESPONSIVE (Mobile & Tablet)
+   ================================================== */
 @media (max-width: 1024px) {
-  .adminContainer {
-    flex-direction: column;
+  .sidebarToggle {
+    display: flex;
   }
+
+  .statusIndicator {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
   .topBar {
-    padding: 0 var(--space-md);
-    height: 54px;
+    padding: 0 12px;
+    height: 52px;
   }
+
+  .breadcrumbSection,
+  .breadcrumbDivider {
+    display: none;
+  }
+
+  .adminDetails {
+    display: none;
+  }
+
+  .adminPill {
+    padding: 2px;
+    background: transparent;
+    border: none;
+  }
+
+  .viewStorefrontBtn span {
+    display: none;
+  }
+
+  .viewStorefrontBtn {
+    padding: 6px;
+  }
+
   .contentArea {
-    padding: var(--space-md);
+    padding: 12px;
   }
 }

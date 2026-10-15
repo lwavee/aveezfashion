@@ -33,6 +33,12 @@ async function seedDatabase() {
     else if (p.slug?.includes('trouser')) catId = categoryMap.get('bottoms') || catId;
     else if (p.slug?.includes('shirt')) catId = categoryMap.get('shirts') || catId;
     else if (p.slug?.includes('jacket')) catId = categoryMap.get('women') || catId;
+    else if (p.slug?.includes('hairband')) catId = categoryMap.get('hairbands') || categoryMap.get('accessories') || catId;
+    else if (p.slug?.includes('claw-clip')) catId = categoryMap.get('claw-clips') || categoryMap.get('accessories') || catId;
+    else if (p.slug?.includes('hair-clip') || p.slug?.includes('clips-set')) catId = categoryMap.get('hair-clips') || categoryMap.get('accessories') || catId;
+    else if (p.slug?.includes('keychain')) catId = categoryMap.get('keychains') || categoryMap.get('accessories') || catId;
+    else if (p.slug?.includes('bag-charm')) catId = categoryMap.get('bag-charms') || categoryMap.get('accessories') || catId;
+    else if (p.slug?.includes('styling-set') || p.slug?.includes('matching-set')) catId = categoryMap.get('matching-sets') || categoryMap.get('accessories') || catId;
 
     return {
       ...p,

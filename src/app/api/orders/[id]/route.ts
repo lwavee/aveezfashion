@@ -63,12 +63,25 @@ export async function GET(
       order.fulfillmentStatus === 'PROCESSING' ||
       order.fulfillmentStatus === 'PENDING_CONFIRMATION';
 
+    const normalizedItems = (order.items || []).map((i: any) => ({
+      ...i,
+      productId: String(i.productId || ''),
+      price: i.unitPrice ?? i.price ?? 0,
+      unitPrice: i.unitPrice ?? i.price ?? 0,
+      quantity: i.quantity || 1,
+      totalPrice: i.totalPrice ?? ((i.unitPrice ?? 0) * (i.quantity || 1)),
+      image: i.thumbnailImage ?? i.image ?? '/images/placeholder.jpg',
+      thumbnailImage: i.thumbnailImage ?? i.image ?? '/images/placeholder.jpg',
+    }));
+
     return NextResponse.json({
       success: true,
       data: {
         order: {
           ...order,
           id: String(order._id),
+          items: normalizedItems,
+          totalAmount: order.pricing?.grandTotal || 0,
           isReturnEligible,
           isCancelEligible,
           daysSinceDelivery,

@@ -227,46 +227,52 @@ export default function OrderDetailPage() {
           </h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {order.items?.map((item: any, idx: number) => (
-              <div
-                key={idx}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1.25rem',
-                  paddingBottom: '1rem',
-                  borderBottom: idx === order.items.length - 1 ? 'none' : '1px solid var(--color-gray-100)',
-                }}
-              >
-                {item.image && (
+            {Array.isArray(order.items) &&
+              order.items.map((item: any, idx: number) => {
+                const itemImg = item.image || item.thumbnailImage;
+                const itemPrice = item.price ?? item.unitPrice ?? 0;
+                const itemQty = item.quantity || 1;
+                return (
                   <div
+                    key={idx}
                     style={{
-                      width: '64px',
-                      height: '85px',
-                      position: 'relative',
-                      backgroundColor: 'var(--color-gray-100)',
-                      borderRadius: 'var(--radius-xs)',
-                      overflow: 'hidden',
-                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1.25rem',
+                      paddingBottom: '1rem',
+                      borderBottom: idx === order.items.length - 1 ? 'none' : '1px solid var(--color-gray-100)',
                     }}
                   >
-                    <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} />
+                    {itemImg && (
+                      <div
+                        style={{
+                          width: '64px',
+                          height: '85px',
+                          position: 'relative',
+                          backgroundColor: 'var(--color-gray-100)',
+                          borderRadius: 'var(--radius-xs)',
+                          overflow: 'hidden',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Image src={itemImg} alt={item.title || 'Product'} fill style={{ objectFit: 'cover' }} />
+                      </div>
+                    )}
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.9375rem', fontWeight: 600 }}>{item.title}</div>
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)', marginTop: '2px' }}>
+                        SIZE: {item.size || 'ONESIZE'} • COLOR: {item.color || 'Default'} • SKU: {item.variantSku || 'N/A'}
+                      </div>
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-700)', marginTop: '2px' }}>
+                        QTY: {itemQty} × ₹{itemPrice.toLocaleString('en-IN')}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '1rem', fontWeight: 700 }}>
+                      ₹{(itemPrice * itemQty).toLocaleString('en-IN')}
+                    </div>
                   </div>
-                )}
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '0.9375rem', fontWeight: 600 }}>{item.title}</div>
-                  <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-500)', marginTop: '2px' }}>
-                    SIZE: {item.size} • COLOR: {item.color} • SKU: {item.variantSku}
-                  </div>
-                  <div style={{ fontSize: '0.8125rem', color: 'var(--color-gray-700)', marginTop: '2px' }}>
-                    QTY: {item.quantity} × ₹{item.price.toLocaleString('en-IN')}
-                  </div>
-                </div>
-                <div style={{ fontSize: '1rem', fontWeight: 700 }}>
-                  ₹{(item.price * item.quantity).toLocaleString('en-IN')}
-                </div>
-              </div>
-            ))}
+                );
+              })}
           </div>
         </div>
 

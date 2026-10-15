@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import { connectToDatabase } from '@/server/db/connect';
 import { Product } from '@/server/models/Product';
+import { Category } from '@/server/models/Category';
 import { getSessionFromRequest } from '@/server/auth';
 
 export async function GET(req: NextRequest) {
@@ -119,6 +121,21 @@ export async function POST(req: NextRequest) {
 
     await connectToDatabase();
 
+    // Resolve category: allow ObjectId or string slug
+    let categoryId = category;
+    if (mongoose.Types.ObjectId.isValid(category)) {
+      categoryId = new mongoose.Types.ObjectId(category);
+    } else if (typeof category === 'string') {
+      const catDoc = await Category.findOne({ slug: category.toLowerCase().trim() });
+      if (!catDoc) {
+        return NextResponse.json(
+          { success: false, error: `Invalid category: "${category}" was not found.` },
+          { status: 400 }
+        );
+      }
+      categoryId = catDoc._id;
+    }
+
     const normalizedSlug = (slug || title)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -126,9 +143,28 @@ export async function POST(req: NextRequest) {
 
     const generatedSku = (sku || `AVZ-${Date.now().toString(36)}`).toUpperCase();
 
+    // Normalize images: accept string URLs or objects
+    const rawImages = Array.isArray(images) && images.length > 0 ? images : ['/images/placeholder.jpg'];
+    const formattedImages = rawImages.map((img: any, idx: number) => {
+      if (typeof img === 'string') {
+        return {
+          url: img,
+          alt: `${title} - View ${idx + 1}`,
+          isPrimary: idx === 0,
+          sortOrder: idx,
+        };
+      }
+      return {
+        url: img.url || '/images/placeholder.jpg',
+        alt: img.alt || `${title} - View ${idx + 1}`,
+        isPrimary: img.isPrimary ?? idx === 0,
+        sortOrder: img.sortOrder ?? idx,
+      };
+    });
+
     // Ensure variants have at least 1 entry if none passed
     const defaultVariants =
-      variants.length > 0
+      Array.isArray(variants) && variants.length > 0
         ? variants
         : [
             {
@@ -146,11 +182,11 @@ export async function POST(req: NextRequest) {
       sku: generatedSku,
       description: description.trim(),
       gender,
-      category,
-      subCategory: subCategory || undefined,
+      category: categoryId,
+      subCategory: subCategory && mongoose.Types.ObjectId.isValid(subCategory) ? subCategory : undefined,
       basePrice: Number(basePrice),
       salePrice: salePrice ? Number(salePrice) : undefined,
-      images,
+      images: formattedImages,
       variants: defaultVariants,
       attributes,
       tags: Array.isArray(tags) ? tags : [],

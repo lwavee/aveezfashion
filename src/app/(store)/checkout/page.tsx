@@ -26,7 +26,15 @@ interface SavedAddress {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotal, clearCart, qualifiesForFreeShipping } = useCart();
+  const {
+    items,
+    subtotal,
+    clearCart,
+    qualifiesForFreeShipping,
+    appliedCoupon,
+    setAppliedCoupon,
+    clearCoupon,
+  } = useCart();
 
   // User & Auth State
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -52,7 +60,6 @@ export default function CheckoutPage() {
 
   const [paymentMethod, setPaymentMethod] = useState<'ONLINE_GATEWAY' | 'COD'>('ONLINE_GATEWAY');
   const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [pincodeLoading, setPincodeLoading] = useState(false);
   const [error, setError] = useState('');
@@ -201,18 +208,36 @@ export default function CheckoutPage() {
     setIsAddressModalOpen(false);
   };
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     const clean = couponCode.trim().toUpperCase();
-    if (clean === 'AVEEZ10') {
-      setAppliedCoupon({ code: clean, discount: Math.round(subtotal * 0.1) });
+    if (!clean) return;
+
+    try {
+      const res = await fetch('/api/checkout/validate-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ couponCode: clean, subtotal }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setError(data.error || 'Invalid coupon code or criteria not met.');
+        return;
+      }
+      setAppliedCoupon({
+        code: data.data.code,
+        discount: data.data.discount,
+        message: data.data.message,
+      });
       setCouponCode('');
-    } else if (clean === 'FIRST500' && subtotal >= 2999) {
-      setAppliedCoupon({ code: clean, discount: 500 });
-      setCouponCode('');
-    } else {
-      setError('Invalid coupon code or criteria not met.');
+    } catch {
+      setError('Unable to validate promo code at this moment.');
     }
+  };
+
+  const handleRemoveCoupon = () => {
+    clearCoupon();
   };
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
@@ -658,9 +683,25 @@ export default function CheckoutPage() {
                 </button>
               </div>
               {appliedCoupon && (
-                <span className={styles.appliedSuccess}>
-                  Coupon {appliedCoupon.code} applied (-₹{appliedCoupon.discount})
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px' }}>
+                  <span className={styles.appliedSuccess}>
+                    Coupon {appliedCoupon.code} applied (-₹{appliedCoupon.discount.toLocaleString('en-IN')})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '11px',
+                      color: 'var(--color-gray-600)',
+                      cursor: 'pointer',
+                      textDecoration: 'underline',
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
               )}
             </div>
 

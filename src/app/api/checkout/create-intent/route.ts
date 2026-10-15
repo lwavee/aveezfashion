@@ -62,9 +62,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // ZERO CLIENT TRUST: Server-authoritative price & availability validation
+    // ZERO CLIENT TRUST: Server-authoritative price, stock & availability validation
     let recalculatedSubtotal = 0;
     const validatedItems = [];
+    const isCod = paymentMethod === 'COD';
 
     for (const clientItem of items) {
       let product = await Product.findOne({
@@ -86,6 +87,38 @@ export async function POST(req: NextRequest) {
       const verifiedQuantity = Math.max(1, parseInt(clientItem.quantity, 10) || 1);
       const verifiedItemTotal = verifiedUnitPrice * verifiedQuantity;
 
+      // Locate specific variant to validate inventory
+      const matchingVariant = (product.variants || []).find(
+        (v: any) =>
+          v.sku === clientItem.variantSku ||
+          (v.size === clientItem.size && v.color?.toLowerCase() === clientItem.color?.toLowerCase()) ||
+          v.size === clientItem.size
+      );
+
+      if (!matchingVariant) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Selected variant (Size: ${clientItem.size}, Color: ${clientItem.color || 'Default'}) for "${product.title}" is unavailable.`,
+          },
+          { status: 422 }
+        );
+      }
+
+      const currentStock = matchingVariant.stock || 0;
+      if (currentStock < verifiedQuantity) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              currentStock <= 0
+                ? `"${product.title}" (Size: ${matchingVariant.size}) is sold out.`
+                : `Only ${currentStock} unit(s) remaining for "${product.title}" (Size: ${matchingVariant.size}). Please adjust your bag quantity.`,
+          },
+          { status: 422 }
+        );
+      }
+
       recalculatedSubtotal += verifiedItemTotal;
 
       const heroImg =
@@ -95,10 +128,10 @@ export async function POST(req: NextRequest) {
 
       validatedItems.push({
         productId: product._id,
-        variantSku: clientItem.variantSku,
+        variantSku: matchingVariant.sku,
         title: product.title,
-        size: clientItem.size,
-        color: clientItem.color,
+        size: matchingVariant.size,
+        color: matchingVariant.color,
         unitPrice: verifiedUnitPrice,
         quantity: verifiedQuantity,
         totalPrice: verifiedItemTotal,
@@ -106,13 +139,14 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Server-side Coupon validation
+    // Dynamic Server-side Coupon validation
     let discountTotal = 0;
-    const cleanCoupon = (couponCode || '').trim().toUpperCase();
-    if (cleanCoupon === 'AVEEZ10') {
-      discountTotal = Math.round(recalculatedSubtotal * 0.1);
-    } else if (cleanCoupon === 'FIRST500' && recalculatedSubtotal >= 2999) {
-      discountTotal = 500;
+    if (couponCode) {
+      const { validateCouponServer } = await import('@/server/coupons');
+      const couponRes = await validateCouponServer(couponCode, recalculatedSubtotal);
+      if (couponRes.valid) {
+        discountTotal = couponRes.discount;
+      }
     }
 
     const freeShippingThreshold = 1999;
@@ -124,10 +158,46 @@ export async function POST(req: NextRequest) {
       100000 + Math.random() * 900000
     )}`;
 
-    // Estimated delivery: 4 days from order date
+    // Estimated delivery: 4 business days from order date
     const estimatedDelivery = new Date(Date.now() + 4 * 24 * 60 * 60 * 1000);
 
-    const isCod = paymentMethod === 'COD';
+    // For COD: Atomically decrement stock immediately upon order placement
+    const decrementedItems: { productId: any; variantSku: string; quantity: number }[] = [];
+    if (isCod) {
+      for (const item of validatedItems) {
+        const updateRes = await Product.updateOne(
+          {
+            _id: item.productId,
+            'variants.sku': item.variantSku,
+            'variants.stock': { $gte: item.quantity },
+          },
+          { $inc: { 'variants.$.stock': -item.quantity } }
+        );
+
+        if (updateRes.modifiedCount === 0) {
+          // Stock was claimed concurrently; roll back any decrements already made for this order
+          for (const dec of decrementedItems) {
+            await Product.updateOne(
+              { _id: dec.productId, 'variants.sku': dec.variantSku },
+              { $inc: { 'variants.$.stock': dec.quantity } }
+            );
+          }
+          return NextResponse.json(
+            {
+              success: false,
+              error: `Stock for "${item.title}" (${item.size}) was just reserved by another customer. Please adjust your bag.`,
+            },
+            { status: 409 }
+          );
+        }
+
+        decrementedItems.push({
+          productId: item.productId,
+          variantSku: item.variantSku,
+          quantity: item.quantity,
+        });
+      }
+    }
 
     // Build immutable address snapshot
     const addressSnapshot = {

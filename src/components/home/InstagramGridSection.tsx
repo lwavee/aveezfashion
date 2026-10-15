@@ -96,7 +96,7 @@ export const InstagramGridSection: React.FC = () => {
                 src={dominantPost.image}
                 alt={dominantPost.alt}
                 fill
-                priority={false}
+                priority={true}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 55vw, 680px"
                 className={styles.image}
                 style={{ objectPosition: dominantPost.objectPosition || 'center center' }}
@@ -132,6 +132,7 @@ export const InstagramGridSection: React.FC = () => {
                   src={supportingPosts[0].image}
                   alt={supportingPosts[0].alt}
                   fill
+                  priority={true}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 45vw, 560px"
                   className={styles.image}
                   style={{
@@ -163,6 +164,7 @@ export const InstagramGridSection: React.FC = () => {
                       src={post.image}
                       alt={post.alt}
                       fill
+                      priority={true}
                       sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 280px"
                       className={styles.image}
                       style={{ objectPosition: post.objectPosition || 'center center' }}

@@ -130,6 +130,9 @@ export const Footer: React.FC = () => {
               <Link href="/shop?gender=WOMEN">Women</Link>
             </li>
             <li>
+              <Link href="/accessories">Accessories</Link>
+            </li>
+            <li>
               <Link href="/shop?filter=new">New Arrivals</Link>
             </li>
             <li>

@@ -17,12 +17,12 @@ export default function CartPage() {
     freeShippingThreshold,
     remainingForFreeShipping,
     qualifiesForFreeShipping,
+    appliedCoupon,
+    setAppliedCoupon,
+    clearCoupon,
   } = useCart();
 
   const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(
-    null
-  );
   const [couponError, setCouponError] = useState('');
 
   const shippingFee = qualifiesForFreeShipping ? 0 : 99;
@@ -30,27 +30,37 @@ export default function CartPage() {
   const estimatedTax = Math.round((subtotal - discountTotal) * 0.12); // GST 12%
   const grandTotal = Math.max(0, subtotal - discountTotal + shippingFee);
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     setCouponError('');
 
     const cleanCode = couponCode.trim().toUpperCase();
     if (!cleanCode) return;
 
-    if (cleanCode === 'AVEEZ10') {
-      const discount = Math.round(subtotal * 0.1);
-      setAppliedCoupon({ code: cleanCode, discount });
+    try {
+      const res = await fetch('/api/checkout/validate-coupon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ couponCode: cleanCode, subtotal }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setCouponError(data.error || 'Invalid coupon code or criteria not met.');
+        return;
+      }
+      setAppliedCoupon({
+        code: data.data.code,
+        discount: data.data.discount,
+        message: data.data.message,
+      });
       setCouponCode('');
-    } else if (cleanCode === 'FIRST500' && subtotal >= 2999) {
-      setAppliedCoupon({ code: cleanCode, discount: 500 });
-      setCouponCode('');
-    } else {
-      setCouponError('Invalid coupon code or minimum order amount not met.');
+    } catch {
+      setCouponError('Unable to validate promo code at this moment.');
     }
   };
 
   const handleRemoveCoupon = () => {
-    setAppliedCoupon(null);
+    clearCoupon();
   };
 
   if (items.length === 0) {

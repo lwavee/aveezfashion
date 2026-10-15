@@ -169,10 +169,17 @@ export const HeroSection: React.FC<HeroProps> = ({
               <div className={styles.slideContent}>
                 <span className={styles.chapterTag}>{slide.tagline}</span>
 
-                <h1 className={styles.heroHeading}>
-                  <span className={styles.headingLine1}>{slide.headingLine1}</span>
-                  <span className={styles.headingLine2}>{slide.headingLine2}</span>
-                </h1>
+                {index === 0 ? (
+                  <h1 className={styles.heroHeading}>
+                    <span className={styles.headingLine1}>{slide.headingLine1}</span>
+                    <span className={styles.headingLine2}>{slide.headingLine2}</span>
+                  </h1>
+                ) : (
+                  <div className={styles.heroHeading} role="heading" aria-level={2}>
+                    <span className={styles.headingLine1}>{slide.headingLine1}</span>
+                    <span className={styles.headingLine2}>{slide.headingLine2}</span>
+                  </div>
+                )}
 
                 <div className={styles.dividerLine} aria-hidden="true" />
 

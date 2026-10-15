@@ -18,6 +18,9 @@ interface CartContextType {
   freeShippingThreshold: number;
   remainingForFreeShipping: number;
   qualifiesForFreeShipping: boolean;
+  appliedCoupon: { code: string; discount: number; message?: string } | null;
+  setAppliedCoupon: (coupon: { code: string; discount: number; message?: string } | null) => void;
+  clearCoupon: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -26,6 +29,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; message?: string } | null>(null);
 
   const freeShippingThreshold = 1999;
 
@@ -35,6 +39,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const stored = localStorage.getItem('aveez_cart');
       if (stored) {
         setItems(JSON.parse(stored));
+      }
+      const storedCoupon = localStorage.getItem('aveez_coupon');
+      if (storedCoupon) {
+        setAppliedCoupon(JSON.parse(storedCoupon));
       }
     } catch {
       // Ignore parse errors
@@ -48,6 +56,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('aveez_cart', JSON.stringify(items));
     }
   }, [items, mounted]);
+
+  useEffect(() => {
+    if (mounted) {
+      if (appliedCoupon) {
+        localStorage.setItem('aveez_coupon', JSON.stringify(appliedCoupon));
+      } else {
+        localStorage.removeItem('aveez_coupon');
+      }
+    }
+  }, [appliedCoupon, mounted]);
 
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
@@ -84,6 +102,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = () => {
     setItems([]);
+    setAppliedCoupon(null);
+  };
+
+  const clearCoupon = () => {
+    setAppliedCoupon(null);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -108,6 +131,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         freeShippingThreshold,
         remainingForFreeShipping,
         qualifiesForFreeShipping,
+        appliedCoupon,
+        setAppliedCoupon,
+        clearCoupon,
       }}
     >
       {children}

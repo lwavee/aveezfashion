@@ -278,41 +278,52 @@ export default function CustomerOrdersPage() {
 
                 {/* Items List */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
-                  {order.items?.map((item: any, idx: number) => (
-                    <div
-                      key={idx}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '1rem',
-                      }}
-                    >
-                      {item.image && (
+                  {Array.isArray(order.items) ? (
+                    order.items.map((item: any, idx: number) => {
+                      const itemImg = item.image || item.thumbnailImage;
+                      const itemPrice = item.price ?? item.unitPrice ?? 0;
+                      const itemQty = item.quantity || 1;
+                      return (
                         <div
+                          key={idx}
                           style={{
-                            width: '48px',
-                            height: '64px',
-                            position: 'relative',
-                            backgroundColor: 'var(--color-gray-100)',
-                            borderRadius: 'var(--radius-xs)',
-                            overflow: 'hidden',
-                            flexShrink: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1rem',
                           }}
                         >
-                          <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} />
+                          {itemImg && (
+                            <div
+                              style={{
+                                width: '48px',
+                                height: '64px',
+                                position: 'relative',
+                                backgroundColor: 'var(--color-gray-100)',
+                                borderRadius: 'var(--radius-xs)',
+                                overflow: 'hidden',
+                                flexShrink: 0,
+                              }}
+                            >
+                              <Image src={itemImg} alt={item.title || 'Product'} fill style={{ objectFit: 'cover' }} />
+                            </div>
+                          )}
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{item.title}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--color-gray-500)', marginTop: '2px' }}>
+                              SIZE: {item.size || 'ONESIZE'} • QTY: {itemQty}
+                            </div>
+                          </div>
+                          <div style={{ fontSize: '0.875rem', fontWeight: 700 }}>
+                            ₹{(itemPrice * itemQty).toLocaleString('en-IN')}
+                          </div>
                         </div>
-                      )}
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{item.title}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--color-gray-500)', marginTop: '2px' }}>
-                          SIZE: {item.size} • QTY: {item.quantity}
-                        </div>
-                      </div>
-                      <div style={{ fontSize: '0.875rem', fontWeight: 700 }}>
-                        ₹{(item.price * item.quantity).toLocaleString('en-IN')}
-                      </div>
+                      );
+                    })
+                  ) : typeof order.items === 'string' && order.items ? (
+                    <div style={{ fontSize: '0.875rem', color: 'var(--color-gray-700)' }}>
+                      {order.items}
                     </div>
-                  ))}
+                  ) : null}
                 </div>
 
                 {/* Bottom Row with Total and Actions */}

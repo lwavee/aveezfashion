@@ -114,6 +114,8 @@ const OrderSchema = new Schema<OrderDocument>(
     courierName: { type: String },
     carrier: { type: String },
     estimatedDelivery: { type: Date },
+    gatewayPaymentId: { type: String },
+    gatewayOrderId: { type: String },
   },
   { timestamps: true }
 );

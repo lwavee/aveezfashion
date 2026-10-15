@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 
     await connectToDatabase();
 
-    // Find orders belonging to this user
+    // Find orders belonging to this user by user ID or customer email
     const orders = await Order.find({
       $or: [
         { user: session.userId },
@@ -26,23 +26,51 @@ export async function GET(req: NextRequest) {
       .sort({ createdAt: -1 })
       .lean();
 
-    const formattedOrders = orders.map((ord) => ({
-      orderNumber: ord.orderNumber,
-      date: ord.createdAt
-        ? new Date(ord.createdAt).toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-          })
-        : 'Recent',
-      total: `₹${(ord.pricing?.grandTotal || 0).toLocaleString('en-IN')}`,
-      items: (ord.items || [])
-        .map((i) => `${i.title} (${i.size}) × ${i.quantity}`)
-        .join(', '),
-      status: ord.fulfillmentStatus,
-      paymentStatus: ord.paymentStatus,
-      trackingUrl: ord.trackingUrl || '#',
-    }));
+    const formattedOrders = orders.map((ord) => {
+      const itemsList = (ord.items || []).map((i: any) => ({
+        productId: String(i.productId || ''),
+        variantSku: i.variantSku || '',
+        title: i.title || 'Apparel Item',
+        size: i.size || 'ONESIZE',
+        color: i.color || 'Default',
+        price: i.unitPrice ?? i.price ?? 0,
+        unitPrice: i.unitPrice ?? i.price ?? 0,
+        quantity: i.quantity || 1,
+        totalPrice: i.totalPrice ?? ((i.unitPrice ?? 0) * (i.quantity || 1)),
+        image: i.thumbnailImage ?? i.image ?? '/images/placeholder.jpg',
+        thumbnailImage: i.thumbnailImage ?? i.image ?? '/images/placeholder.jpg',
+      }));
+
+      const grandTotal = ord.pricing?.grandTotal || 0;
+
+      return {
+        id: String(ord._id),
+        orderNumber: ord.orderNumber,
+        createdAt: ord.createdAt,
+        date: ord.createdAt
+          ? new Date(ord.createdAt).toLocaleDateString('en-IN', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            })
+          : 'Recent',
+        total: `₹${grandTotal.toLocaleString('en-IN')}`,
+        totalAmount: grandTotal,
+        pricing: ord.pricing || { grandTotal },
+        items: itemsList,
+        itemsSummary: itemsList.map((i) => `${i.title} (${i.size}) × ${i.quantity}`).join(', '),
+        fulfillmentStatus: ord.fulfillmentStatus || 'PROCESSING',
+        status: ord.fulfillmentStatus || 'PROCESSING',
+        paymentStatus: ord.paymentStatus || 'PENDING',
+        paymentMethod: ord.paymentMethod || 'ONLINE_GATEWAY',
+        returnStatus: (ord as any).returnStatus || 'NONE',
+        deliveredAt: (ord as any).deliveredAt || null,
+        shippingAddress: ord.shippingAddress,
+        trackingNumber: ord.trackingNumber || '',
+        carrier: ord.carrier || '',
+        trackingUrl: ord.trackingUrl || '#',
+      };
+    });
 
     return NextResponse.json({
       success: true,

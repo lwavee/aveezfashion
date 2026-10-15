@@ -23,14 +23,14 @@ export const BestSellersSection: React.FC<BestSellersSectionProps> = ({
   const displayProducts = products.slice(0, 4);
 
   return (
-    <section className={styles.section} aria-label="Best Sellers">
+    <section className={styles.section} aria-label="Popular Picks">
       <div className={`container ${styles.container}`}>
         {/* Section Editorial Header */}
         <div className={styles.header}>
           <div className={styles.titleStack}>
-            <span className={styles.eyebrow}>MOST WANTED</span>
-            <h2 className={styles.heading}>BEST SELLERS</h2>
-            <p className={styles.supportingText}>The pieces making their mark.</p>
+            <span className={styles.eyebrow}>CURATED SELECTION</span>
+            <h2 className={styles.heading}>POPULAR PICKS</h2>
+            <p className={styles.supportingText}>Architectural essentials defining the season.</p>
           </div>
 
           <Link href={viewAllLink} className={styles.desktopViewAll}>

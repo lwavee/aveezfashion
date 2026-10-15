@@ -3,10 +3,7 @@ import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider } from '@/context/WishlistContext';
 import { ToastProvider } from '@/components/ui/Toast';
-import { CartDrawer } from '@/components/cart/CartDrawer';
-import { AnnouncementBar } from '@/components/layout/AnnouncementBar';
-import { Navbar } from '@/components/layout/Navbar';
-import { Footer } from '@/components/layout/Footer';
+import { StorefrontShell } from '@/components/layout/StorefrontShell';
 import { CatalogService } from '@/server/services/catalogService';
 
 export const metadata: Metadata = {
@@ -77,17 +74,9 @@ export default async function RootLayout({
         <CartProvider>
           <WishlistProvider>
             <ToastProvider>
-              {content.announcementBar?.isActive && (
-                <AnnouncementBar
-                  message={content.announcementBar.message}
-                  ctaText={content.announcementBar.ctaLink ? content.announcementBar.ctaText : undefined}
-                  ctaLink={content.announcementBar.ctaLink}
-                />
-              )}
-              <Navbar />
-              <main id="main-content">{children}</main>
-              <Footer />
-              <CartDrawer />
+              <StorefrontShell announcementBar={content.announcementBar}>
+                {children}
+              </StorefrontShell>
             </ToastProvider>
           </WishlistProvider>
         </CartProvider>

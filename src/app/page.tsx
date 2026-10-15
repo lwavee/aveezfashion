@@ -21,7 +21,7 @@ export default async function HomePage() {
     CatalogService.getCategories(),
     CatalogService.getProducts({ isNewArrival: true, limit: 8 }),
     CatalogService.getProducts({ isBestSeller: true, limit: 4 }),
-    CatalogService.getAccessories({ limit: 4 }),
+    CatalogService.getAccessories({ limit: 12 }),
   ]);
 
   return (
@@ -32,16 +32,13 @@ export default async function HomePage() {
       {/* 2. Shop By Category (Immediate visual category discovery) */}
       <CategoryGrid categories={categories} />
 
-      {/* 3. Accessories Showcase — The Finishing Touch */}
-      <HomeAccessoriesSection products={accessoriesData.products} />
-
-      {/* 4. New Arrivals Showcase */}
+      {/* 3. New Arrivals Showcase */}
       <NewArrivalsSection products={newArrivalsData.products} />
 
-      {/* 5. Together in Style — Men × Women Matching Styles */}
+      {/* 4. Together in Style — Men × Women Matching Styles */}
       <TogetherInStyleSection />
 
-      {/* 6. Aveez Originals Editorial */}
+      {/* 5. Aveez Originals Editorial */}
       <AveezOriginalsSection
         eyebrow="AVEEZ ORIGINALS — 01 / SIGNATURE COLLECTION"
         secondaryLabel="THE AVEEZ SIGNATURE"
@@ -52,10 +49,10 @@ export default async function HomePage() {
         ctaLink={content.aveezOriginals?.ctaLink || '/collections/aveez-originals'}
       />
 
-      {/* 7. Best Sellers */}
+      {/* 6. Popular Picks */}
       <BestSellersSection products={bestSellersData.products} />
 
-      {/* 8. Brand Story */}
+      {/* 7. Brand Story */}
       <BrandStorySection
         title={content.brandStory.title}
         paragraphs={content.brandStory.paragraphs}
@@ -63,11 +60,14 @@ export default async function HomePage() {
         ctaLink={content.brandStory.ctaLink}
       />
 
-      {/* 9. Why Aveez */}
+      {/* 8. Why Aveez */}
       <WhyAveezSection />
 
-      {/* 10. Instagram / Community Showcase */}
+      {/* 9. Community & Editorial — As Seen on the Street */}
       <InstagramGridSection />
+
+      {/* 10. Accessories Showcase — The Finishing Touch (In last, before footer) */}
+      <HomeAccessoriesSection products={accessoriesData.products} />
     </div>
   );
 }

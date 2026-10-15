@@ -115,21 +115,19 @@ export class CatalogService {
       if (params.categorySlug) {
         const cat = await Category.findOne({ slug: params.categorySlug });
         if (cat) {
-          const children = await Category.find({ parentCategory: cat._id }).select('_id');
-          if (children.length > 0) {
-            const catIds = [cat._id, ...children.map((c) => c._id)];
-            filter.$or = [
-              { category: { $in: catIds } },
-              { subCategory: { $in: catIds } },
-              { tags: { $in: [params.categorySlug] } },
-            ];
-          } else {
-            filter.$or = [
-              { category: cat._id },
-              { subCategory: cat._id },
-              { tags: { $in: [params.categorySlug] } },
-            ];
-          }
+          const isAccessoryRoot = cat.slug === 'accessories';
+          const accessorySlugs = ['hairbands', 'claw-clips', 'hair-clips', 'keychains', 'bag-charms', 'matching-sets'];
+          const relatedCats = isAccessoryRoot
+            ? await Category.find({ $or: [{ parentCategory: cat._id }, { slug: { $in: accessorySlugs } }] }).select('_id')
+            : await Category.find({ parentCategory: cat._id }).select('_id');
+
+          const catIds = [cat._id, ...relatedCats.map((c) => c._id)];
+          filter.$or = [
+            { category: { $in: catIds } },
+            { subCategory: { $in: catIds } },
+            { tags: { $in: isAccessoryRoot ? ['accessories', ...accessorySlugs] : [params.categorySlug] } },
+            ...(isAccessoryRoot ? [{ accessoryType: { $exists: true, $ne: null } }] : []),
+          ];
         } else {
           // If category slug not in DB directly, filter by tag or title
           filter.tags = { $in: [params.categorySlug] };
