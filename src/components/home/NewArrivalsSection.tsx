@@ -52,7 +52,7 @@ export const NewArrivalsSection: React.FC<NewArrivalsSectionProps> = ({
     if (!trackRef.current) return;
     const firstCard = trackRef.current.firstElementChild as HTMLElement | null;
     const cardWidth = firstCard?.offsetWidth || 300;
-    const gap = 20;
+    const gap = window.innerWidth <= 768 ? 14 : 24;
     const stepCards = window.innerWidth <= 768 ? 1 : 2;
     const scrollAmount = (cardWidth + gap) * stepCards;
 
@@ -99,87 +99,89 @@ export const NewArrivalsSection: React.FC<NewArrivalsSectionProps> = ({
   };
 
   return (
-    <section className={`container ${styles.section}`} aria-label="New Arrivals Showcase">
-      <div className={styles.headerWrapper}>
-        {/* Giant subtle watermark text */}
-        <span className={styles.watermark} aria-hidden="true">
-          NEW
-        </span>
+    <section className={styles.section} aria-label="New Arrivals Showcase">
+      <div className={styles.container}>
+        <div className={styles.headerWrapper}>
+          {/* Giant subtle watermark text */}
+          <span className={styles.watermark} aria-hidden="true">
+            NEW
+          </span>
 
-        {/* Left column: Eyebrow + Brand Heading + Tagline */}
-        <div className={styles.leftCol}>
-          <div className={styles.eyebrowRow}>
-            <span className={styles.eyebrowText}>FRESH CUTS</span>
-            <div className={styles.eyebrowLine} aria-hidden="true" />
+          {/* Left column: Eyebrow + Brand Heading + Tagline */}
+          <div className={styles.leftCol}>
+            <div className={styles.eyebrowRow}>
+              <span className={styles.eyebrowText}>FRESH CUTS</span>
+              <div className={styles.eyebrowLine} aria-hidden="true" />
+            </div>
+
+            <h2 className={styles.mainTitle}>
+              <span className={styles.titleWordNew}>NEW</span>
+              <span className={styles.titleWordArrivals}>ARRIVALS</span>
+            </h2>
+
+            <p className={styles.tagline}>
+              DISCOVER OUR LATEST STYLES FOR A BOLDER YOU.
+            </p>
           </div>
 
-          <h2 className={styles.mainTitle}>
-            <span className={styles.titleWordNew}>NEW</span>
-            <span className={styles.titleWordArrivals}>ARRIVALS</span>
-          </h2>
+          {/* Right column: Blurb + Action Link + Arrow Controls */}
+          <div className={styles.rightCol}>
+            <p className={styles.blurbText}>
+              Latest fits. Modern silhouettes.
+              <br />
+              Everyday essentials.
+            </p>
 
-          <p className={styles.tagline}>
-            DISCOVER OUR LATEST STYLES FOR A BOLDER YOU.
-          </p>
-        </div>
+            <div className={styles.actionsRow}>
+              <Link href={viewAllLink} className={styles.viewAllLink}>
+                VIEW ALL (NEW) →
+              </Link>
 
-        {/* Right column: Blurb + Action Link + Arrow Controls */}
-        <div className={styles.rightCol}>
-          <p className={styles.blurbText}>
-            Latest fits. Modern silhouettes.
-            <br />
-            Everyday essentials.
-          </p>
+              <div className={styles.navControls} aria-label="Product Slider Controls">
+                <button
+                  type="button"
+                  onClick={() => handleScroll('prev')}
+                  className={`${styles.arrowBtn} ${styles.arrowBtnPrev} ${!canScrollLeft ? styles.arrowBtnDisabled : ''}`}
+                  aria-label="Previous products"
+                  disabled={!canScrollLeft}
+                >
+                  <ChevronLeft size={16} strokeWidth={2} />
+                </button>
 
-          <div className={styles.actionsRow}>
-            <Link href={viewAllLink} className={styles.viewAllLink}>
-              VIEW ALL (NEW) →
-            </Link>
-
-            <div className={styles.navControls} aria-label="Product Slider Controls">
-              <button
-                type="button"
-                onClick={() => handleScroll('prev')}
-                className={`${styles.arrowBtn} ${styles.arrowBtnPrev} ${!canScrollLeft ? styles.arrowBtnDisabled : ''}`}
-                aria-label="Previous products"
-                disabled={!canScrollLeft}
-              >
-                <ChevronLeft size={16} strokeWidth={2} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleScroll('next')}
-                className={`${styles.arrowBtn} ${styles.arrowBtnNext} ${!canScrollRight ? styles.arrowBtnDisabled : ''}`}
-                aria-label="Next products"
-                disabled={!canScrollRight}
-              >
-                <ChevronRight size={16} strokeWidth={2} />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => handleScroll('next')}
+                  className={`${styles.arrowBtn} ${styles.arrowBtnNext} ${!canScrollRight ? styles.arrowBtnDisabled : ''}`}
+                  aria-label="Next products"
+                  disabled={!canScrollRight}
+                >
+                  <ChevronRight size={16} strokeWidth={2} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Product Cards Single-Line Slider Track */}
-      <div
-        ref={trackRef}
-        className={`${styles.cardsTrack} ${isDragging ? styles.isDragging : ''}`}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={handleMouseUpOrLeave}
-        onClickCapture={handleClickCapture}
-      >
-        {products.map((product, idx) => (
-          <div key={product._id} className={styles.cardItem}>
-            <ProductCard
-              product={product}
-              variant="curated"
-              priority={idx < 4}
-            />
-          </div>
-        ))}
+        {/* Product Cards Single-Line Slider Track */}
+        <div
+          ref={trackRef}
+          className={`${styles.cardsTrack} ${isDragging ? styles.isDragging : ''}`}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUpOrLeave}
+          onMouseLeave={handleMouseUpOrLeave}
+          onClickCapture={handleClickCapture}
+        >
+          {products.map((product, idx) => (
+            <div key={product._id} className={styles.cardItem}>
+              <ProductCard
+                product={product}
+                variant="curated"
+                priority={idx < 4}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
