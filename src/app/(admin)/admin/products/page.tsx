@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import {
   Shirt,
   RefreshCw,
@@ -32,6 +33,13 @@ interface ProductItem {
   sku: string;
   price: string;
   rawPrice: number;
+  basePrice?: number;
+  salePrice?: number;
+  costPrice?: number;
+  productType?: string;
+  department?: 'MEN' | 'WOMEN' | 'UNISEX' | 'ACCESSORIES';
+  category?: string;
+  collectionId?: string;
   variantsCount: number;
   variants: ProductVariant[];
   totalStock: number;
@@ -41,22 +49,10 @@ interface ProductItem {
   heroImage: string;
 }
 
-const CATEGORY_OPTIONS = [
-  { slug: 'men', label: 'Men' },
-  { slug: 'women', label: 'Women' },
-  { slug: 'accessories', label: 'Accessories' },
-  { slug: 't-shirts', label: 'T-Shirts' },
-  { slug: 'hoodies-sweatshirts', label: 'Hoodies & Sweatshirts' },
-  { slug: 'shirts', label: 'Shirts' },
-  { slug: 'pants-trousers', label: 'Pants & Trousers' },
-  { slug: 'hairbands', label: 'Hairbands' },
-  { slug: 'hair-clips', label: 'Hair Clips' },
-  { slug: 'claw-clips', label: 'Claw Clips' },
-  { slug: 'keychains-charms', label: 'Keychains & Charms' },
-];
-
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [collections, setCollections] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -68,8 +64,10 @@ export default function AdminProductsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addForm, setAddForm] = useState({
     title: '',
-    category: 'accessories',
-    gender: 'UNISEX',
+    department: 'MEN' as 'MEN' | 'WOMEN' | 'UNISEX' | 'ACCESSORIES',
+    category: '',
+    collectionId: '',
+    gender: 'MEN',
     basePrice: '',
     salePrice: '',
     description: '',
@@ -83,6 +81,9 @@ export default function AdminProductsPage() {
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
   const [editForm, setEditForm] = useState({
     title: '',
+    department: 'MEN' as 'MEN' | 'WOMEN' | 'UNISEX' | 'ACCESSORIES',
+    category: '',
+    collectionId: '',
     basePrice: '',
     salePrice: '',
     description: '',
@@ -109,13 +110,31 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     fetchProducts();
+    async function loadTaxonomy() {
+      try {
+        const res = await fetch('/api/admin/taxonomy');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            setCategories(data.data.categories || []);
+            setCollections(data.data.collections || []);
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to load taxonomy:', err);
+      }
+    }
+    loadTaxonomy();
   }, []);
 
   const handleOpenAddModal = () => {
+    const defaultCats = categories.filter((c) => (c.departments || []).includes('MEN'));
     setAddForm({
       title: '',
-      category: 'accessories',
-      gender: 'UNISEX',
+      department: 'MEN',
+      category: defaultCats.length > 0 ? defaultCats[0].slug : '',
+      collectionId: '',
+      gender: 'MEN',
       basePrice: '',
       salePrice: '',
       description: '',
@@ -153,8 +172,11 @@ export default function AdminProductsPage() {
 
       const payload = {
         title: addForm.title.trim(),
+        department: addForm.department,
         category: addForm.category,
-        gender: addForm.gender,
+        collectionId: addForm.collectionId || undefined,
+        gender: addForm.department === 'ACCESSORIES' ? 'UNISEX' : addForm.department,
+        productType: addForm.department === 'ACCESSORIES' ? 'accessories' : 'clothing',
         basePrice: parseFloat(addForm.basePrice),
         salePrice: addForm.salePrice ? parseFloat(addForm.salePrice) : undefined,
         description: addForm.description.trim(),
@@ -186,11 +208,15 @@ export default function AdminProductsPage() {
   };
 
   const handleOpenEditModal = (prod: ProductItem) => {
+    const defaultDept = prod.department || (prod.productType === 'accessories' ? 'ACCESSORIES' : 'UNISEX');
     setEditingProduct(prod);
     setEditForm({
       title: prod.title,
-      basePrice: String(prod.rawPrice || ''),
-      salePrice: '',
+      department: defaultDept,
+      category: prod.category || '',
+      collectionId: prod.collectionId || '',
+      basePrice: String(prod.rawPrice || prod.basePrice || ''),
+      salePrice: prod.salePrice ? String(prod.salePrice) : '',
       description: '',
       status: prod.status || 'PUBLISHED',
     });
@@ -204,6 +230,9 @@ export default function AdminProductsPage() {
     try {
       const payload: any = {
         title: editForm.title.trim(),
+        department: editForm.department,
+        category: editForm.category,
+        collectionId: editForm.collectionId || '',
         status: editForm.status,
       };
       if (editForm.basePrice) payload.basePrice = parseFloat(editForm.basePrice);
@@ -276,8 +305,8 @@ export default function AdminProductsPage() {
             <RefreshCw size={14} className={isLoading ? 'animate-spin' : ''} />
             <span>SYNC</span>
           </button>
-          <button
-            onClick={handleOpenAddModal}
+          <Link
+            href="/admin/products/new"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -290,11 +319,12 @@ export default function AdminProductsPage() {
               fontWeight: 600,
               cursor: 'pointer',
               color: '#fff',
+              textDecoration: 'none',
             }}
           >
             <Plus size={14} />
             <span>NEW PRODUCT</span>
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -522,36 +552,86 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '4px' }}>
+                    DEPARTMENT *
+                  </label>
+                  <select
+                    value={addForm.department}
+                    onChange={(e) => {
+                      const newDept = e.target.value as any;
+                      const validCats = categories.filter((c) => (c.departments || []).includes(newDept));
+                      setAddForm({
+                        ...addForm,
+                        department: newDept,
+                        category: validCats.length > 0 ? validCats[0].slug : '',
+                        collectionId: '',
+                      });
+                    }}
+                    style={{ width: '100%', padding: '8px 10px', fontSize: '12px', border: '1px solid #D1D5DB', borderRadius: '3px', background: '#fff' }}
+                  >
+                    <option value="MEN">Men</option>
+                    <option value="WOMEN">Women</option>
+                    <option value="UNISEX">Unisex</option>
+                    <option value="ACCESSORIES">Accessories</option>
+                  </select>
+                </div>
+
                 <div>
                   <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '4px' }}>
                     CATEGORY *
                   </label>
                   <select
                     value={addForm.category}
-                    onChange={(e) => setAddForm({ ...addForm, category: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', fontSize: '13px', border: '1px solid #D1D5DB', borderRadius: '3px', background: '#fff' }}
+                    onChange={(e) => {
+                      setAddForm({
+                        ...addForm,
+                        category: e.target.value,
+                        collectionId: '',
+                      });
+                    }}
+                    disabled={!addForm.department}
+                    style={{ width: '100%', padding: '8px 10px', fontSize: '12px', border: '1px solid #D1D5DB', borderRadius: '3px', background: '#fff' }}
                   >
-                    {CATEGORY_OPTIONS.map((c) => (
-                      <option key={c.slug} value={c.slug}>
-                        {c.label}
-                      </option>
-                    ))}
+                    <option value="">Select Category...</option>
+                    {categories
+                      .filter((c) => (c.departments || []).includes(addForm.department))
+                      .map((c) => (
+                        <option key={c.id || c.slug} value={c.slug}>
+                          {c.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '4px' }}>
-                    GENDER
+                    COLLECTION
                   </label>
                   <select
-                    value={addForm.gender}
-                    onChange={(e) => setAddForm({ ...addForm, gender: e.target.value })}
-                    style={{ width: '100%', padding: '8px 10px', fontSize: '13px', border: '1px solid #D1D5DB', borderRadius: '3px', background: '#fff' }}
+                    value={addForm.collectionId}
+                    onChange={(e) => setAddForm({ ...addForm, collectionId: e.target.value })}
+                    disabled={!addForm.category}
+                    style={{ width: '100%', padding: '8px 10px', fontSize: '12px', border: '1px solid #D1D5DB', borderRadius: '3px', background: '#fff' }}
                   >
-                    <option value="UNISEX">Unisex</option>
-                    <option value="WOMEN">Women</option>
-                    <option value="MEN">Men</option>
+                    <option value="">No Collection Assigned</option>
+                    {collections
+                      .filter((col) => {
+                        const depts = col.departments || ['MEN', 'WOMEN', 'UNISEX', 'ACCESSORIES'];
+                        if (!depts.includes(addForm.department)) return false;
+                        if (col.categories && col.categories.length > 0) {
+                          const catObj = categories.find((c) => c.slug === addForm.category || c.id === addForm.category);
+                          if (!catObj) return false;
+                          return col.categories.includes(catObj.id) || col.categories.includes(catObj.slug);
+                        }
+                        return true;
+                      })
+                      .map((col) => (
+                        <option key={col.id} value={col.id}>
+                          {col.title}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>
@@ -736,6 +816,91 @@ export default function AdminProductsPage() {
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
                   style={{ width: '100%', padding: '8px 10px', fontSize: '13px', border: '1px solid #D1D5DB', borderRadius: '3px' }}
                 />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '4px' }}>
+                    DEPARTMENT *
+                  </label>
+                  <select
+                    value={editForm.department}
+                    onChange={(e) => {
+                      const newDept = e.target.value as any;
+                      const validCats = categories.filter((c) => (c.departments || []).includes(newDept));
+                      const isCatStillValid = validCats.some((c) => c.slug === editForm.category || c.id === editForm.category);
+                      setEditForm({
+                        ...editForm,
+                        department: newDept,
+                        category: isCatStillValid ? editForm.category : (validCats.length > 0 ? validCats[0].slug : ''),
+                        collectionId: isCatStillValid ? editForm.collectionId : '',
+                      });
+                    }}
+                    style={{ width: '100%', padding: '8px 10px', fontSize: '12px', border: '1px solid #D1D5DB', borderRadius: '3px', background: '#fff' }}
+                  >
+                    <option value="MEN">Men</option>
+                    <option value="WOMEN">Women</option>
+                    <option value="UNISEX">Unisex</option>
+                    <option value="ACCESSORIES">Accessories</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '4px' }}>
+                    CATEGORY *
+                  </label>
+                  <select
+                    value={editForm.category}
+                    onChange={(e) => {
+                      setEditForm({
+                        ...editForm,
+                        category: e.target.value,
+                        collectionId: '',
+                      });
+                    }}
+                    disabled={!editForm.department}
+                    style={{ width: '100%', padding: '8px 10px', fontSize: '12px', border: '1px solid #D1D5DB', borderRadius: '3px', background: '#fff' }}
+                  >
+                    <option value="">Select Category...</option>
+                    {categories
+                      .filter((c) => (c.departments || []).includes(editForm.department))
+                      .map((c) => (
+                        <option key={c.id || c.slug} value={c.slug}>
+                          {c.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, marginBottom: '4px' }}>
+                    COLLECTION
+                  </label>
+                  <select
+                    value={editForm.collectionId}
+                    onChange={(e) => setEditForm({ ...editForm, collectionId: e.target.value })}
+                    disabled={!editForm.category}
+                    style={{ width: '100%', padding: '8px 10px', fontSize: '12px', border: '1px solid #D1D5DB', borderRadius: '3px', background: '#fff' }}
+                  >
+                    <option value="">No Collection Assigned</option>
+                    {collections
+                      .filter((col) => {
+                        const depts = col.departments || ['MEN', 'WOMEN', 'UNISEX', 'ACCESSORIES'];
+                        if (!depts.includes(editForm.department)) return false;
+                        if (col.categories && col.categories.length > 0) {
+                          const catObj = categories.find((c) => c.slug === editForm.category || c.id === editForm.category);
+                          if (!catObj) return false;
+                          return col.categories.includes(catObj.id) || col.categories.includes(catObj.slug);
+                        }
+                        return true;
+                      })
+                      .map((col) => (
+                        <option key={col.id} value={col.id}>
+                          {col.title}
+                        </option>
+                      ))}
+                  </select>
+                </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>

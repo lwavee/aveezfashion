@@ -17,6 +17,7 @@ import styles from './adminLayout.module.css';
 const ROUTE_TITLES: Record<string, { title: string; section: string }> = {
   '/admin': { title: 'Dashboard', section: 'Overview' },
   '/admin/products': { title: 'Products', section: 'Catalog' },
+  '/admin/products/new': { title: 'Add Product', section: 'Catalog' },
   '/admin/categories': { title: 'Categories', section: 'Catalog' },
   '/admin/collections': { title: 'Collections', section: 'Catalog' },
   '/admin/orders': { title: 'Orders', section: 'Operations' },

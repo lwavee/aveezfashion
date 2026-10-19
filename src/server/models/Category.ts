@@ -13,6 +13,13 @@ const CategorySchema = new Schema<CategoryDocument>(
     slug: { type: String, required: true, unique: true, lowercase: true, index: true },
     description: { type: String },
     parentCategory: { type: Schema.Types.ObjectId, ref: 'Category', default: null },
+    departments: {
+      type: [String],
+      enum: ['MEN', 'WOMEN', 'UNISEX', 'ACCESSORIES'],
+      default: ['UNISEX'],
+      index: true,
+    },
+    group: { type: String, trim: true, default: 'General', index: true },
     image: { type: String },
     displayOrder: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true, index: true },
@@ -23,6 +30,7 @@ const CategorySchema = new Schema<CategoryDocument>(
 );
 
 CategorySchema.index({ isActive: 1, displayOrder: 1 });
+CategorySchema.index({ departments: 1, isActive: 1 });
 
 export const Category: Model<CategoryDocument> =
   mongoose.models.Category || mongoose.model<CategoryDocument>('Category', CategorySchema);

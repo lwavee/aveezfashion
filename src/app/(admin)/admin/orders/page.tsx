@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ShoppingBag, RefreshCw, AlertCircle, Inbox, X, Truck, CheckCircle2 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -24,6 +26,7 @@ interface OrderItem {
 }
 
 export default function AdminOrdersPage() {
+  const router = useRouter();
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -181,7 +184,12 @@ export default function AdminOrdersPage() {
               </thead>
               <tbody>
                 {orders.map((ord) => (
-                  <tr key={ord.id}>
+                  <tr
+                    key={ord.id}
+                    onClick={() => router.push(`/admin/orders/${ord.id}`)}
+                    style={{ cursor: 'pointer' }}
+                    title="Click to view complete order details and manage fulfillment"
+                  >
                     <td>
                       <strong>{ord.orderNumber}</strong>
                     </td>
@@ -219,10 +227,12 @@ export default function AdminOrdersPage() {
                       </span>
                     </td>
                     <td className={styles.dateCol}>{ord.date}</td>
-                    <td>
-                      <Button variant="outline" size="sm" onClick={() => handleOpenModal(ord)}>
-                        MANAGE
-                      </Button>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <Link href={`/admin/orders/${ord.id}`}>
+                        <Button variant="outline" size="sm">
+                          MANAGE
+                        </Button>
+                      </Link>
                     </td>
                   </tr>
                 ))}

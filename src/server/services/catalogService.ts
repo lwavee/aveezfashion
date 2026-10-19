@@ -166,6 +166,7 @@ export class CatalogService {
 
       const total = await Product.countDocuments(filter);
       const products = await Product.find(filter)
+        .select('-costPrice')
         .sort(sortQuery)
         .skip((page - 1) * limit)
         .limit(limit)
@@ -285,6 +286,7 @@ export class CatalogService {
     try {
       await connectToDatabase();
       const product = await Product.findOne({ slug, status: 'PUBLISHED' })
+        .select('-costPrice')
         .populate('category')
         .lean();
 
@@ -495,7 +497,7 @@ export class CatalogService {
           });
         }
 
-        const items = await Product.find(query).limit(limit).lean();
+        const items = await Product.find(query).select('-costPrice').limit(limit).lean();
         if (items && items.length > 0) {
           return JSON.parse(JSON.stringify(items));
         }
@@ -510,7 +512,7 @@ export class CatalogService {
           category: { $nin: accessoryCatIds },
           'variants.stock': { $gt: 0 },
         };
-        const items = await Product.find(query).limit(limit).lean();
+        const items = await Product.find(query).select('-costPrice').limit(limit).lean();
         if (items && items.length > 0) {
           return JSON.parse(JSON.stringify(items));
         }

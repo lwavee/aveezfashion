@@ -81,23 +81,207 @@ export async function PATCH(
       );
     }
 
-    // Handle Category mapping: allow ObjectId or string slug
+    const VALID_DEPTS = new Set(['MEN', 'WOMEN', 'UNISEX', 'ACCESSORIES']);
+
+    // Determine target department
+    let targetDept = product.department;
+    if (body.department !== undefined) {
+      if (!VALID_DEPTS.has(body.department)) {
+        return NextResponse.json(
+          { success: false, error: `Invalid department: "${body.department}".` },
+          { status: 400 }
+        );
+      }
+      targetDept = body.department;
+      product.department = targetDept;
+
+      // Align legacy fields
+      if (targetDept === 'ACCESSORIES') {
+        product.productType = 'accessories';
+        product.gender = 'UNISEX';
+      } else if (targetDept === 'MEN') {
+        product.gender = 'MEN';
+        product.productType = 'clothing';
+      } else if (targetDept === 'WOMEN') {
+        product.gender = 'WOMEN';
+        product.productType = 'clothing';
+      } else if (targetDept === 'UNISEX') {
+        product.gender = 'UNISEX';
+        product.productType = 'clothing';
+      }
+    }
+
+    if (!targetDept) {
+      targetDept = product.productType === 'accessories' ? 'ACCESSORIES' : (product.gender || 'UNISEX');
+      product.department = targetDept;
+    }
+
+    // Determine target category
+    let targetCategoryDoc = null;
     if (body.category !== undefined) {
       if (mongoose.Types.ObjectId.isValid(body.category)) {
-        product.category = new mongoose.Types.ObjectId(body.category);
+        targetCategoryDoc = await Category.findById(body.category);
       } else if (typeof body.category === 'string') {
-        const catDoc = await Category.findOne({ slug: body.category.toLowerCase() });
-        if (catDoc) {
-          product.category = catDoc._id as any;
+        targetCategoryDoc = await Category.findOne({ slug: body.category.toLowerCase().trim() });
+      }
+
+      if (!targetCategoryDoc) {
+        return NextResponse.json(
+          { success: false, error: `Category "${body.category}" was not found.` },
+          { status: 400 }
+        );
+      }
+
+      if (!targetCategoryDoc.isActive) {
+        return NextResponse.json(
+          { success: false, error: `Category "${targetCategoryDoc.name}" is currently inactive.` },
+          { status: 400 }
+        );
+      }
+
+      const catDepts: string[] = Array.isArray(targetCategoryDoc.departments) && targetCategoryDoc.departments.length > 0
+        ? targetCategoryDoc.departments
+        : ['UNISEX'];
+
+      if (!catDepts.includes(targetDept)) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Category "${targetCategoryDoc.name}" does not belong to the "${targetDept}" department. (Allowed: ${catDepts.join(', ')})`,
+          },
+          { status: 400 }
+        );
+      }
+
+      product.category = targetCategoryDoc._id as any;
+    } else {
+      // Validate current category against target department
+      targetCategoryDoc = await Category.findById(product.category);
+      if (targetCategoryDoc) {
+        const catDepts: string[] = Array.isArray(targetCategoryDoc.departments) && targetCategoryDoc.departments.length > 0
+          ? targetCategoryDoc.departments
+          : ['UNISEX'];
+        if (!catDepts.includes(targetDept)) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `Existing category "${targetCategoryDoc.name}" does not belong to the newly selected department "${targetDept}". Please choose a valid category.`,
+            },
+            { status: 400 }
+          );
         }
+      }
+    }
+
+    // Determine target collection
+    if (body.collectionId !== undefined) {
+      const { Collection } = await import('@/server/models/Collection');
+      const oldCollectionId = product.collectionId;
+
+      if (!body.collectionId || body.collectionId === '' || body.collectionId === null) {
+        // Clear collection
+        product.collectionId = undefined;
+        if (oldCollectionId) {
+          await Collection.findByIdAndUpdate(oldCollectionId, {
+            $pull: { products: product._id },
+          });
+        }
+      } else {
+        if (!mongoose.Types.ObjectId.isValid(body.collectionId)) {
+          return NextResponse.json(
+            { success: false, error: 'Invalid Collection ID.' },
+            { status: 400 }
+          );
+        }
+
+        const collectionDoc = await Collection.findById(body.collectionId);
+        if (!collectionDoc) {
+          return NextResponse.json(
+            { success: false, error: 'Collection not found.' },
+            { status: 400 }
+          );
+        }
+
+        if (!collectionDoc.isActive) {
+          return NextResponse.json(
+            { success: false, error: `Collection "${collectionDoc.title}" is currently inactive.` },
+            { status: 400 }
+          );
+        }
+
+        const colDepts: string[] = Array.isArray(collectionDoc.departments) && collectionDoc.departments.length > 0
+          ? collectionDoc.departments
+          : ['MEN', 'WOMEN', 'UNISEX', 'ACCESSORIES'];
+
+        if (!colDepts.includes(targetDept)) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: `Collection "${collectionDoc.title}" is not valid for department "${targetDept}".`,
+            },
+            { status: 400 }
+          );
+        }
+
+        if (Array.isArray(collectionDoc.categories) && collectionDoc.categories.length > 0 && targetCategoryDoc) {
+          const hasCategory = collectionDoc.categories.some(
+            (catRef: any) => String(catRef) === String(targetCategoryDoc!._id)
+          );
+          if (!hasCategory) {
+            return NextResponse.json(
+              {
+                success: false,
+                error: `Collection "${collectionDoc.title}" is not valid for category "${targetCategoryDoc.name}".`,
+              },
+              { status: 400 }
+            );
+          }
+        }
+
+        product.collectionId = collectionDoc._id as any;
+
+        // Sync Collection products array
+        if (oldCollectionId && String(oldCollectionId) !== String(collectionDoc._id)) {
+          await Collection.findByIdAndUpdate(oldCollectionId, {
+            $pull: { products: product._id },
+          });
+        }
+        await Collection.findByIdAndUpdate(collectionDoc._id, {
+          $addToSet: { products: product._id },
+        });
       }
     }
 
     if (body.title !== undefined) product.title = body.title.trim();
     if (body.description !== undefined) product.description = body.description.trim();
     if (body.gender !== undefined) product.gender = body.gender;
-    if (body.basePrice !== undefined) product.basePrice = Number(body.basePrice);
-    if (body.salePrice !== undefined) product.salePrice = body.salePrice ? Number(body.salePrice) : undefined;
+    if (body.basePrice !== undefined) {
+      const bp = Number(body.basePrice);
+      if (isNaN(bp) || bp < 0) {
+        return NextResponse.json({ success: false, error: 'Base price must be a non-negative number.' }, { status: 400 });
+      }
+      product.basePrice = bp;
+    }
+    if (body.salePrice !== undefined) {
+      if (body.salePrice === null || body.salePrice === '') {
+        product.salePrice = undefined;
+      } else {
+        const sp = Number(body.salePrice);
+        if (isNaN(sp) || sp < 0) {
+          return NextResponse.json({ success: false, error: 'Sale price must be a non-negative number.' }, { status: 400 });
+        }
+        if (sp >= product.basePrice) {
+          return NextResponse.json({ success: false, error: 'Sale price must be lower than base price.' }, { status: 400 });
+        }
+        product.salePrice = sp;
+      }
+    }
+    if (body.costPrice !== undefined) {
+      product.costPrice = body.costPrice ? Math.max(0, Number(body.costPrice)) : undefined;
+    }
+    if (body.productType !== undefined) product.productType = body.productType;
+    if (body.lowStockThreshold !== undefined) product.lowStockThreshold = Math.max(1, Number(body.lowStockThreshold) || 5);
+    if (body.bundleDetails !== undefined) product.bundleDetails = body.bundleDetails;
     if (body.status !== undefined) product.status = body.status;
     if (body.isFeatured !== undefined) product.isFeatured = Boolean(body.isFeatured);
     if (body.isBestSeller !== undefined) product.isBestSeller = Boolean(body.isBestSeller);

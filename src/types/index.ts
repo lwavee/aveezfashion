@@ -26,6 +26,9 @@ export interface ProductAttributes {
   origin?: string;
 }
 
+export type Department = 'MEN' | 'WOMEN' | 'UNISEX' | 'ACCESSORIES';
+export const DEPARTMENTS: Department[] = ['MEN', 'WOMEN', 'UNISEX', 'ACCESSORIES'];
+
 export interface Product {
   _id: string;
   title: string;
@@ -33,10 +36,15 @@ export interface Product {
   sku: string;
   description: string;
   gender: Gender;
+  department?: Department;
   category: string; // Category ID or populated Category object
   subCategory?: string;
+  collectionId?: string;
   basePrice: number;
   salePrice?: number;
+  costPrice?: number;
+  productType?: 'clothing' | 'accessories';
+  lowStockThreshold?: number;
   images: ProductImage[];
   variants: ProductVariant[];
   attributes?: ProductAttributes;
@@ -52,6 +60,7 @@ export interface Product {
   accessoryType?: string;
   isBundle?: boolean;
   bundleProductIds?: string[];
+  bundleDetails?: string;
   stylingTips?: string;
   relatedAccessories?: string[] | Product[];
   metaTitle?: string;
@@ -65,6 +74,8 @@ export interface Category {
   name: string;
   slug: string;
   description?: string;
+  departments?: Department[];
+  group?: string;
   parentCategory?: string | null;
   image?: string;
   displayOrder?: number;
@@ -82,6 +93,8 @@ export interface Collection {
   description?: string;
   coverImage: string;
   featured: boolean;
+  departments?: Department[];
+  categories?: string[];
   products?: string[];
   isActive: boolean;
   createdAt: string;
@@ -125,6 +138,7 @@ export interface Cart {
 
 export type OrderPaymentStatus = 'UNPAID' | 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 export type OrderFulfillmentStatus =
+  | 'PENDING'
   | 'PENDING_CONFIRMATION'
   | 'CONFIRMED'
   | 'UNFULFILLED'
@@ -134,10 +148,13 @@ export type OrderFulfillmentStatus =
   | 'OUT_FOR_DELIVERY'
   | 'DELIVERED'
   | 'CANCELLED'
-  | 'RETURNED';
+  | 'RETURN_REQUESTED'
+  | 'RETURNED'
+  | 'REFUNDED';
 
 export interface OrderStatusHistoryItem {
   status: string;
+  previousStatus?: string;
   timestamp: string | Date;
   note?: string;
   description?: string;
@@ -166,6 +183,7 @@ export interface Order {
   customerPhone: string;
   items: OrderItem[];
   shippingAddress: Address;
+  billingAddress?: Address;
   pricing: {
     subtotal: number;
     discountTotal: number;
@@ -183,11 +201,16 @@ export interface Order {
   returnStatus?: 'NONE' | 'REQUESTED' | 'APPROVED' | 'PICKUP_SCHEDULED' | 'INSPECTED' | 'REFUNDED' | 'EXCHANGED' | 'REJECTED';
   statusHistory?: OrderStatusHistoryItem[];
   cancellationReason?: string;
+  cancelledAt?: string | Date;
+  cancelledBy?: string;
+  stockRestored?: boolean;
+  invoiceNumber?: string;
+  invoiceIssuedAt?: string | Date;
   carrier?: string;
   trackingNumber?: string;
   trackingUrl?: string;
   courierName?: string;
-  estimatedDelivery?: string;
+  estimatedDelivery?: string | Date;
   createdAt: string;
   updatedAt: string;
 }

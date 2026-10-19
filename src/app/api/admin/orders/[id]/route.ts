@@ -66,6 +66,7 @@ export async function PATCH(
       fulfillmentStatus,
       orderStatus,
       paymentStatus,
+      cancellationReason,
       carrier,
       trackingNumber,
       trackingUrl,
@@ -94,39 +95,103 @@ export async function PATCH(
       );
     }
 
-    const updates: any = {};
-
+    // --- 1. FULFILLMENT STATUS VALIDATION & TRANSITIONS ---
     if (fulfillmentStatus && fulfillmentStatus !== order.fulfillmentStatus) {
-      updates.fulfillmentStatus = fulfillmentStatus;
-      order.fulfillmentStatus = fulfillmentStatus;
+      const current = order.fulfillmentStatus || 'UNFULFILLED';
+      const target = fulfillmentStatus;
+
+      // Transition matrix definition
+      const ALLOWED_TRANSITIONS: Record<string, string[]> = {
+        PENDING: ['CONFIRMED', 'PROCESSING', 'CANCELLED'],
+        PENDING_CONFIRMATION: ['CONFIRMED', 'PROCESSING', 'CANCELLED'],
+        UNFULFILLED: ['CONFIRMED', 'PROCESSING', 'CANCELLED'],
+        CONFIRMED: ['PROCESSING', 'PACKED', 'CANCELLED'],
+        PROCESSING: ['PACKED', 'SHIPPED', 'CANCELLED'],
+        PACKED: ['SHIPPED', 'CANCELLED'],
+        SHIPPED: ['OUT_FOR_DELIVERY', 'DELIVERED', 'RETURN_REQUESTED', 'RETURNED'],
+        OUT_FOR_DELIVERY: ['DELIVERED', 'RETURN_REQUESTED', 'RETURNED'],
+        DELIVERED: ['RETURN_REQUESTED', 'RETURNED'],
+        RETURN_REQUESTED: ['RETURNED', 'REFUNDED'],
+        RETURNED: ['REFUNDED'],
+        CANCELLED: [],
+        REFUNDED: [],
+      };
+
+      const allowedNext = ALLOWED_TRANSITIONS[current] || [];
+      if (!allowedNext.includes(target)) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Invalid status transition: Cannot change order from '${current}' to '${target}'. Allowed next statuses: ${allowedNext.length > 0 ? allowedNext.join(', ') : 'None (Terminal State)'}.`,
+          },
+          { status: 400 }
+        );
+      }
+
+      // Handle cancellation logic
+      if (target === 'CANCELLED') {
+        const reason = cancellationReason?.trim() || statusNote?.trim();
+        if (!reason) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'A cancellation reason is required to cancel an order.',
+            },
+            { status: 400 }
+          );
+        }
+
+        order.cancellationReason = reason;
+        order.cancelledAt = new Date();
+        order.cancelledBy = session.email;
+
+        // Idempotent exact-once stock restoration
+        if (!order.stockRestored) {
+          const { Product } = await import('@/server/models/Product');
+          for (const item of order.items || []) {
+            try {
+              if (item.productId && item.variantSku) {
+                await Product.updateOne(
+                  { _id: item.productId, 'variants.sku': item.variantSku },
+                  { $inc: { 'variants.$.stock': item.quantity } }
+                );
+              }
+            } catch (restockErr) {
+              console.warn('Inventory restoration notice:', restockErr);
+            }
+          }
+          order.stockRestored = true;
+        }
+      }
+
+      const previousStatus = order.fulfillmentStatus;
+      order.fulfillmentStatus = target;
 
       // Status history entry
       const description =
-        statusNote ||
-        `Fulfillment updated to ${fulfillmentStatus} by administrator (${session.email})`;
+        statusNote?.trim() ||
+        (target === 'CANCELLED'
+          ? `Order cancelled by ${session.email}. Reason: ${order.cancellationReason}`
+          : `Fulfillment updated from ${previousStatus} to ${target} by administrator (${session.email})`);
+
       if (!order.statusHistory) {
         order.statusHistory = [];
       }
       order.statusHistory.push({
-        status: fulfillmentStatus,
-        timestamp: new Date().toISOString(),
+        status: target,
+        previousStatus,
+        timestamp: new Date(),
+        note: statusNote?.trim() || undefined,
         description,
         updatedBy: session.email,
       });
     }
 
     if (orderStatus && orderStatus !== order.orderStatus) {
-      updates.orderStatus = orderStatus;
       order.orderStatus = orderStatus;
-      if (!order.statusHistory) order.statusHistory = [];
-      order.statusHistory.push({
-        status: orderStatus,
-        timestamp: new Date().toISOString(),
-        description: `Order status set to ${orderStatus} by administrator (${session.email})`,
-        updatedBy: session.email,
-      });
     }
 
+    // --- 2. PAYMENT STATUS VALIDATION ---
     if (paymentStatus && paymentStatus !== order.paymentStatus) {
       if (paymentStatus === 'PAID') {
         if (order.paymentMethod === 'ONLINE_GATEWAY') {
@@ -152,21 +217,24 @@ export async function PATCH(
         }
       }
 
-      updates.paymentStatus = paymentStatus;
+      const prevPaymentStatus = order.paymentStatus;
       order.paymentStatus = paymentStatus;
+
       if (!order.statusHistory) order.statusHistory = [];
       order.statusHistory.push({
         status: `PAYMENT_${paymentStatus}`,
-        timestamp: new Date().toISOString(),
-        description: `Payment status updated to ${paymentStatus} by administrator (${session.email})`,
+        previousStatus: prevPaymentStatus,
+        timestamp: new Date(),
+        description: `Payment status updated from ${prevPaymentStatus} to ${paymentStatus} by administrator (${session.email})`,
         updatedBy: session.email,
       });
     }
 
-    if (carrier !== undefined) order.carrier = carrier;
-    if (trackingNumber !== undefined) order.trackingNumber = trackingNumber;
-    if (trackingUrl !== undefined) order.trackingUrl = trackingUrl;
-    if (estimatedDelivery !== undefined) order.estimatedDelivery = estimatedDelivery;
+    // --- 3. CARRIER & TRACKING INFORMATION ---
+    if (carrier !== undefined) order.carrier = carrier.trim();
+    if (trackingNumber !== undefined) order.trackingNumber = trackingNumber.trim();
+    if (trackingUrl !== undefined) order.trackingUrl = trackingUrl.trim();
+    if (estimatedDelivery !== undefined) order.estimatedDelivery = estimatedDelivery ? new Date(estimatedDelivery) : undefined;
 
     await order.save();
 

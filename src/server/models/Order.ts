@@ -38,6 +38,7 @@ const ShippingAddressSchema = new Schema(
 const StatusHistorySchema = new Schema(
   {
     status: { type: String, required: true },
+    previousStatus: { type: String },
     timestamp: { type: Date, default: Date.now },
     note: { type: String },
     description: { type: String },
@@ -56,6 +57,7 @@ const OrderSchema = new Schema<OrderDocument>(
     customerPhone: { type: String, required: true },
     items: [OrderItemSchema],
     shippingAddress: ShippingAddressSchema,
+    billingAddress: ShippingAddressSchema,
     pricing: {
       subtotal: { type: Number, required: true },
       discountTotal: { type: Number, default: 0 },
@@ -78,6 +80,7 @@ const OrderSchema = new Schema<OrderDocument>(
     fulfillmentStatus: {
       type: String,
       enum: [
+        'PENDING',
         'PENDING_CONFIRMATION',
         'CONFIRMED',
         'UNFULFILLED',
@@ -87,7 +90,9 @@ const OrderSchema = new Schema<OrderDocument>(
         'OUT_FOR_DELIVERY',
         'DELIVERED',
         'CANCELLED',
+        'RETURN_REQUESTED',
         'RETURNED',
+        'REFUNDED',
       ],
       default: 'UNFULFILLED',
       index: true,
@@ -109,6 +114,11 @@ const OrderSchema = new Schema<OrderDocument>(
     },
     statusHistory: { type: [StatusHistorySchema], default: [] },
     cancellationReason: { type: String },
+    cancelledAt: { type: Date },
+    cancelledBy: { type: String },
+    stockRestored: { type: Boolean, default: false },
+    invoiceNumber: { type: String, unique: true, sparse: true, index: true },
+    invoiceIssuedAt: { type: Date },
     trackingNumber: { type: String },
     trackingUrl: { type: String },
     courierName: { type: String },

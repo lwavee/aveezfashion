@@ -1,0 +1,956 @@
+/* ==================================================
+   AVEEZ FASHION — ADD PRODUCT WORKFLOW STYLES
+   Ultra-Clean Monochrome Luxury SaaS Aesthetic
+   ================================================== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 4px 60px 4px;
+}
+
+/* 1. TOP HEADER & BREADCRUMBS */
+.topHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E4E4E7;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #18181B;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.backBtn:hover {
+  background-color: #F4F4F5;
+  border-color: #D4D4D8;
+}
+
+.headerTitleStack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pageTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0A0A0A;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.pageSubtitle {
+  font-size: 0.8125rem;
+  color: #71717A;
+  margin: 0;
+}
+
+/* 2. PRODUCT TYPE SELECTION SCREEN */
+.selectionWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 40px 16px;
+  max-width: 840px;
+  margin: 20px auto;
+}
+
+.selectionHeading {
+  text-align: center;
+}
+
+.selectionTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0A0A0A;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+
+.selectionSubtitle {
+  font-size: 0.9375rem;
+  color: #71717A;
+  max-width: 520px;
+  line-height: 1.5;
+}
+
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+@media (max-width: 680px) {
+  .typeGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.typeCard {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 24px;
+  background-color: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+}
+
+.typeCard:hover {
+  border-color: #0A0A0A;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.08);
+}
+
+.typeIconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: #F4F4F5;
+  border-radius: 8px;
+  color: #0A0A0A;
+  margin-bottom: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.typeCard:hover .typeIconBadge {
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+}
+
+.typeCardTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0A0A0A;
+  margin-bottom: 8px;
+}
+
+.typeCardDesc {
+  font-size: 0.8125rem;
+  color: #71717A;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  min-height: 40px;
+}
+
+.typeFeatureList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #F4F4F5;
+}
+
+.typeFeatureItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: #52525B;
+  font-weight: 500;
+}
+
+.typeSelectIndicator {
+  margin-top: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #0A0A0A;
+  letter-spacing: 0.02em;
+}
+
+/* 3. FORM CONTAINER & SECTIONS */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sectionCard {
+  background-color: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: #FAFAFA;
+  border-bottom: 1px solid #E4E4E7;
+}
+
+.sectionHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 800;
+}
+
+.sectionTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0A0A0A;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.sectionSubtitle {
+  font-size: 0.75rem;
+  color: #71717A;
+  margin: 0;
+}
+
+.sectionBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* 4. FORM CONTROLS & GRID */
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formGridThree {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .formGridThree {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #27272A;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.labelRequired {
+  color: #DC2626;
+  margin-left: 2px;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 0.8125rem;
+  color: #0A0A0A;
+  background-color: #FFFFFF;
+  border: 1px solid #D4D4D8;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: #0A0A0A;
+  box-shadow: 0 0 0 1px #0A0A0A;
+}
+
+.inputError {
+  border-color: #EF4444 !important;
+}
+
+.helperText {
+  font-size: 0.6875rem;
+  color: #71717A;
+  line-height: 1.4;
+}
+
+.errorText {
+  font-size: 0.6875rem;
+  color: #DC2626;
+  font-weight: 500;
+}
+
+/* Slug row */
+.slugRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slugPrefix {
+  font-size: 0.75rem;
+  color: #71717A;
+  font-family: monospace;
+  background: #F4F4F5;
+  padding: 8px 10px;
+  border: 1px solid #E4E4E7;
+  border-radius: 4px 0 0 4px;
+}
+
+.slugInput {
+  border-radius: 0 4px 4px 0 !important;
+}
+
+/* 5. IMAGE UPLOADER */
+.uploaderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 20px;
+  border: 2px dashed #D4D4D8;
+  border-radius: 6px;
+  background-color: #FAFAFA;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.dropzone:hover,
+.dropzoneActive {
+  border-color: #0A0A0A;
+  background-color: #F4F4F5;
+}
+
+.dropzoneIcon {
+  color: #71717A;
+}
+
+.dropzoneText {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #18181B;
+}
+
+.dropzoneSubtext {
+  font-size: 0.6875rem;
+  color: #71717A;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.imageCard {
+  position: relative;
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #FAFAFA;
+  display: flex;
+  flex-direction: column;
+}
+
+.imageCardPrimary {
+  border-color: #0A0A0A;
+  box-shadow: 0 0 0 2px #0A0A0A;
+}
+
+.imagePreviewWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background-color: #F4F4F5;
+  overflow: hidden;
+}
+
+.imagePreviewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.primaryBadge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  font-size: 0.625rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.05em;
+  z-index: 2;
+}
+
+.imageToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px;
+  background-color: #FFFFFF;
+  border-top: 1px solid #E4E4E7;
+}
+
+.imageToolbarBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  border-radius: 4px;
+  color: #27272A;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.imageToolbarBtn:hover {
+  background: #E4E4E7;
+  color: #0A0A0A;
+}
+
+.imageToolbarBtnDanger:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+  border-color: #FCA5A5;
+}
+
+/* Color Suggestion Bar */
+.colorSuggestionBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.colorSuggestionTitle {
+  font-weight: 700;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.colorSuggestionPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #0F172A;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.colorSuggestionPill:hover {
+  border-color: #0A0A0A;
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+}
+
+.swatchDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  display: inline-block;
+}
+
+/* 6. PRICING & MARGINS */
+.marginCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #FAFAFA;
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+}
+
+.marginMetrics {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.marginItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.marginLabel {
+  font-size: 0.6875rem;
+  color: #71717A;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.marginValue {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #0A0A0A;
+}
+
+.marginBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.marginBadgeHealthy {
+  background-color: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.marginBadgeModerate {
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.marginBadgeTight {
+  background-color: #FEF2F2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+/* 7. SIZES SECTION */
+.sizePresetGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sizePill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 38px;
+  padding: 0 12px;
+  background-color: #FFFFFF;
+  border: 1px solid #D4D4D8;
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #27272A;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.sizePill:hover {
+  border-color: #0A0A0A;
+}
+
+.sizePillActive {
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  border-color: #0A0A0A;
+}
+
+.customSizeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 320px;
+  margin-top: 4px;
+}
+
+/* 8. COLOURS SECTION */
+.colorBuilder {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.colorInputBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.colorPickerWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: #FFFFFF;
+  border: 1px solid #D4D4D8;
+  border-radius: 4px;
+}
+
+.colorPickerInput {
+  -webkit-appearance: none;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+}
+
+.colorPickerInput::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.colorPickerInput::-webkit-color-swatch {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+}
+
+.colorChipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.colorChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: #FAFAFA;
+  border: 1px solid #E4E4E7;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #18181B;
+}
+
+.colorChipDelete {
+  cursor: pointer;
+  color: #71717A;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+
+.colorChipDelete:hover {
+  color: #DC2626;
+}
+
+/* 9. VARIANT MATRIX TABLE */
+.matrixWrapper {
+  overflow-x: auto;
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+}
+
+.matrixTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  text-align: left;
+}
+
+.matrixTable th {
+  background-color: #FAFAFA;
+  padding: 10px 14px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #52525B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #E4E4E7;
+  white-space: nowrap;
+}
+
+.matrixTable td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #F4F4F5;
+  vertical-align: middle;
+}
+
+.matrixTable tr:last-child td {
+  border-bottom: none;
+}
+
+.matrixRowDisabled td {
+  opacity: 0.45;
+  background-color: #FAFAFA;
+}
+
+.skuInput {
+  font-family: monospace;
+  font-size: 0.75rem !important;
+  padding: 6px 8px !important;
+  max-width: 220px;
+}
+
+.stockInput {
+  font-size: 0.8125rem !important;
+  font-weight: 700;
+  padding: 6px 8px !important;
+  width: 90px;
+}
+
+.bulkSetterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background-color: #F8FAFC;
+  border-bottom: 1px solid #E2E8F0;
+  font-size: 0.75rem;
+}
+
+/* 10. STICKY ACTION BAR */
+.actionBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background-color: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.actionSummary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.8125rem;
+}
+
+.actionStockSummary {
+  font-weight: 700;
+  color: #0A0A0A;
+}
+
+.actionButtons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cancelActionBtn {
+  padding: 8px 16px;
+  background-color: #FFFFFF;
+  border: 1px solid #D4D4D8;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #3F3F46;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cancelActionBtn:hover {
+  background-color: #F4F4F5;
+  color: #0A0A0A;
+}
+
+.draftActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: #F4F4F5;
+  border: 1px solid #D4D4D8;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #0A0A0A;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.draftActionBtn:hover:not(:disabled) {
+  background-color: #E4E4E7;
+}
+
+.publishActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  background-color: #0A0A0A;
+  border: 1px solid #0A0A0A;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.publishActionBtn:hover:not(:disabled) {
+  background-color: #27272A;
+  border-color: #27272A;
+}
+
+.publishActionBtn:disabled,
+.draftActionBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 11. TAG INPUT */
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tagPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  border-radius: 3px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #18181B;
+}
+
+.tagDelete {
+  cursor: pointer;
+  color: #71717A;
+}
+
+.tagDelete:hover {
+  color: #DC2626;
+}
+
+/* 12. CONFIRMATION MODAL */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalDialog {
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  max-width: 440px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalTitle {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0A0A0A;
+  margin: 0;
+}
+
+.modalText {
+  font-size: 0.8125rem;
+  color: #52525B;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
