@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { connectToDatabase } from '@/server/db/connect';
 import { Order } from '@/server/models/Order';
 import { Product } from '@/server/models/Product';
+import { getActiveRazorpayCredentials } from '@/server/razorpay';
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,7 +28,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const secret = process.env.PAYMENT_GATEWAY_SECRET || 'rzp_test_aveez_secret_mock';
+    const credentials = getActiveRazorpayCredentials();
+    const secret = credentials.secret || 'rzp_test_aveez_secret_mock';
 
     // Verify HMAC-SHA256 signature
     const generated = crypto

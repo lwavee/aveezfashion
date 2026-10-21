@@ -53,10 +53,17 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ categories }) => {
     const imageSrc = editorial?.image || cat.image;
     const objectPosition = editorial?.objectPosition || 'center center';
 
+    const getCategoryHref = (slug: string) => {
+      if (slug === 'men') return '/shop?gender=MEN';
+      if (slug === 'women') return '/shop?gender=WOMEN';
+      if (slug === 'accessories') return '/accessories';
+      return `/shop?category=${slug}`;
+    };
+
     return (
       <Link
         key={cat._id || cat.slug}
-        href={`/shop?category=${cat.slug}`}
+        href={getCategoryHref(cat.slug)}
         className={`${styles.card} ${isHero ? styles.heroCard : styles.standardCard}`}
         aria-label={`Shop ${cat.name}`}
       >

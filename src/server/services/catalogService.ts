@@ -8,6 +8,7 @@ import {
   initialCategories,
   initialCollections,
   initialProducts,
+  paymentTestProduct,
 } from '@/server/db/seedData';
 import {
   Product as IProduct,
@@ -100,9 +101,13 @@ export class CatalogService {
     try {
       await connectToDatabase();
 
-      // Build MongoDB Query Filter
+      // Build MongoDB Query Filter - Always exclude internal test products
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const filter: any = { status: 'PUBLISHED' };
+      const filter: any = {
+        status: 'PUBLISHED',
+        slug: { $ne: 'aveez-payment-test-product' },
+        tags: { $nin: ['payment-test', 'internal-only'] },
+      };
 
       if (params.gender) {
         filter.gender = { $in: [params.gender.toUpperCase(), 'UNISEX'] };
@@ -172,16 +177,14 @@ export class CatalogService {
         .limit(limit)
         .lean();
 
-      if (products && products.length > 0) {
-        return {
-          products: JSON.parse(JSON.stringify(products)),
-          total,
-          page,
-          totalPages: Math.ceil(total / limit),
-        };
-      }
+      return {
+        products: JSON.parse(JSON.stringify(products || [])),
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+      };
     } catch {
-      // Fallback to static catalog filtering
+      // Fallback to static catalog filtering only if DB connection throws an exception
     }
 
     // Static fallback filtering
@@ -253,7 +256,11 @@ export class CatalogService {
     if (params.search) {
       const q = params.search.toLowerCase();
       filtered = filtered.filter(
-        (p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.slug.toLowerCase().includes(q) ||
+          p.tags?.some((t) => t.toLowerCase().includes(q))
       );
     }
     if (params.sort === 'price_asc') {
@@ -283,6 +290,10 @@ export class CatalogService {
    * Retrieves single product by slug
    */
   static async getProductBySlug(slug: string): Promise<IProduct | null> {
+    if (slug === 'aveez-payment-test-product') {
+      return JSON.parse(JSON.stringify(paymentTestProduct));
+    }
+
     try {
       await connectToDatabase();
       const product = await Product.findOne({ slug, status: 'PUBLISHED' })

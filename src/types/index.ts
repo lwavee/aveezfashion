@@ -192,7 +192,7 @@ export interface Order {
     grandTotal: number;
     currency: string;
   };
-  paymentMethod: 'ONLINE_GATEWAY' | 'COD';
+  paymentMethod: 'ONLINE_GATEWAY' | 'COD' | 'UPI' | 'CREDIT_CARD' | 'DEBIT_CARD' | 'NET_BANKING';
   paymentStatus: OrderPaymentStatus;
   fulfillmentStatus: OrderFulfillmentStatus;
   orderStatus?: string;

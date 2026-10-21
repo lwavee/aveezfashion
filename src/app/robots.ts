@@ -8,7 +8,15 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/admin/', '/account/', '/checkout', '/order/confirmation'],
+        disallow: [
+          '/api/',
+          '/admin/',
+          '/account/',
+          '/checkout',
+          '/order/confirmation',
+          '/test-payment',
+          '/product/aveez-payment-test-product',
+        ],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

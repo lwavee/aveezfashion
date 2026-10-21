@@ -2,19 +2,18 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Search, User, Heart, ShoppingBag, Menu, X, ChevronRight, ChevronDown } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { SearchModal } from './SearchModal';
 import styles from './Navbar.module.css';
 
 function NavbarContent() {
-  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [activeDropdown, setActiveDropdown] = useState<'women' | 'men' | 'accessories' | null>(null);
   const [mobileWomenOpen, setMobileWomenOpen] = useState(false);
   const [mobileMenOpen, setMobileMenOpen] = useState(false);
@@ -52,19 +51,6 @@ function NavbarContent() {
       document.body.style.overflow = '';
     };
   }, [mobileMenuOpen]);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      setSearchOpen(false);
-      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
-  const handleQuickSearch = (term: string) => {
-    setSearchOpen(false);
-    router.push(`/shop?search=${encodeURIComponent(term)}`);
-  };
 
   // Active state calculations
   const filterParam = searchParams?.get('filter');
@@ -337,53 +323,8 @@ function NavbarContent() {
           </div>
         </div>
 
-        {/* Search Bar Flyout */}
-        {searchOpen && (
-          <div className={styles.searchFlyout}>
-            <div className={`container ${styles.searchContainer}`}>
-              <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
-                <Search size={20} className={styles.searchFormIcon} />
-                <input
-                  type="text"
-                  placeholder="SEARCH HOODIES, OVERSIZED TEES, TROUSERS, SHIRTS..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  autoFocus
-                  className={styles.searchInput}
-                  aria-label="Search products"
-                />
-                <button
-                  type="button"
-                  onClick={() => setSearchOpen(false)}
-                  className={styles.searchCloseBtn}
-                  aria-label="Close Search"
-                >
-                  <X size={20} />
-                </button>
-              </form>
-
-              {/* Quick Discovery Tags */}
-              <div className={styles.quickTagsRow}>
-                <span className={styles.quickTagsLabel}>POPULAR SEARCHES:</span>
-                <button type="button" onClick={() => handleQuickSearch('Hoodies')} className={styles.quickTag}>
-                  Hoodies
-                </button>
-                <button type="button" onClick={() => handleQuickSearch('Oversized')} className={styles.quickTag}>
-                  Oversized Tees
-                </button>
-                <button type="button" onClick={() => handleQuickSearch('Trousers')} className={styles.quickTag}>
-                  Pleated Trousers
-                </button>
-                <button type="button" onClick={() => handleQuickSearch('Linen')} className={styles.quickTag}>
-                  Resort Shirts
-                </button>
-                <button type="button" onClick={() => handleQuickSearch('Black')} className={styles.quickTag}>
-                  Onyx Black
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Luxury Search Modal */}
+        <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
       </header>
 
       {/* Mobile Menu Drawer */}
@@ -405,17 +346,19 @@ function NavbarContent() {
               </button>
             </div>
 
-            {/* Mobile Search Input */}
-            <form onSubmit={handleSearchSubmit} className={styles.mobileSearchForm}>
+            {/* Mobile Search Trigger Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setSearchOpen(true);
+              }}
+              className={styles.mobileSearchTrigger}
+              aria-label="Open search"
+            >
               <Search size={18} className={styles.mobileSearchIcon} />
-              <input
-                type="text"
-                placeholder="Search catalog..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.mobileSearchInput}
-              />
-            </form>
+              <span className={styles.mobileSearchPlaceholder}>Search catalog...</span>
+            </button>
 
             <nav className={styles.mobileNavLinks}>
               <Link

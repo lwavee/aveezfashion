@@ -23,7 +23,13 @@ export async function GET(req: NextRequest) {
 
     await connectToDatabase();
 
-    const orders = await Order.find({}).sort({ createdAt: -1 }).lean();
+    // Only return confirmed placed orders (exclude uncompleted checkout drafts)
+    const orders = await Order.find({
+      orderStatus: { $ne: 'DRAFT_CHECKOUT' },
+      paymentStatus: 'PAID',
+    })
+      .sort({ createdAt: -1 })
+      .lean();
 
     const formattedOrders = orders.map((ord) => ({
       id: String(ord._id),

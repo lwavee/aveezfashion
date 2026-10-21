@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import '@/styles/tokens.css';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider } from '@/context/WishlistContext';

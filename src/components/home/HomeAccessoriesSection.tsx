@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Sparkles, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { ProductCard } from '@/components/product/ProductCard';
 import styles from './HomeAccessoriesSection.module.css';
@@ -30,6 +30,18 @@ export const HomeAccessoriesSection: React.FC<HomeAccessoriesSectionProps> = ({
   products = [],
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  // Slider Refs and State
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  // Mouse drag-to-scroll interaction
+  const isDownRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftPosRef = useRef(0);
+  const hasMovedRef = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const filteredProducts = useMemo(() => {
     if (!selectedCategory) return products;
@@ -88,6 +100,84 @@ export const HomeAccessoriesSection: React.FC<HomeAccessoriesSectionProps> = ({
     });
   }, [products, selectedCategory]);
 
+  const checkScrollState = useCallback(() => {
+    if (!trackRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = trackRef.current;
+    setCanScrollLeft(scrollLeft > 6);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 6);
+  }, []);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    checkScrollState();
+    track.addEventListener('scroll', checkScrollState, { passive: true });
+    window.addEventListener('resize', checkScrollState);
+
+    return () => {
+      track.removeEventListener('scroll', checkScrollState);
+      window.removeEventListener('resize', checkScrollState);
+    };
+  }, [checkScrollState, filteredProducts]);
+
+  // Reset scroll position when category changes
+  useEffect(() => {
+    if (trackRef.current) {
+      trackRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+  }, [selectedCategory]);
+
+  const handleScroll = (direction: 'prev' | 'next') => {
+    if (!trackRef.current) return;
+    const firstCard = trackRef.current.firstElementChild as HTMLElement | null;
+    const cardWidth = firstCard?.offsetWidth || 280;
+    const gap = window.innerWidth <= 768 ? 14 : 24;
+    const stepCards = window.innerWidth <= 768 ? 1 : 2;
+    const scrollAmount = (cardWidth + gap) * stepCards;
+
+    trackRef.current.scrollBy({
+      left: direction === 'next' ? scrollAmount : -scrollAmount,
+      behavior: 'smooth',
+    });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!trackRef.current) return;
+    isDownRef.current = true;
+    hasMovedRef.current = false;
+    startXRef.current = e.pageX - trackRef.current.offsetLeft;
+    scrollLeftPosRef.current = trackRef.current.scrollLeft;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDownRef.current || !trackRef.current) return;
+    const currentX = e.pageX - trackRef.current.offsetLeft;
+    const distance = currentX - startXRef.current;
+
+    if (Math.abs(distance) > 6) {
+      hasMovedRef.current = true;
+      if (!isDragging) setIsDragging(true);
+      trackRef.current.scrollLeft = scrollLeftPosRef.current - distance;
+    }
+  };
+
+  const handleMouseUpOrLeave = () => {
+    if (!isDownRef.current) return;
+    isDownRef.current = false;
+    setTimeout(() => {
+      setIsDragging(false);
+      hasMovedRef.current = false;
+    }, 50);
+  };
+
+  const handleClickCapture = (e: React.MouseEvent) => {
+    if (hasMovedRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   const handleCategoryClick = (slug: string) => {
     setSelectedCategory((prev) => (prev === slug ? null : slug));
   };
@@ -101,7 +191,7 @@ export const HomeAccessoriesSection: React.FC<HomeAccessoriesSectionProps> = ({
       className={`container ${styles.section}`}
       aria-label="Accessories — The Finishing Touch"
     >
-      {/* 1. Section Header — Matches visual design */}
+      {/* 1. Section Header — Editorial & Premium */}
       <div className={styles.header}>
         <div className={styles.eyebrowRow}>
           <span className={styles.eyebrowLine} aria-hidden="true" />
@@ -158,15 +248,63 @@ export const HomeAccessoriesSection: React.FC<HomeAccessoriesSectionProps> = ({
         )}
       </div>
 
-      {/* 3. Product Display (Real MongoDB Accessories) */}
+      {/* 3. Slider Toolbar: Piece Count & Navigation Controls */}
+      <div className={styles.sliderToolbar}>
+        <div className={styles.toolbarInfo}>
+          <span className={styles.pieceCountBadge}>
+            {filteredProducts.length} {filteredProducts.length === 1 ? 'PIECE' : 'PIECES'} AVAILABLE
+          </span>
+          <span className={styles.swipeHint}>Swipe or drag to explore</span>
+        </div>
+
+        <div className={styles.toolbarActions}>
+          <Link href="/accessories" className={styles.viewAllLink}>
+            VIEW ALL ACCESSORIES →
+          </Link>
+
+          <div className={styles.navControls} aria-label="Accessories Slider Controls">
+            <button
+              type="button"
+              onClick={() => handleScroll('prev')}
+              className={`${styles.arrowBtn} ${styles.arrowBtnPrev} ${!canScrollLeft ? styles.arrowBtnDisabled : ''}`}
+              aria-label="Previous accessories"
+              disabled={!canScrollLeft}
+            >
+              <ChevronLeft size={16} strokeWidth={2} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleScroll('next')}
+              className={`${styles.arrowBtn} ${styles.arrowBtnNext} ${!canScrollRight ? styles.arrowBtnDisabled : ''}`}
+              aria-label="Next accessories"
+              disabled={!canScrollRight}
+            >
+              <ChevronRight size={16} strokeWidth={2} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. Single-Line Product Slider Track (matching NEW ARRIVALS UX) */}
       {filteredProducts.length > 0 ? (
-        <div className={styles.productGrid}>
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product._id}
-              product={product}
-              variant="default"
-            />
+        <div
+          ref={trackRef}
+          className={`${styles.cardsTrack} ${isDragging ? styles.isDragging : ''}`}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUpOrLeave}
+          onMouseLeave={handleMouseUpOrLeave}
+          onClickCapture={handleClickCapture}
+        >
+          {filteredProducts.map((product, idx) => (
+            <div key={product._id} className={styles.cardItem}>
+              <ProductCard
+                product={product}
+                variant="curated"
+                priority={idx < 4}
+              />
+            </div>
           ))}
         </div>
       ) : products.length > 0 ? (
@@ -220,7 +358,7 @@ export const HomeAccessoriesSection: React.FC<HomeAccessoriesSectionProps> = ({
         </div>
       )}
 
-      {/* 4. Complete the Look Editorial Banner */}
+      {/* 5. Complete the Look Editorial Banner */}
       <div className={styles.completeTheLookBanner}>
         <div className={styles.ctlContent}>
           <div className={styles.ctlBadge}>

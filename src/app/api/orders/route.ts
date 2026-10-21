@@ -16,12 +16,14 @@ export async function GET(req: NextRequest) {
 
     await connectToDatabase();
 
-    // Find orders belonging to this user by user ID or customer email
+    // Find confirmed orders belonging to this user (exclude unpaid checkout drafts)
     const orders = await Order.find({
       $or: [
         { user: session.userId },
         { customerEmail: session.email },
       ],
+      orderStatus: { $ne: 'DRAFT_CHECKOUT' },
+      paymentStatus: 'PAID',
     })
       .sort({ createdAt: -1 })
       .lean();

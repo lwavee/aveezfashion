@@ -235,98 +235,7 @@
   line-height: 1;
 }
 
-/* Search Bar Flyout */
-.searchFlyout {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background-color: var(--color-white-pure);
-  border-bottom: 1px solid var(--color-gray-200);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-  padding: 20px 0 24px 0;
-  animation: slideDown 200ms ease-out;
-}
-
-.searchContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.searchForm {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--color-black-rich);
-}
-
-.searchFormIcon {
-  color: var(--color-gray-500);
-}
-
-.searchInput {
-  flex: 1;
-  font-family: var(--font-family-body);
-  font-size: 0.9375rem;
-  letter-spacing: 0.05em;
-  color: var(--color-black-rich);
-  background: transparent;
-  border: none;
-  outline: none;
-}
-
-.searchInput::placeholder {
-  color: var(--color-gray-400);
-}
-
-.searchCloseBtn {
-  color: var(--color-gray-500);
-  cursor: pointer;
-  padding: 4px;
-  background: transparent;
-  border: none;
-}
-
-.searchCloseBtn:hover {
-  color: var(--color-black-rich);
-}
-
-.quickTagsRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.quickTagsLabel {
-  font-size: var(--font-size-micro);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: var(--letter-spacing-widest);
-  color: var(--color-gray-500);
-  text-transform: uppercase;
-  margin-right: 4px;
-}
-
-.quickTag {
-  padding: 4px 10px;
-  background-color: var(--color-white-surface);
-  border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-xs);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-micro);
-  color: var(--color-gray-700);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.quickTag:hover {
-  background-color: var(--color-black-rich);
-  border-color: var(--color-black-rich);
-  color: var(--color-white-pure);
-}
+/* Search Flyout replaced by SearchModal component */
 
 /* Mobile Navigation */
 .mobileMenuBtn {
@@ -382,29 +291,36 @@
   color: var(--color-black-rich);
 }
 
-.mobileSearchForm {
+.mobileSearchTrigger {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  background-color: var(--color-white-surface);
+  gap: 10px;
+  padding: 12px 14px;
+  background-color: var(--color-warm-bg);
   border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-sm);
   margin-bottom: 20px;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.mobileSearchTrigger:hover {
+  background-color: var(--color-white-pure);
+  border-color: var(--color-black-rich);
 }
 
 .mobileSearchIcon {
-  color: var(--color-gray-400);
+  color: var(--color-gray-500);
+  flex-shrink: 0;
 }
 
-.mobileSearchInput {
-  flex: 1;
+.mobileSearchPlaceholder {
   font-family: var(--font-family-body);
-  font-size: 0.8125rem;
-  color: var(--color-black-rich);
-  background: transparent;
-  border: none;
-  outline: none;
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+  letter-spacing: 0.01em;
 }
 
 .mobileNavLinks {

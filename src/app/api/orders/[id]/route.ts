@@ -32,6 +32,14 @@ export async function GET(
       );
     }
 
+    // Do not expose uncompleted checkout drafts
+    if (order.orderStatus === 'DRAFT_CHECKOUT' || order.paymentStatus === 'PENDING') {
+      return NextResponse.json(
+        { success: false, error: 'Order payment was not completed.' },
+        { status: 400 }
+      );
+    }
+
     // Security check: require ownership for authenticated users, or allow admin
     const isAdmin = session?.role === 'ADMIN' || session?.role === 'STAFF';
     if (!isAdmin) {

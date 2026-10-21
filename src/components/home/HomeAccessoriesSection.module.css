@@ -65,7 +65,7 @@
    2. CATEGORY QUICK NAVIGATION & FILTER PILLS
    ================================================== */
 .categoryNavWrapper {
-  margin-bottom: clamp(2rem, 3.5vw, 3rem);
+  margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -170,14 +170,169 @@
 }
 
 /* ==================================================
-   3. PRODUCT GRID
+   3. SLIDER TOOLBAR & NAV CONTROLS
    ================================================== */
-.productGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 24px;
-  row-gap: 36px;
-  margin-bottom: clamp(2.5rem, 4.5vw, 4rem);
+.sliderToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-gray-200);
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.toolbarInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pieceCountBadge {
+  font-family: var(--font-family-body);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-black-pure);
+  background-color: var(--color-gray-100);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.swipeHint {
+  font-family: var(--font-family-body);
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+}
+
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.viewAllLink {
+  font-family: var(--font-family-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-black-rich);
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: 1.5px solid var(--color-black-rich);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.viewAllLink:hover {
+  color: #B5997A;
+  border-color: #B5997A;
+  transform: translateX(2px);
+}
+
+.navControls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.arrowBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.arrowBtnPrev {
+  background-color: var(--color-white-pure);
+  border: 1.5px solid var(--color-gray-300);
+  color: var(--color-black-rich);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.arrowBtnPrev:hover:not(:disabled) {
+  background-color: var(--color-gray-100);
+  border-color: var(--color-black-rich);
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.arrowBtnNext {
+  background-color: var(--color-black-rich);
+  border: 1.5px solid var(--color-black-rich);
+  color: var(--color-white-pure);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+}
+
+.arrowBtnNext:hover:not(:disabled) {
+  background-color: #262626;
+  border-color: #262626;
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+}
+
+.arrowBtn:disabled,
+.arrowBtnDisabled {
+  opacity: 0.28;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ==================================================
+   4. SINGLE-LINE SLIDER TRACK & CARDS (Exact NEW ARRIVALS Architecture)
+   ================================================== */
+.cardsTrack {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 24px;
+  width: 100%;
+  padding-top: 6px;
+  padding-bottom: 32px;
+  padding-left: 2px;
+  padding-right: 2px;
+  box-sizing: border-box;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  user-select: none;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.cardsTrack.isDragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+.cardsTrack::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+/* Desktop: 4 cards visible with mathematical 24px gap */
+.cardItem {
+  flex: 0 0 calc((100% - (3 * 24px)) / 4);
+  width: calc((100% - (3 * 24px)) / 4);
+  max-width: calc((100% - (3 * 24px)) / 4);
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  display: flex;
+  flex-direction: column;
 }
 
 .emptyFilteredState {
@@ -238,37 +393,34 @@
   justify-content: space-between;
   min-height: 220px;
   transition: all var(--transition-fast);
-  position: relative;
-  overflow: hidden;
 }
 
 .spotlightCard:hover {
   border-color: var(--color-black-pure);
-  background-color: var(--color-white-pure);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
   transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
 .spotlightContent {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .spotlightKicker {
   font-family: var(--font-family-body);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-gray-500);
 }
 
 .spotlightTitle {
-  font-family: var(--font-family-heading);
-  font-size: 1.125rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  font-family: var(--font-family-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-black-pure);
   margin: 0;
@@ -279,17 +431,20 @@
   font-size: 0.8125rem;
   line-height: 1.5;
   color: var(--color-gray-600);
-  margin: 0 0 16px;
+  margin: 0;
 }
 
 .spotlightCta {
   font-family: var(--font-family-body);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-black-rich);
-  margin-top: auto;
+  color: var(--color-black-pure);
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: transform var(--transition-fast);
 }
 
@@ -298,143 +453,195 @@
 }
 
 /* ==================================================
-   4. COMPLETE THE LOOK BANNER
+   5. COMPLETE THE LOOK EDITORIAL BANNER
    ================================================== */
 .completeTheLookBanner {
-  background: linear-gradient(135deg, var(--color-white-off) 0%, #F5F5F3 100%);
-  border: 1px solid var(--color-gray-200);
-  padding: clamp(1.75rem, 3.5vw, 2.75rem);
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3.5vw, 2.75rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 32px;
+  margin-top: clamp(1rem, 2vw, 1.5rem);
+  border-radius: var(--radius-sm, 4px);
+  position: relative;
+  overflow: hidden;
+}
+
+.completeTheLookBanner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(181, 153, 122, 0.12) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .ctlContent {
-  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 620px;
+  position: relative;
+  z-index: 1;
 }
 
 .ctlBadge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 8px;
+  color: #B5997A;
 }
 
 .ctlIcon {
-  color: var(--color-black-rich);
+  color: #B5997A;
 }
 
 .ctlKicker {
   font-family: var(--font-family-body);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-gray-500);
+  color: #B5997A;
 }
 
 .ctlHeading {
-  font-family: var(--font-family-heading);
-  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  font-family: var(--font-family-display);
+  font-size: clamp(1.2rem, 2.2vw, 1.75rem);
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--color-black-pure);
-  margin: 0 0 8px;
+  color: #FFFFFF;
+  margin: 0;
   line-height: 1.2;
 }
 
 .ctlText {
   font-family: var(--font-family-body);
   font-size: 0.875rem;
-  line-height: 1.6;
-  color: var(--color-gray-600);
+  line-height: 1.55;
+  color: #9CA3AF;
   margin: 0;
 }
 
 .ctlActions {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
+  align-items: center;
+  gap: 16px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .primaryCta {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 24px;
-  background-color: var(--color-black-pure);
-  color: var(--color-white-pure);
+  gap: 8px;
+  padding: 14px 28px;
+  background-color: #FFFFFF;
+  color: #000000;
   font-family: var(--font-family-body);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
-  white-space: nowrap;
+  border-radius: var(--radius-sm, 4px);
   transition: all var(--transition-fast);
 }
 
 .primaryCta:hover {
-  background-color: #262626;
+  background-color: var(--color-gray-100);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
 }
 
 .secondaryCta {
   font-family: var(--font-family-body);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--color-gray-600);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  white-space: nowrap;
+  letter-spacing: 0.04em;
+  color: #9CA3AF;
+  text-decoration: none;
   transition: color var(--transition-fast);
+  padding: 8px 4px;
 }
 
 .secondaryCta:hover {
-  color: var(--color-black-pure);
+  color: #FFFFFF;
 }
 
 /* ==================================================
-   5. RESPONSIVE BREAKPOINTS
+   6. RESPONSIVE BREAKPOINTS (Matching NEW ARRIVALS)
    ================================================== */
-@media (max-width: 1024px) {
-  .productGrid {
-    grid-template-columns: repeat(2, 1fr);
+/* Medium Desktop / Laptop: 3 cards visible */
+@media (max-width: 1199px) and (min-width: 860px) {
+  .cardsTrack {
     gap: 20px;
   }
-
-  .editorialGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .completeTheLookBanner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  }
-
-  .ctlActions {
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
+  .cardItem {
+    flex: 0 0 calc((100% - (2 * 20px)) / 3);
+    width: calc((100% - (2 * 20px)) / 3);
+    max-width: calc((100% - (2 * 20px)) / 3);
   }
 }
 
+/* Tablet Screens: 2.35 cards visible with soft peek */
+@media (max-width: 859px) and (min-width: 641px) {
+  .cardsTrack {
+    gap: 18px;
+  }
+  .cardItem {
+    flex: 0 0 calc((100% - 18px) / 2.35);
+    width: calc((100% - 18px) / 2.35);
+    max-width: calc((100% - 18px) / 2.35);
+  }
+}
+
+/* Mobile Screens: 2 cards with smooth swipe & peek */
 @media (max-width: 640px) {
-  .productGrid {
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 12px;
-    row-gap: 20px;
+  .section {
+    padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+  }
+
+  .header {
+    padding: 0 clamp(16px, 4vw, 20px);
+  }
+
+  .categoryNavWrapper {
+    padding: 0 clamp(16px, 4vw, 20px);
+  }
+
+  .sliderToolbar {
+    padding-left: clamp(16px, 4vw, 20px);
+    padding-right: clamp(16px, 4vw, 20px);
+  }
+
+  .cardsTrack {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: clamp(16px, 4vw, 20px);
+    padding-right: clamp(16px, 4vw, 20px);
+    gap: 14px;
+    padding-top: 6px;
+    padding-bottom: 22px;
+  }
+
+  .cardItem {
+    flex: 0 0 calc((100% - 14px) / 2.18);
+    width: calc((100% - 14px) / 2.18);
+    max-width: calc((100% - 14px) / 2.18);
+    min-width: 146px;
   }
 
   .editorialGrid {
     grid-template-columns: 1fr;
     gap: 14px;
+    padding: 0 clamp(16px, 4vw, 20px);
   }
 
   .categoryPill {
@@ -446,8 +653,16 @@
     gap: 8px;
   }
 
+  .swipeHint {
+    display: none;
+  }
+
   .completeTheLookBanner {
+    margin: 1rem clamp(16px, 4vw, 20px) 0;
     padding: 20px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
   }
 
   .ctlActions {

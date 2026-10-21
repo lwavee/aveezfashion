@@ -12,7 +12,11 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   color: var(--color-gray-500);
-  margin-bottom: 12px;
+  margin-bottom: 20px;
+}
+
+.collectionAnchor {
+  scroll-margin-top: 84px;
 }
 
 .breadcrumb a {

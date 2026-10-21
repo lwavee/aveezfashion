@@ -92,11 +92,13 @@ export const AccessoriesContent: React.FC<AccessoriesContentProps> = ({
       <AccessoriesHero totalCount={total} />
 
       {/* Category Filter Pills & Sort Controls */}
-      <AccessoriesFilterBar
-        activeCategory={activeCategory}
-        activeSort={activeSort}
-        totalProducts={total}
-      />
+      <div id="accessories-collection" className={styles.collectionAnchor}>
+        <AccessoriesFilterBar
+          activeCategory={activeCategory}
+          activeSort={activeSort}
+          totalProducts={total}
+        />
+      </div>
 
       {/* Main Grid or Empty State */}
       {products.length > 0 ? (
@@ -144,11 +146,6 @@ export const AccessoriesContent: React.FC<AccessoriesContentProps> = ({
             <Link href="/shop" className={styles.secondaryBtn}>
               <span>EXPLORE APPAREL</span>
               <ArrowRight size={14} />
-            </Link>
-
-            <Link href="/admin/products" className={styles.adminHintBtn} title="Add genuine products via Admin">
-              <Plus size={14} />
-              <span>ADMIN: ADD NEW ACCESSORY</span>
             </Link>
           </div>
 

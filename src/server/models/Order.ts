@@ -68,7 +68,7 @@ const OrderSchema = new Schema<OrderDocument>(
     },
     paymentMethod: {
       type: String,
-      enum: ['ONLINE_GATEWAY', 'COD'],
+      enum: ['ONLINE_GATEWAY', 'COD', 'UPI', 'CREDIT_CARD', 'DEBIT_CARD', 'NET_BANKING'],
       required: true,
     },
     paymentStatus: {
