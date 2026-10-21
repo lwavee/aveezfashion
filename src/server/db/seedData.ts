@@ -524,6 +524,42 @@ export const initialProducts: Partial<Product>[] = [
     matchingColors: ['Onyx Black', 'Slate Gray', 'Vintage Bone'],
   },
   {
+    title: 'Handmade Teddy Bear Keychain',
+    slug: 'handmade-teddy-bear-keychain',
+    sku: 'AVZ-ACC-KC-006',
+    description:
+      'Handmade teddy bear keychain with soft plush texture and sturdy split keyring. Perfect for everyday carry, bags, and keys.',
+    gender: 'UNISEX',
+    basePrice: 99,
+    images: [
+      {
+        url: '/images/products/handmade-teddy-bear-keychain.jpg',
+        alt: 'Handmade Teddy Bear Keychain',
+        isPrimary: true,
+        sortOrder: 0,
+      },
+    ],
+    variants: [
+      { sku: 'AVZ-ACC-KC-006-BRN', size: 'ONESIZE', color: 'Brown', colorHex: '#8B5A2B', stock: 25 },
+    ],
+    attributes: {
+      fabric: 'Plush & Metal Hardware',
+      fit: 'Compact Keychain',
+      washCare: 'Wipe clean with a dry cloth.',
+      origin: 'Crafted in India',
+    },
+    status: 'PUBLISHED',
+    tags: ['accessories', 'keychains', 'keychain', 'charms', 'finishing-touch'],
+    averageRating: 5.0,
+    totalReviews: 8,
+    isFeatured: true,
+    isBestSeller: false,
+    isNewArrival: true,
+    isAveezOriginal: true,
+    accessoryType: 'keychain',
+    matchingColors: ['Raw Ecru', 'Warm Brown', 'Vintage Bone'],
+  },
+  {
     title: 'Tactile Everyday Bag Charm — Matte Black & Gunmetal',
     slug: 'tactile-everyday-bag-charm-matte-black',
     sku: 'AVZ-ACC-BC-005',
