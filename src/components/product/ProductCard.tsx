@@ -9,6 +9,7 @@ import { IconHeart } from '@/components/ui/Icons';
 import { ShoppingBag, Heart } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { resolveColorHex } from '@/lib/colors';
 import styles from './ProductCard.module.css';
 
 export interface ProductCardProps {
@@ -26,12 +27,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [activeColor, setActiveColor] = useState<string | null>(null);
 
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
 
-  const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
-  const secondaryImage = product.images.find((img) => !img.isPrimary) || primaryImage;
+  // Find color-specific images when activeColor is chosen
+  const colorMatchedImages = activeColor
+    ? (product.images || []).filter(
+        (img) => img.color && img.color.trim().toLowerCase() === activeColor.trim().toLowerCase()
+      )
+    : [];
+
+  const primaryImage =
+    (colorMatchedImages.length > 0
+      ? colorMatchedImages.find((img) => img.isPrimary) || colorMatchedImages[0]
+      : null) ||
+    product.images?.find((img) => img.isPrimary) ||
+    product.images?.[0];
+
+  const secondaryImage =
+    (colorMatchedImages.length > 1
+      ? colorMatchedImages.find((img) => img.url !== primaryImage?.url)
+      : null) ||
+    product.images?.find((img) => img.url !== primaryImage?.url && !img.isPrimary) ||
+    primaryImage;
 
   const hasSale = product.salePrice && product.salePrice < product.basePrice;
   const discountPercent = hasSale
@@ -276,18 +296,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             (() => {
               const uniqueVariants = product.variants.filter(
                 (v, i, self) =>
-                  Boolean(v.colorHex) &&
-                  i === self.findIndex((t) => t.colorHex.toLowerCase() === v.colorHex.toLowerCase())
+                  Boolean(v.color) &&
+                  i === self.findIndex((t) => t.color.trim().toLowerCase() === v.color.trim().toLowerCase())
               );
               if (uniqueVariants.length <= 1) return null;
               return (
                 <div className={styles.colorSwatchesRow} aria-label="Available colors">
                   {uniqueVariants.slice(0, 4).map((v) => (
-                    <span
+                    <button
                       key={v.sku || v.color}
-                      className={styles.colorDot}
-                      style={{ backgroundColor: v.colorHex }}
+                      type="button"
+                      className={`${styles.colorDot} ${activeColor === v.color ? styles.colorDotActive : ''}`}
+                      style={{ backgroundColor: resolveColorHex(v.color, v.colorHex) }}
                       title={v.color}
+                      aria-label={`Show ${v.color} variant`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setActiveColor(v.color);
+                      }}
+                      onMouseEnter={() => {
+                        setActiveColor(v.color);
+                      }}
                     />
                   ))}
                   {uniqueVariants.length > 4 && (

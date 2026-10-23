@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Heart, Star, ShieldCheck, Truck, RotateCcw, ChevronDown, Check, Ruler } from 'lucide-react';
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { resolveColorHex } from '@/lib/colors';
 import styles from './ProductDetailView.module.css';
 
 interface ProductDetailViewProps {
@@ -37,6 +38,28 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   const [pincode, setPincode] = useState('');
   const [pincodeStatus, setPincodeStatus] = useState<string | null>(null);
 
+  // Filter images according to the active selected color
+  const displayedImages = useMemo(() => {
+    if (!product.images || product.images.length === 0) return [];
+
+    const hasColorImages = product.images.some((img) => Boolean(img.color && img.color.trim()));
+    if (!hasColorImages || !selectedColor) {
+      return product.images;
+    }
+
+    const matching = product.images.filter(
+      (img) => img.color && img.color.trim().toLowerCase() === selectedColor.trim().toLowerCase()
+    );
+
+    if (matching.length > 0) {
+      // Color-specific images first, followed by any general images with no color set
+      const common = product.images.filter((img) => !img.color || !img.color.trim());
+      return [...matching, ...common];
+    }
+
+    return product.images;
+  }, [product.images, selectedColor]);
+
   // Swipe handling
   const touchStartX = useRef<number | null>(null);
 
@@ -47,11 +70,11 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
     const diffX = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diffX) > 40 && product.images.length > 1) {
+    if (Math.abs(diffX) > 40 && displayedImages.length > 1) {
       if (diffX > 0) {
-        setSelectedImageIndex((prev) => (prev + 1) % product.images.length);
+        setSelectedImageIndex((prev) => (prev + 1) % displayedImages.length);
       } else {
-        setSelectedImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
+        setSelectedImageIndex((prev) => (prev - 1 + displayedImages.length) % displayedImages.length);
       }
     }
     touchStartX.current = null;
@@ -113,6 +136,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
 
   const handleColorChange = (newColor: string) => {
     setSelectedColor(newColor);
+    setSelectedImageIndex(0); // Reset gallery view to first photo of chosen color
     const inStockForColor = product.variants.find(
       (v) => v.color.toLowerCase() === newColor.toLowerCase() && v.stock > 0
     );
@@ -138,7 +162,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
     ? Math.round(((product.basePrice - product.salePrice!) / product.basePrice) * 100)
     : 0;
 
-  const currentImage = product.images[selectedImageIndex] || product.images[0];
+  const currentImage = displayedImages[selectedImageIndex] || displayedImages[0] || product.images[0];
 
   const handleAddToCart = () => {
     if (isOutOfStock) return;
@@ -170,9 +194,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         <div className={styles.galleryColumn}>
           {/* Thumbnails list */}
           <div className={styles.thumbnails}>
-            {product.images.map((img, idx) => (
+            {displayedImages.map((img, idx) => (
               <button
-                key={idx}
+                key={img.url + idx}
                 type="button"
                 className={`${styles.thumbBtn} ${selectedImageIndex === idx ? styles.activeThumb : ''}`}
                 onClick={() => setSelectedImageIndex(idx)}
@@ -209,9 +233,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               </div>
             ) : null}
 
-            {product.images.length > 1 && (
+            {displayedImages.length > 1 && (
               <div className={styles.mobileDotsTrack} aria-hidden="true">
-                {product.images.map((_, dotIdx) => (
+                {displayedImages.map((_, dotIdx) => (
                   <span
                     key={dotIdx}
                     className={`${styles.mobileDot} ${
@@ -288,7 +312,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     >
                       <span
                         className={styles.colorSwatchDot}
-                        style={{ backgroundColor: colorObj.colorHex }}
+                        style={{ backgroundColor: resolveColorHex(colorObj.color, colorObj.colorHex) }}
                       />
                       <span>{colorObj.color}</span>
                     </button>
@@ -299,7 +323,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               <div className={styles.colorPill}>
                 <span
                   className={styles.colorSwatch}
-                  style={{ backgroundColor: activeVariant.colorHex }}
+                  style={{ backgroundColor: resolveColorHex(activeVariant.color, activeVariant.colorHex) }}
                 />
                 <span>{activeVariant.color}</span>
               </div>

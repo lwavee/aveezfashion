@@ -4,6 +4,7 @@ import { connectToDatabase } from '@/server/db/connect';
 import { Product } from '@/server/models/Product';
 import { Category } from '@/server/models/Category';
 import { getSessionFromRequest } from '@/server/auth';
+import { resolveColorHex } from '@/lib/colors';
 
 export async function GET(req: NextRequest) {
   try {
@@ -371,6 +372,7 @@ export async function POST(req: NextRequest) {
       return {
         url: img.url || '/images/placeholder.jpg',
         alt: img.alt || `${title.trim()} - View ${idx + 1}`,
+        color: img.color ? String(img.color).trim() : undefined,
         isPrimary: img.isPrimary ?? idx === 0,
         sortOrder: img.sortOrder ?? idx,
       };
@@ -401,7 +403,7 @@ export async function POST(req: NextRequest) {
           sku: vSku,
           size: vSize,
           color: vColor,
-          colorHex: v.colorHex || '#0A0A0A',
+          colorHex: resolveColorHex(vColor, v.colorHex),
           stock: vStock,
           reservedStock: 0,
           barcode: v.barcode || undefined,

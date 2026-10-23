@@ -14,6 +14,7 @@ import {
   X,
   Check,
   ExternalLink,
+  Palette,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -474,24 +475,45 @@ export default function AdminProductsPage() {
                       </Badge>
                     </td>
                     <td>
-                      <button
-                        onClick={() => handleOpenEditModal(p)}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          padding: '5px 10px',
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          backgroundColor: '#F3F4F6',
-                          border: '1px solid #D1D5DB',
-                          borderRadius: '2px',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        <Edit2 size={11} />
-                        <span>EDIT</span>
-                      </button>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <Link
+                          href={`/admin/products/new?edit=${p.id}`}
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '5px 9px',
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            backgroundColor: '#0A0A0A',
+                            color: '#FFFFFF',
+                            borderRadius: '2px',
+                            textDecoration: 'none',
+                          }}
+                          title="Manage images by colour and edit variants"
+                        >
+                          <Palette size={11} />
+                          <span>COLOURS & PHOTOS</span>
+                        </Link>
+                        <button
+                          onClick={() => handleOpenEditModal(p)}
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '5px 9px',
+                            fontSize: '11px',
+                            fontWeight: 600,
+                            backgroundColor: '#F3F4F6',
+                            border: '1px solid #D1D5DB',
+                            borderRadius: '2px',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <Edit2 size={11} />
+                          <span>QUICK EDIT</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

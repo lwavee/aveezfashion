@@ -483,6 +483,141 @@
   border-color: #FCA5A5;
 }
 
+/* Color Filter & Assignment in Image Uploader */
+.colorFilterBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 4px 0 10px 0;
+  border-bottom: 1px solid #F4F4F5;
+  margin-bottom: 4px;
+}
+
+.colorFilterTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #52525B;
+  background-color: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.colorFilterTab:hover {
+  background-color: #E4E4E7;
+  color: #0A0A0A;
+}
+
+.colorFilterTabActive {
+  background-color: #0A0A0A;
+  color: #FFFFFF;
+  border-color: #0A0A0A;
+}
+
+.colorFilterTabActive:hover {
+  background-color: #27272A;
+  color: #FFFFFF;
+}
+
+.colorTabCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  border-radius: 10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.colorFilterTabActive .colorTabCount {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.colorQuickAddBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0A0A0A;
+  background-color: #FFFFFF;
+  border: 1px dashed #A1A1AA;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.colorQuickAddBtn:hover {
+  border-color: #0A0A0A;
+  background-color: #F4F4F5;
+}
+
+.colorTargetNotice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: #F4F4F5;
+  border-left: 3px solid #0A0A0A;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #18181B;
+}
+
+.imageColorTag {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  color: #FFFFFF;
+  font-size: 0.625rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.imageColorSelectWrap {
+  padding: 4px 6px;
+  background-color: #FAFAFA;
+  border-top: 1px solid #F4F4F5;
+}
+
+.imageColorSelect {
+  width: 100%;
+  padding: 3px 6px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #27272A;
+  background-color: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.imageColorSelect:focus {
+  outline: none;
+  border-color: #0A0A0A;
+}
+
 /* Color Suggestion Bar */
 .colorSuggestionBar {
   display: flex;

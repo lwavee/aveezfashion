@@ -15,6 +15,7 @@ export interface ProductVariant {
 export interface ProductImage {
   url: string;
   alt: string;
+  color?: string;
   isPrimary?: boolean;
   sortOrder?: number;
 }

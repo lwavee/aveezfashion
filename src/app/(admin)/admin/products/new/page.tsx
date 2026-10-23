@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { resolveColorHex } from '@/lib/colors';
 import {
   Shirt,
   Sparkles,
@@ -64,6 +65,7 @@ interface MatrixVariantItem {
 interface UploadedImage {
   url: string;
   alt: string;
+  color?: string;
   isPrimary: boolean;
   sortOrder: number;
   fileName: string;
@@ -73,19 +75,28 @@ const APPAREL_SIZE_PRESETS = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 const WAIST_SIZE_PRESETS = ['28', '30', '32', '34', '36', '38'];
 
 const STANDARD_PALETTE = [
+  { name: 'White', hex: '#FFFFFF' },
+  { name: 'Olive', hex: '#708238' },
+  { name: 'Beige', hex: '#E8DCC4' },
   { name: 'Onyx Black', hex: '#0A0A0A' },
   { name: 'Chalk White', hex: '#F9FAFB' },
   { name: 'Slate Gray', hex: '#64748B' },
   { name: 'Vintage Bone', hex: '#E7E5E4' },
   { name: 'Navy Blue', hex: '#1E293B' },
+  { name: 'Sage Green', hex: '#9CA986' },
   { name: 'Raw Ecru', hex: '#F5F5DC' },
   { name: 'Charcoal', hex: '#334155' },
   { name: 'Forest Green', hex: '#14532D' },
   { name: 'Dusty Rose', hex: '#FDA4AF' },
+  { name: 'Maroon', hex: '#800000' },
+  { name: 'Camel Tan', hex: '#C19A6B' },
 ];
 
-export default function NewProductPage() {
+function NewProductStudio() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams?.get('edit') || searchParams?.get('id');
+  const [isLoadingEdit, setIsLoadingEdit] = useState(false);
 
   // Navigation & Selection State
   const [productType, setProductType] = useState<'clothing' | 'accessories' | null>(null);
@@ -116,6 +127,10 @@ export default function NewProductPage() {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [suggestedColors, setSuggestedColors] = useState<ColorVariant[]>([]);
+  const [activeUploadColor, setActiveUploadColor] = useState<string>('ALL');
+  const [isQuickAddingColor, setIsQuickAddingColor] = useState(false);
+  const [quickColorName, setQuickColorName] = useState('');
+  const [quickColorHex, setQuickColorHex] = useState('#0A0A0A');
 
   // Pricing
   const [basePrice, setBasePrice] = useState('');
@@ -190,6 +205,106 @@ export default function NewProductPage() {
     }
     loadTaxonomy();
   }, []);
+
+  // 1b. Load existing product if edit mode is active
+  useEffect(() => {
+    if (!editId) return;
+
+    async function loadProductToEdit() {
+      setIsLoadingEdit(true);
+      try {
+        const res = await fetch(`/api/admin/products/${editId}`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const p = json?.data?.product;
+        if (!p) return;
+
+        setTitle(p.title || '');
+        setSlug(p.slug || '');
+        setIsSlugManuallyEdited(true);
+        setMasterSku(p.sku || '');
+        setDescription(p.description || '');
+        const dept = p.department || (p.productType === 'accessories' ? 'ACCESSORIES' : 'UNISEX');
+        setDepartment(dept);
+        setGender(p.gender || 'UNISEX');
+        setCategory(typeof p.category === 'object' ? p.category?.slug || p.category?._id : p.category);
+        if (p.collectionId) {
+          setCollectionId(typeof p.collectionId === 'object' ? p.collectionId?._id : p.collectionId);
+        }
+        setBasePrice(p.basePrice ? String(p.basePrice) : '');
+        setSalePrice(p.salePrice ? String(p.salePrice) : '');
+        setCostPrice(p.costPrice ? String(p.costPrice) : '');
+        setProductType(p.productType || 'clothing');
+        setLowStockThreshold(p.lowStockThreshold ? String(p.lowStockThreshold) : '5');
+        setIsFeatured(Boolean(p.isFeatured));
+        setIsNewArrival(Boolean(p.isNewArrival));
+        setIsAveezOriginal(Boolean(p.isAveezOriginal));
+        setTags(p.tags || []);
+        if (p.attributes) {
+          setFabric(p.attributes.fabric || '');
+          setFit(p.attributes.fit || '');
+          setWashCare(p.attributes.washCare || '');
+        }
+
+        // Load images
+        if (Array.isArray(p.images) && p.images.length > 0) {
+          setImages(
+            p.images.map((img: any, idx: number) => ({
+              url: typeof img === 'string' ? img : img.url,
+              alt: typeof img === 'string' ? `${p.title} view ${idx + 1}` : (img.alt || `${p.title} view ${idx + 1}`),
+              color: typeof img === 'object' ? img.color : undefined,
+              isPrimary: typeof img === 'object' ? Boolean(img.isPrimary) : idx === 0,
+              sortOrder: typeof img === 'object' && typeof img.sortOrder === 'number' ? img.sortOrder : idx,
+              fileName: (typeof img === 'string' ? img : img.url).split('/').pop() || 'image.jpg',
+            }))
+          );
+        }
+
+        // Load colors from variants & images
+        const colorMap = new Map<string, string>();
+        if (Array.isArray(p.variants)) {
+          for (const v of p.variants) {
+            if (v.color && v.color !== 'Default') {
+              colorMap.set(v.color.trim().toLowerCase(), v.colorHex || '#0A0A0A');
+            }
+          }
+        }
+        if (Array.isArray(p.images)) {
+          for (const img of p.images) {
+            if (typeof img === 'object' && img.color && !colorMap.has(img.color.trim().toLowerCase())) {
+              colorMap.set(img.color.trim().toLowerCase(), '#0A0A0A');
+            }
+          }
+        }
+        if (colorMap.size > 0) {
+          const loadedCols: ColorVariant[] = Array.from(colorMap.entries()).map(([nameLower, hex]) => {
+            const std = STANDARD_PALETTE.find((sp) => sp.name.toLowerCase() === nameLower);
+            return {
+              name: std ? std.name : nameLower.charAt(0).toUpperCase() + nameLower.slice(1),
+              hex: std ? std.hex : hex,
+            };
+          });
+          setColors(loadedCols);
+        }
+
+        // Load sizes
+        if (Array.isArray(p.variants) && p.variants.length > 0) {
+          const uniqueSizes = Array.from(
+            new Set(p.variants.map((v: any) => v.size).filter((s: any) => s && s !== 'ONESIZE'))
+          ) as string[];
+          if (uniqueSizes.length > 0) {
+            setSelectedSizes(uniqueSizes);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load existing product for edit:', err);
+      } finally {
+        setIsLoadingEdit(false);
+      }
+    }
+
+    loadProductToEdit();
+  }, [editId]);
 
   // Filtered categories for currently active department
   const availableCategories = useMemo(() => {
@@ -324,10 +439,11 @@ export default function NewProductPage() {
           const key = `${col.name}__${sz}`;
           const existing = prevMap.get(key);
 
+          const resolvedColHex = resolveColorHex(col.name, col.hex);
           if (existing) {
             nextMatrix.push({
               ...existing,
-              colorHex: col.hex,
+              colorHex: resolvedColHex,
             });
           } else {
             const colAbbr = col.name.replace(/[^a-zA-Z]/g, '').substring(0, 3).toUpperCase() || 'DEF';
@@ -336,7 +452,7 @@ export default function NewProductPage() {
               sku: `${baseSku}-${colAbbr}-${sz}`,
               size: sz,
               color: col.name,
-              colorHex: col.hex,
+              colorHex: resolvedColHex,
               stock: 10,
               enabled: true,
             });
@@ -416,9 +532,11 @@ export default function NewProductPage() {
           throw new Error(data.error || `Upload failed for ${file.name}`);
         }
 
+        const targetColor = activeUploadColor !== 'ALL' ? activeUploadColor : undefined;
         newUploaded.push({
           url: data.data.url,
-          alt: `${title || 'Product'} view ${images.length + newUploaded.length + 1}`,
+          alt: `${title || 'Product'} ${targetColor ? `(${targetColor})` : ''} view ${images.length + newUploaded.length + 1}`.trim(),
+          color: targetColor,
           isPrimary: images.length === 0 && newUploaded.length === 0,
           sortOrder: images.length + newUploaded.length,
           fileName: data.data.fileName,
@@ -502,35 +620,65 @@ export default function NewProductPage() {
     return closest;
   };
 
-  const handleMakePrimary = (index: number) => {
+  const handleMakePrimary = (target: number | string) => {
     setImages((prev) =>
       prev.map((img, idx) => ({
         ...img,
-        isPrimary: idx === index,
+        isPrimary: typeof target === 'number' ? idx === target : img.url === target,
       }))
     );
   };
 
-  const handleMoveImage = (index: number, direction: 'left' | 'right') => {
+  const handleMoveImage = (target: number | string, direction: 'left' | 'right') => {
     setImages((prev) => {
+      const index = typeof target === 'number' ? target : prev.findIndex((img) => img.url === target);
+      if (index === -1) return prev;
+      const targetIdx = direction === 'left' ? index - 1 : index + 1;
+      if (targetIdx < 0 || targetIdx >= prev.length) return prev;
       const next = [...prev];
-      const target = direction === 'left' ? index - 1 : index + 1;
-      if (target < 0 || target >= next.length) return prev;
       const temp = next[index];
-      next[index] = next[target];
-      next[target] = temp;
+      next[index] = next[targetIdx];
+      next[targetIdx] = temp;
       return next.map((img, i) => ({ ...img, sortOrder: i }));
     });
   };
 
-  const handleRemoveImage = (index: number) => {
+  const handleRemoveImage = (target: number | string) => {
     setImages((prev) => {
-      const filtered = prev.filter((_, i) => i !== index);
+      const filtered = typeof target === 'number'
+        ? prev.filter((_, i) => i !== target)
+        : prev.filter((img) => img.url !== target);
       if (filtered.length > 0 && !filtered.some((img) => img.isPrimary)) {
         filtered[0].isPrimary = true;
       }
       return filtered.map((img, i) => ({ ...img, sortOrder: i }));
     });
+  };
+
+  const handleImageColorChange = (targetUrl: string, newColor: string) => {
+    setImages((prev) =>
+      prev.map((img) => {
+        if (img.url === targetUrl) {
+          return {
+            ...img,
+            color: newColor.trim() ? newColor.trim() : undefined,
+          };
+        }
+        return img;
+      })
+    );
+  };
+
+  const handleQuickAddColor = () => {
+    const trimmed = quickColorName.trim();
+    if (!trimmed) return;
+    const resolvedHex = resolveColorHex(trimmed, quickColorHex);
+    if (!colors.some((c) => c.name.toLowerCase() === trimmed.toLowerCase())) {
+      setColors((prev) => [...prev, { name: trimmed, hex: resolvedHex }]);
+    }
+    setActiveUploadColor(trimmed);
+    setIsQuickAddingColor(false);
+    setQuickColorName('');
   };
 
   // 8. Size Selector Controls
@@ -559,8 +707,10 @@ export default function NewProductPage() {
       alert(`Colour "${trimmed}" is already added.`);
       return;
     }
-    setColors((prev) => [...prev, { name: trimmed, hex }]);
+    const resolvedHex = resolveColorHex(trimmed, hex);
+    setColors((prev) => [...prev, { name: trimmed, hex: resolvedHex }]);
     setNewColorName('');
+    setNewColorHex('#0A0A0A');
     setSuggestedColors((prev) => prev.filter((s) => s.name.toLowerCase() !== trimmed.toLowerCase()));
   };
 
@@ -671,7 +821,7 @@ export default function NewProductPage() {
           sku: v.sku.trim().toUpperCase(),
           size: v.size,
           color: v.color,
-          colorHex: v.colorHex,
+          colorHex: resolveColorHex(v.color, v.colorHex),
           stock: Math.max(0, v.stock || 0),
         }));
       } else {
@@ -691,7 +841,7 @@ export default function NewProductPage() {
             sku: `${(masterSku || `AVZ-ACC-${Date.now().toString(36)}`).toUpperCase()}-${col.name.substring(0, 3).toUpperCase()}`,
             size: 'ONESIZE',
             color: col.name,
-            colorHex: col.hex,
+            colorHex: resolveColorHex(col.name, col.hex),
             stock: Math.max(0, parseInt(singleStock, 10) || 10),
           }));
         }
@@ -715,6 +865,7 @@ export default function NewProductPage() {
         images: images.map((img) => ({
           url: img.url,
           alt: img.alt || `${title} - View`,
+          color: img.color ? img.color.trim() : undefined,
           isPrimary: img.isPrimary,
           sortOrder: img.sortOrder,
         })),
@@ -735,8 +886,11 @@ export default function NewProductPage() {
         metaDescription: metaDescription.trim() || undefined,
       };
 
-      const res = await fetch('/api/admin/products', {
-        method: 'POST',
+      const endpoint = editId ? `/api/admin/products/${editId}` : '/api/admin/products';
+      const method = editId ? 'PATCH' : 'POST';
+
+      const res = await fetch(endpoint, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -747,7 +901,9 @@ export default function NewProductPage() {
       }
 
       setFormSuccess(
-        targetStatus === 'PUBLISHED'
+        editId
+          ? `Product "${title}" updated successfully with colourway images!`
+          : targetStatus === 'PUBLISHED'
           ? `Product "${title}" has been published live to the catalog!`
           : `Product "${title}" has been saved as a draft.`
       );
@@ -1241,6 +1397,102 @@ export default function NewProductPage() {
           </div>
 
           <div className={styles.sectionBody}>
+            {/* Colour Selector & Target Tabs */}
+            <div className={styles.colorFilterBar}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0A0A0A', marginRight: '4px' }}>
+                Upload & View By Colour:
+              </span>
+              <button
+                type="button"
+                className={`${styles.colorFilterTab} ${activeUploadColor === 'ALL' ? styles.colorFilterTabActive : ''}`}
+                onClick={() => setActiveUploadColor('ALL')}
+              >
+                <span>All Images</span>
+                <span className={styles.colorTabCount}>{images.length}</span>
+              </button>
+              {colors.map((c) => {
+                const countForColor = images.filter(
+                  (img) => img.color && img.color.toLowerCase() === c.name.toLowerCase()
+                ).length;
+                const isActive = activeUploadColor.toLowerCase() === c.name.toLowerCase();
+                return (
+                  <button
+                    key={c.name}
+                    type="button"
+                    className={`${styles.colorFilterTab} ${isActive ? styles.colorFilterTabActive : ''}`}
+                    onClick={() => setActiveUploadColor(c.name)}
+                    title={`Filter or upload images for ${c.name}`}
+                  >
+                    <span className={styles.swatchDot} style={{ backgroundColor: resolveColorHex(c.name, c.hex) }} />
+                    <span>{c.name}</span>
+                    <span className={styles.colorTabCount}>{countForColor}</span>
+                  </button>
+                );
+              })}
+
+              {!isQuickAddingColor ? (
+                <button
+                  type="button"
+                  className={styles.colorQuickAddBtn}
+                  onClick={() => setIsQuickAddingColor(true)}
+                  title="Add a new colourway"
+                >
+                  <Plus size={12} />
+                  <span>Add Colour</span>
+                </button>
+              ) : (
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <input
+                    type="text"
+                    placeholder="e.g. White, Olive, Beige"
+                    value={quickColorName}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setQuickColorName(val);
+                      if (val.trim()) {
+                        const autoHex = resolveColorHex(val);
+                        if (autoHex && autoHex !== '#A1A1AA') {
+                          setQuickColorHex(autoHex);
+                        }
+                      }
+                    }}
+                    style={{ padding: '4px 8px', fontSize: '0.75rem', border: '1px solid #D1D5DB', borderRadius: '4px', width: '120px' }}
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleQuickAddColor();
+                      }
+                    }}
+                  />
+                  <input
+                    type="color"
+                    value={quickColorHex}
+                    onChange={(e) => setQuickColorHex(e.target.value)}
+                    style={{ width: '24px', height: '24px', border: 'none', cursor: 'pointer', padding: 0, background: 'none' }}
+                    title="Pick hex shade"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleQuickAddColor}
+                    style={{ padding: '4px 8px', fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#0A0A0A', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                  >
+                    Add
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsQuickAddingColor(false);
+                      setQuickColorName('');
+                    }}
+                    style={{ padding: '4px', border: 'none', background: 'none', cursor: 'pointer', color: '#6B7280' }}
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* Hidden File Input */}
             <input
               ref={fileInputRef}
@@ -1251,7 +1503,7 @@ export default function NewProductPage() {
               onChange={(e) => handleFileUpload(e.target.files)}
             />
 
-            {/* Dropzone */}
+            {/* Dropzone with Color Target Banner */}
             <div
               className={styles.dropzone}
               onClick={() => fileInputRef.current?.click()}
@@ -1269,11 +1521,27 @@ export default function NewProductPage() {
                 handleFileUpload(e.dataTransfer.files);
               }}
             >
+              {activeUploadColor !== 'ALL' && (
+                <div className={styles.colorTargetNotice}>
+                  <Palette size={14} />
+                  <span>
+                    Currently uploading photos specifically for colour:{' '}
+                    <strong>{activeUploadColor}</strong>
+                  </span>
+                </div>
+              )}
+
               <Upload size={28} className={styles.dropzoneIcon} />
               <div>
-                <span className={styles.dropzoneText}>Click to select images or drag and drop</span>
+                <span className={styles.dropzoneText}>
+                  {activeUploadColor !== 'ALL'
+                    ? `Click to select photos or drag & drop for ${activeUploadColor}`
+                    : 'Click to select images or drag and drop'}
+                </span>
                 <p className={styles.dropzoneSubtext}>
-                  JPG, PNG, WEBP, or AVIF up to 10MB each. Primary image appears first on the storefront.
+                  {activeUploadColor !== 'ALL'
+                    ? `All uploaded photos will automatically be assigned to the "${activeUploadColor}" colourway.`
+                    : 'JPG, PNG, WEBP, or AVIF up to 10MB each. Primary image appears first on the storefront.'}
                 </p>
               </div>
               {isUploadingImage && (
@@ -1292,64 +1560,116 @@ export default function NewProductPage() {
             )}
 
             {/* Image Preview Grid */}
-            {images.length > 0 && (
-              <div className={styles.imageGrid}>
-                {images.map((img, idx) => (
-                  <div key={img.url + idx} className={`${styles.imageCard} ${img.isPrimary ? styles.imageCardPrimary : ''}`}>
-                    {img.isPrimary && <span className={styles.primaryBadge}>PRIMARY</span>}
+            {(() => {
+              const visibleImages = activeUploadColor === 'ALL'
+                ? images
+                : images.filter((img) => img.color && img.color.toLowerCase() === activeUploadColor.toLowerCase());
 
-                    <div className={styles.imagePreviewWrapper}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={img.url} alt={img.alt} className={styles.imagePreviewImg} />
+              if (visibleImages.length === 0) {
+                if (activeUploadColor !== 'ALL') {
+                  return (
+                    <div style={{ padding: '24px', textAlign: 'center', backgroundColor: '#F9FAFB', border: '1px dashed #D1D5DB', borderRadius: '6px', color: '#6B7280', fontSize: '0.8125rem' }}>
+                      No photos uploaded for <strong>{activeUploadColor}</strong> yet. Drop files above or select a photo from another colour to reassign.
                     </div>
+                  );
+                }
+                return null;
+              }
 
-                    <div className={styles.imageToolbar}>
-                      <div style={{ display: 'flex', gap: '4px' }}>
-                        <button
-                          type="button"
-                          disabled={idx === 0}
-                          className={styles.imageToolbarBtn}
-                          title="Move Left"
-                          onClick={() => handleMoveImage(idx, 'left')}
-                        >
-                          <MoveLeft size={12} />
-                        </button>
-                        <button
-                          type="button"
-                          disabled={idx === images.length - 1}
-                          className={styles.imageToolbarBtn}
-                          title="Move Right"
-                          onClick={() => handleMoveImage(idx, 'right')}
-                        >
-                          <MoveRight size={12} />
-                        </button>
-                      </div>
+              return (
+                <div className={styles.imageGrid}>
+                  {visibleImages.map((img) => {
+                    const globalIdx = images.findIndex((i) => i.url === img.url);
+                    const colorObj = colors.find((c) => c.name.toLowerCase() === (img.color || '').toLowerCase());
 
-                      <div style={{ display: 'flex', gap: '4px' }}>
-                        {!img.isPrimary && (
-                          <button
-                            type="button"
-                            className={styles.imageToolbarBtn}
-                            title="Mark as Primary"
-                            onClick={() => handleMakePrimary(idx)}
+                    return (
+                      <div key={img.url} className={`${styles.imageCard} ${img.isPrimary ? styles.imageCardPrimary : ''}`}>
+                        {img.isPrimary && <span className={styles.primaryBadge}>PRIMARY</span>}
+
+                        {/* Colour Badge Tag */}
+                        <span className={styles.imageColorTag} title={img.color ? `Colour: ${img.color}` : 'All Colours / Common'}>
+                          <span
+                            className={styles.swatchDot}
+                            style={{
+                              backgroundColor: resolveColorHex(img.color || 'Default', colorObj?.hex),
+                              width: '8px',
+                              height: '8px',
+                            }}
+                          />
+                          <span>{img.color || 'All Colours'}</span>
+                        </span>
+
+                        <div className={styles.imagePreviewWrapper}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={img.url} alt={img.alt} className={styles.imagePreviewImg} />
+                        </div>
+
+                        {/* Colour Selector Dropdown */}
+                        <div className={styles.imageColorSelectWrap}>
+                          <select
+                            className={styles.imageColorSelect}
+                            value={img.color || ''}
+                            onChange={(e) => handleImageColorChange(img.url, e.target.value)}
+                            title="Assign this photo to a specific colourway"
                           >
-                            <Star size={12} />
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          className={`${styles.imageToolbarBtn} ${styles.imageToolbarBtnDanger}`}
-                          title="Remove image"
-                          onClick={() => handleRemoveImage(idx)}
-                        >
-                          <Trash2 size={12} />
-                        </button>
+                            <option value="">All Colours / General</option>
+                            {colors.map((c) => (
+                              <option key={c.name} value={c.name}>
+                                {c.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className={styles.imageToolbar}>
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            <button
+                              type="button"
+                              disabled={globalIdx <= 0}
+                              className={styles.imageToolbarBtn}
+                              title="Move Left"
+                              onClick={() => handleMoveImage(img.url, 'left')}
+                            >
+                              <MoveLeft size={12} />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={globalIdx === -1 || globalIdx >= images.length - 1}
+                              className={styles.imageToolbarBtn}
+                              title="Move Right"
+                              onClick={() => handleMoveImage(img.url, 'right')}
+                            >
+                              <MoveRight size={12} />
+                            </button>
+                          </div>
+
+                          <div style={{ display: 'flex', gap: '4px' }}>
+                            {!img.isPrimary && (
+                              <button
+                                type="button"
+                                className={styles.imageToolbarBtn}
+                                title="Mark as Primary"
+                                onClick={() => handleMakePrimary(img.url)}
+                              >
+                                <Star size={12} />
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              className={`${styles.imageToolbarBtn} ${styles.imageToolbarBtnDanger}`}
+                              title="Remove image"
+                              onClick={() => handleRemoveImage(img.url)}
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                    );
+                  })}
+                </div>
+              );
+            })()}
 
             {/* Smart Colour Detection Suggestions */}
             {suggestedColors.length > 0 && (
@@ -1703,10 +2023,10 @@ export default function NewProductPage() {
               <div className={styles.colorChipList}>
                 {colors.map((c) => (
                   <div key={c.name} className={styles.colorChip}>
-                    <span className={styles.swatchDot} style={{ backgroundColor: c.hex }} />
+                    <span className={styles.swatchDot} style={{ backgroundColor: resolveColorHex(c.name, c.hex) }} />
                     <span>{c.name}</span>
                     <span style={{ fontSize: '0.625rem', color: '#71717A', fontFamily: 'monospace' }}>
-                      {c.hex.toUpperCase()}
+                      {resolveColorHex(c.name, c.hex).toUpperCase()}
                     </span>
                     <span
                       className={styles.colorChipDelete}
@@ -1736,9 +2056,18 @@ export default function NewProductPage() {
                   type="text"
                   className={styles.input}
                   style={{ maxWidth: '240px' }}
-                  placeholder="Colour name (e.g. Sage Green)..."
+                  placeholder="Colour name (e.g. White, Olive, Beige)..."
                   value={newColorName}
-                  onChange={(e) => setNewColorName(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setNewColorName(val);
+                    if (val.trim()) {
+                      const autoHex = resolveColorHex(val);
+                      if (autoHex && autoHex !== '#A1A1AA') {
+                        setNewColorHex(autoHex);
+                      }
+                    }
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -2270,5 +2599,19 @@ export default function NewProductPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function NewProductPage() {
+  return (
+    <React.Suspense
+      fallback={
+        <div style={{ padding: '60px', textAlign: 'center', color: '#71717A', fontSize: '0.875rem' }}>
+          Loading Catalog Studio...
+        </div>
+      }
+    >
+      <NewProductStudio />
+    </React.Suspense>
   );
 }

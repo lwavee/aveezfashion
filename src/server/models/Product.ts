@@ -26,6 +26,7 @@ const ImageSchema = new Schema(
   {
     url: { type: String, required: true },
     alt: { type: String, required: true },
+    color: { type: String, trim: true },
     isPrimary: { type: Boolean, default: false },
     sortOrder: { type: Number, default: 0 },
   },

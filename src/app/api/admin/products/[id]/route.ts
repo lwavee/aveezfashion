@@ -4,6 +4,7 @@ import { connectToDatabase } from '@/server/db/connect';
 import { Product } from '@/server/models/Product';
 import { Category } from '@/server/models/Category';
 import { getSessionFromRequest } from '@/server/auth';
+import { resolveColorHex } from '@/lib/colors';
 
 export async function GET(
   req: NextRequest,
@@ -290,7 +291,13 @@ export async function PATCH(
     if (body.accessoryType !== undefined) product.accessoryType = body.accessoryType || undefined;
 
     if (Array.isArray(body.images)) {
-      product.images = body.images;
+      product.images = body.images.map((img: any, idx: number) => ({
+        url: typeof img === 'string' ? img : (img.url || '/images/placeholder.jpg'),
+        alt: typeof img === 'string' ? `${product.title} - View ${idx + 1}` : (img.alt || `${product.title} - View ${idx + 1}`),
+        color: typeof img === 'object' && img.color ? String(img.color).trim() : undefined,
+        isPrimary: typeof img === 'object' ? Boolean(img.isPrimary) : idx === 0,
+        sortOrder: typeof img === 'object' && typeof img.sortOrder === 'number' ? img.sortOrder : idx,
+      }));
     }
 
     if (Array.isArray(body.variants) && body.variants.length > 0) {
@@ -298,7 +305,7 @@ export async function PATCH(
         sku: v.sku || `${product.sku}-${v.size || idx}`,
         size: v.size || 'ONESIZE',
         color: v.color || 'Default',
-        colorHex: v.colorHex || '#0A0A0A',
+        colorHex: resolveColorHex(v.color || 'Default', v.colorHex),
         stock: Math.max(0, Number(v.stock) || 0),
         barcode: v.barcode,
       }));
