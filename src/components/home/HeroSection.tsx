@@ -9,17 +9,23 @@ import styles from './HeroSection.module.css';
 export interface HeroSlide {
   id: number;
   label: string;
-  tagline: string;
-  headingLine1: string;
-  headingLine2: string;
-  description: string;
+  tagline?: string;
+  headingLine1?: string;
+  headingLine2?: string;
+  description?: string;
   image: string;
+  mobileImage?: string;
   alt: string;
-  menLink: string;
-  womenLink: string;
+  menLink?: string;
+  womenLink?: string;
   menText?: string;
   womenText?: string;
+  isFestive?: boolean;
+  hideOverlay?: boolean;
+  link?: string;
 }
+
+import { SeasonalThemeConfig } from '@/types';
 
 const DEFAULT_SLIDES: HeroSlide[] = [
   {
@@ -68,18 +74,120 @@ const DEFAULT_SLIDES: HeroSlide[] = [
 
 interface HeroProps {
   slides?: HeroSlide[];
+  seasonalTheme?: SeasonalThemeConfig;
   autoPlayInterval?: number;
 }
 
 export const HeroSection: React.FC<HeroProps> = ({
-  slides = DEFAULT_SLIDES,
+  slides,
+  seasonalTheme,
   autoPlayInterval = 6000,
 }) => {
+  const isDiwali = seasonalTheme?.enabled && seasonalTheme?.theme === 'diwali';
+
+  const resolvedSlides: HeroSlide[] = React.useMemo(() => {
+    if (slides && slides.length > 0) return slides;
+
+    if (isDiwali) {
+      const heroOverlayMode = seasonalTheme?.heroOverlayMode || 'without_text';
+      const shouldHideOverlay = heroOverlayMode === 'without_text';
+
+      const defaultBanners = [
+        {
+          id: 901,
+          label: '01',
+          image: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
+          mobileImage: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
+          alt: 'AVEEZ FASHION — The Diwali Edit Fashion Banner',
+          link: seasonalTheme?.heroPrimaryCtaLink || '/shop',
+          hideOverlay: shouldHideOverlay,
+          isFestive: true,
+          tagline: '✨ DIWALI FESTIVE EDIT',
+          headingLine1: seasonalTheme?.heroHeadline || 'THE DIWALI',
+          headingLine2: 'EDIT',
+          description: seasonalTheme?.heroSubheadline || 'Celebrate the season in timeless style. Architectural silhouettes meet festive warmth.',
+          menLink: seasonalTheme?.heroPrimaryCtaLink || '/shop?gender=MEN',
+          menText: seasonalTheme?.heroPrimaryCtaText || 'SHOP FESTIVE MEN →',
+          womenLink: seasonalTheme?.heroSecondaryCtaLink || '/shop?gender=WOMEN',
+          womenText: seasonalTheme?.heroSecondaryCtaText || 'SHOP FESTIVE WOMEN →',
+        },
+        {
+          id: 902,
+          label: '02',
+          image: '/uploads/campaigns/diwali/diwali-winter-collection.webp',
+          mobileImage: '/uploads/campaigns/diwali/diwali-winter-collection.webp',
+          alt: 'AVEEZ FASHION — Diwali Winter Collection',
+          link: '/shop',
+          hideOverlay: shouldHideOverlay,
+          isFestive: true,
+          tagline: 'CHAPTER 02 / FESTIVE WINTER',
+          headingLine1: 'WINTER',
+          headingLine2: 'COLLECTION',
+          description: 'Heavyweight fleece & tailored seasonal outerwear designed for festive evenings.',
+          menLink: '/shop?gender=MEN',
+          menText: 'EXPLORE MEN →',
+          womenLink: '/shop?gender=WOMEN',
+          womenText: 'EXPLORE WOMEN →',
+        },
+        {
+          id: 903,
+          label: '03',
+          image: '/uploads/campaigns/diwali/diwali-bogo-banner.webp',
+          mobileImage: '/uploads/campaigns/diwali/diwali-bogo-banner.webp',
+          alt: 'AVEEZ FASHION — Diwali Buy One Get One',
+          link: '/shop',
+          hideOverlay: shouldHideOverlay,
+          isFestive: true,
+          tagline: 'CHAPTER 03 / FESTIVE BOGO',
+          headingLine1: 'BUY 1',
+          headingLine2: 'GET 1',
+          description: 'Special Diwali gifting privileges on select architectural streetwear essentials.',
+          menLink: '/shop',
+          menText: 'CLAIM OFFER →',
+        },
+      ];
+
+      // If admin selected or uploaded a custom hero image that is not the default edit banner, place it first
+      const customHero = seasonalTheme?.heroDesktopImage;
+      if (customHero && !customHero.includes('hero-desktop.webp')) {
+        const existingIdx = defaultBanners.findIndex((b) => b.image === customHero);
+        if (existingIdx > -1) {
+          // Move selected banner to first position
+          const [selected] = defaultBanners.splice(existingIdx, 1);
+          defaultBanners.unshift(selected);
+        } else {
+          // Custom uploaded banner
+          defaultBanners.unshift({
+            id: 900,
+            label: '01',
+            image: customHero,
+            mobileImage: seasonalTheme?.heroMobileImage || customHero,
+            alt: seasonalTheme?.heroHeadline || 'AVEEZ FASHION — Diwali Campaign Banner',
+            link: seasonalTheme?.heroPrimaryCtaLink || '/shop',
+            hideOverlay: shouldHideOverlay,
+            isFestive: true,
+            tagline: '✨ DIWALI SPECIAL',
+            headingLine1: seasonalTheme?.heroHeadline || 'THE DIWALI',
+            headingLine2: 'EDIT',
+            description: seasonalTheme?.heroSubheadline,
+            menLink: seasonalTheme?.heroPrimaryCtaLink || '/shop?gender=MEN',
+            menText: seasonalTheme?.heroPrimaryCtaText || 'SHOP FESTIVE MEN →',
+            womenLink: seasonalTheme?.heroSecondaryCtaLink || '/shop?gender=WOMEN',
+            womenText: seasonalTheme?.heroSecondaryCtaText || 'SHOP FESTIVE WOMEN →',
+          });
+        }
+      }
+
+      return defaultBanners;
+    }
+
+    return DEFAULT_SLIDES;
+  }, [slides, isDiwali, seasonalTheme]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
-  const totalSlides = slides.length;
+  const totalSlides = resolvedSlides.length;
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % totalSlides);
@@ -131,11 +239,11 @@ export const HeroSection: React.FC<HeroProps> = ({
     }
   };
 
-  const currentSlide = slides[currentIndex];
+  const currentSlide = resolvedSlides[currentIndex];
 
   return (
     <section
-      className={styles.heroSlider}
+      className={`${styles.heroSlider} ${isDiwali ? styles.festiveHeroSlider : ''}`}
       aria-label="Editorial Campaign Hero Slider"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -145,7 +253,7 @@ export const HeroSection: React.FC<HeroProps> = ({
       tabIndex={0}
     >
       <div className={styles.slidesWrapper}>
-        {slides.map((slide, index) => {
+        {resolvedSlides.map((slide, index) => {
           const isActive = index === currentIndex;
           return (
             <div
@@ -153,56 +261,90 @@ export const HeroSection: React.FC<HeroProps> = ({
               className={`${styles.slide} ${isActive ? styles.activeSlide : ''}`}
               aria-hidden={!isActive}
             >
-              <Image
-                src={slide.image}
-                alt={slide.alt}
-                fill
-                priority={index === 0}
-                sizes="100vw"
-                className={styles.slideImage}
-              />
-
-              {/* Contrast enhancement vignette overlay on shadow side */}
-              <div className={styles.vignetteOverlay} aria-hidden="true" />
-
-              {/* Editorial Text Overlay matching reference design */}
-              <div className={styles.slideContent}>
-                <span className={styles.chapterTag}>{slide.tagline}</span>
-
-                {index === 0 ? (
-                  <h1 className={styles.heroHeading}>
-                    <span className={styles.headingLine1}>{slide.headingLine1}</span>
-                    <span className={styles.headingLine2}>{slide.headingLine2}</span>
-                  </h1>
-                ) : (
-                  <div className={styles.heroHeading} role="heading" aria-level={2}>
-                    <span className={styles.headingLine1}>{slide.headingLine1}</span>
-                    <span className={styles.headingLine2}>{slide.headingLine2}</span>
-                  </div>
-                )}
-
-                <div className={styles.dividerLine} aria-hidden="true" />
-
-                <p className={styles.heroSubheadline}>{slide.description}</p>
-
-                <div className={styles.ctaButtonGroup}>
-                  <Link
-                    href={slide.menLink}
-                    className={styles.ctaBtnPrimary}
-                    aria-label="Shop Men Collection"
-                  >
-                    {slide.menText || 'SHOP MEN →'}
-                  </Link>
-
-                  <Link
-                    href={slide.womenLink}
-                    className={styles.ctaBtnSecondary}
-                    aria-label="Shop Women Collection"
-                  >
-                    {slide.womenText || 'SHOP WOMEN →'}
-                  </Link>
-                </div>
+              {/* Desktop Wide Editorial Image */}
+              <div className={styles.desktopImageContainer}>
+                <Image
+                  src={slide.image}
+                  alt={slide.alt}
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  className={styles.slideImage}
+                />
               </div>
+
+              {/* Mobile Portrait Crop */}
+              <div className={styles.mobileImageContainer}>
+                <Image
+                  src={slide.mobileImage || slide.image}
+                  alt={slide.alt}
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  className={styles.slideImage}
+                />
+              </div>
+
+              {/* If hideOverlay is true, render a clean clickable banner without overlay text or vignette */}
+              {slide.hideOverlay ? (
+                <Link
+                  href={slide.link || '/shop'}
+                  className={styles.bannerFullLink}
+                  aria-label={slide.alt}
+                />
+              ) : (
+                <>
+                  {/* Contrast enhancement vignette overlay on shadow side */}
+                  <div className={styles.vignetteOverlay} aria-hidden="true" />
+
+                  {/* Editorial Text Overlay matching reference design */}
+                  <div className={styles.slideContent}>
+                    {slide.tagline && <span className={styles.chapterTag}>{slide.tagline}</span>}
+
+                    {index === 0 ? (
+                      <h1 className={styles.heroHeading}>
+                        <span className={styles.headingLine1}>{slide.headingLine1}</span>
+                        <span className={styles.headingLine2}>{slide.headingLine2}</span>
+                      </h1>
+                    ) : (
+                      <div className={styles.heroHeading} role="heading" aria-level={2}>
+                        <span className={styles.headingLine1}>{slide.headingLine1}</span>
+                        <span className={styles.headingLine2}>{slide.headingLine2}</span>
+                      </div>
+                    )}
+
+                    <div className={styles.dividerLine} aria-hidden="true" />
+
+                    {slide.description && (
+                      <p className={styles.heroSubheadline}>{slide.description}</p>
+                    )}
+
+                    {(slide.menLink || slide.womenLink) && (
+                      <div className={styles.ctaButtonGroup}>
+                        {slide.menLink && (
+                          <Link
+                            href={slide.menLink}
+                            className={styles.ctaBtnPrimary}
+                            aria-label="Shop Men Collection"
+                          >
+                            {slide.menText || 'SHOP MEN →'}
+                          </Link>
+                        )}
+
+                        {slide.womenLink && (
+                          <Link
+                            href={slide.womenLink}
+                            className={styles.ctaBtnSecondary}
+                            aria-label="Shop Women Collection"
+                          >
+                            {slide.womenText || 'SHOP WOMEN →'}
+                          </Link>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           );
         })}
@@ -234,7 +376,7 @@ export const HeroSection: React.FC<HeroProps> = ({
         </span>
 
         <div className={styles.chapterTrack}>
-          {slides.map((slide, idx) => {
+          {resolvedSlides.map((slide, idx) => {
             const isActive = idx === currentIndex;
             return (
               <button

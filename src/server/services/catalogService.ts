@@ -393,14 +393,71 @@ export class CatalogService {
   }
 
   /**
+   * Helper to check if seasonal theme should be displayed
+   */
+  static isSeasonalThemeActive(config?: any): boolean {
+    if (!config || !config.enabled) return false;
+    if (config.theme !== 'diwali') return false;
+
+    const now = new Date();
+
+    if (config.campaignStartDate) {
+      const parts = String(config.campaignStartDate).split('T')[0].split('-');
+      if (parts.length === 3) {
+        const start = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 0, 0, 0, 0);
+        if (now.getTime() < start.getTime()) return false;
+      }
+    }
+
+    if (config.campaignEndDate) {
+      const parts = String(config.campaignEndDate).split('T')[0].split('-');
+      if (parts.length === 3) {
+        const end = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 23, 59, 59, 999);
+        if (now.getTime() > end.getTime()) return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Retrieves store settings
    */
   static async getSettings(): Promise<ISettings> {
+    const defaultSeasonalTheme = {
+      enabled: false,
+      theme: 'normal' as const,
+      announcementText: '✨ THE DIWALI EDIT — CELEBRATE THE SEASON IN TIMELESS STYLE',
+      announcementCtaText: 'EXPLORE THE COLLECTION',
+      announcementCtaLink: '/shop?gender=MEN',
+      heroHeadline: 'THE DIWALI EDIT',
+      heroSubheadline: 'Celebrate the season in timeless style. Architectural silhouettes meet festive warmth.',
+      heroDesktopImage: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
+      heroMobileImage: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
+      heroOverlayMode: 'without_text' as const,
+      heroPrimaryCtaText: 'SHOP FESTIVE MEN →',
+      heroPrimaryCtaLink: '/shop?gender=MEN',
+      heroSecondaryCtaText: 'SHOP FESTIVE WOMEN →',
+      heroSecondaryCtaLink: '/shop?gender=WOMEN',
+      giftPackagingPrice: 99,
+      matchingStylesImage: '/api/media/campaigns/diwali/matching-styles.webp',
+      menImage: '/api/media/campaigns/diwali/men.webp',
+      womenImage: '/api/media/campaigns/diwali/women.webp',
+      accessoriesImage: '/api/media/campaigns/diwali/accessories.webp',
+      campaignStartDate: null,
+      campaignEndDate: null,
+      campaignAssets: [],
+    };
+
     try {
       await connectToDatabase();
       const settings = await Settings.findOne().lean();
       if (settings) {
-        return JSON.parse(JSON.stringify(settings));
+        const parsed = JSON.parse(JSON.stringify(settings));
+        if (!parsed.seasonalTheme) {
+          parsed.seasonalTheme = defaultSeasonalTheme;
+        }
+        return parsed;
       }
     } catch {
       // Fallback
@@ -416,7 +473,29 @@ export class CatalogService {
       codEnabled: true,
       codFee: 49,
       gstPercentage: 12,
+      seasonalTheme: defaultSeasonalTheme,
     };
+  }
+
+  /**
+   * Updates seasonal theme configuration
+   */
+  static async updateSeasonalTheme(themeData: any): Promise<ISettings> {
+    await connectToDatabase();
+    let settings = await Settings.findOne();
+    if (!settings) {
+      settings = new Settings();
+    }
+
+    const currentTheme = settings.seasonalTheme || {};
+    settings.seasonalTheme = {
+      ...currentTheme,
+      ...themeData,
+    };
+    settings.markModified('seasonalTheme');
+    await settings.save();
+
+    return JSON.parse(JSON.stringify(settings));
   }
 
   /**

@@ -190,9 +190,11 @@ export interface Order {
     discountTotal: number;
     taxTotal: number;
     shippingFee: number;
+    giftWrapFee?: number;
     grandTotal: number;
     currency: string;
   };
+  giftPackaging?: boolean;
   paymentMethod: 'ONLINE_GATEWAY' | 'COD' | 'UPI' | 'CREDIT_CARD' | 'DEBIT_CARD' | 'NET_BANKING';
   paymentStatus: OrderPaymentStatus;
   fulfillmentStatus: OrderFulfillmentStatus;
@@ -306,6 +308,45 @@ export interface HomepageContent {
   };
 }
 
+export interface CampaignAssetMetadata {
+  id: string;
+  purpose: string;
+  fileKey: string;
+  url: string;
+  width: number;
+  height: number;
+  sizeBytes: number;
+  format: string;
+  variant?: 'desktop' | 'mobile' | 'editorial' | 'square';
+  active: boolean;
+  createdAt: string;
+}
+
+export interface SeasonalThemeConfig {
+  enabled: boolean;
+  theme: 'normal' | 'diwali';
+  announcementText: string;
+  announcementCtaText?: string;
+  announcementCtaLink?: string;
+  heroHeadline: string;
+  heroSubheadline: string;
+  heroDesktopImage: string;
+  heroMobileImage: string;
+  heroOverlayMode?: 'with_text' | 'without_text';
+  heroPrimaryCtaText?: string;
+  heroPrimaryCtaLink?: string;
+  heroSecondaryCtaText?: string;
+  heroSecondaryCtaLink?: string;
+  giftPackagingPrice?: number;
+  matchingStylesImage?: string;
+  menImage?: string;
+  womenImage?: string;
+  accessoriesImage?: string;
+  campaignStartDate?: string | null;
+  campaignEndDate?: string | null;
+  campaignAssets?: CampaignAssetMetadata[];
+}
+
 export interface Settings {
   storeName: string;
   supportEmail: string;
@@ -316,4 +357,5 @@ export interface Settings {
   codEnabled: boolean;
   codFee: number;
   gstPercentage: number;
+  seasonalTheme?: SeasonalThemeConfig;
 }

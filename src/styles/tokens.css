@@ -184,6 +184,30 @@
   --z-toast:                600;
 }
 
+/* ==================================================
+   AVEEZ FASHION — DIWALI FESTIVE LUXURY DESIGN TOKENS
+   Deep Burgundy & Wine, Warm Ivory & Restrained Gold
+   ================================================== */
+[data-theme="diwali"] {
+  --color-festive-wine-deep:    #24060B;
+  --color-festive-wine:         #380B12;
+  --color-festive-burgundy:     #4A0E17;
+  --color-festive-gold:         #C5A059;
+  --color-festive-gold-light:   #E0C58A;
+  --color-festive-gold-shimmer: #D4AF37;
+  --color-festive-cream:        #FAF6F0;
+  --color-festive-ivory:        #FDFBF7;
+  --color-festive-warm-border:  #E8DFD5;
+
+  /* Selective Ambient Overrides for Storefront */
+  --color-white-pure:           #FDFBF7;
+  --color-white-off:            #FAF6F0;
+  --color-warm-bg:              #FAF6F0;
+  --color-warm-surface:         #F5EFEB;
+  --color-warm-border:          #E8DFD5;
+  --color-black-rich:           #140709;
+}
+
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

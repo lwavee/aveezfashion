@@ -16,9 +16,13 @@ export const CartDrawer: React.FC = () => {
     updateQuantity,
     removeFromCart,
     subtotal,
+    isDiwali,
     freeShippingThreshold,
     remainingForFreeShipping,
     qualifiesForFreeShipping,
+    giftPackaging,
+    setGiftPackaging,
+    giftPackagingPrice,
   } = useCart();
 
   // Lock body scroll when cart drawer is open
@@ -35,7 +39,9 @@ export const CartDrawer: React.FC = () => {
 
   if (!isOpen) return null;
 
-  const progressPercent = Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
+  const progressPercent = qualifiesForFreeShipping
+    ? 100
+    : Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
 
   return (
     <div className={styles.overlay} onClick={closeCart}>
@@ -58,7 +64,11 @@ export const CartDrawer: React.FC = () => {
         {/* Free Shipping Progress Indicator */}
         <div className={styles.shippingBar}>
           <div className={styles.shippingText}>
-            {qualifiesForFreeShipping ? (
+            {isDiwali ? (
+              <span style={{ color: '#C5A059', fontWeight: 700 }}>
+                ✨ DIWALI SPECIAL: ₹0 DELIVERY CHARGE ON ANY ORDER
+              </span>
+            ) : qualifiesForFreeShipping ? (
               <span>
                 <strong>YOU QUALIFY FOR FREE EXPRESS SHIPPING</strong>
               </span>
@@ -71,7 +81,10 @@ export const CartDrawer: React.FC = () => {
           <div className={styles.progressBar}>
             <div
               className={styles.progressFill}
-              style={{ width: `${progressPercent}%` }}
+              style={{
+                width: `${progressPercent}%`,
+                backgroundColor: isDiwali ? '#C5A059' : undefined,
+              }}
             />
           </div>
         </div>
@@ -160,14 +173,37 @@ export const CartDrawer: React.FC = () => {
         {/* Footer & Checkout */}
         {items.length > 0 && (
           <div className={styles.footer}>
+            {/* Premium Festive Gift Packaging Selection */}
+            <div className={styles.giftOptionRow}>
+              <label className={styles.giftLabel}>
+                <input
+                  type="checkbox"
+                  checked={giftPackaging}
+                  onChange={(e) => setGiftPackaging(e.target.checked)}
+                  className={styles.giftCheckbox}
+                />
+                <span className={styles.giftTextWrap}>
+                  <span className={styles.giftHeading}>🎁 Premium Festive Gift Packaging</span>
+                  <span className={styles.giftSubtext}>
+                    Matte-black box, wax seal & festive ribbon (+₹{giftPackagingPrice})
+                  </span>
+                </span>
+              </label>
+            </div>
+
             <div className={styles.subtotalRow}>
               <span className={styles.subtotalLabel}>SUBTOTAL</span>
               <span className={styles.subtotalValue}>
-                ₹{subtotal.toLocaleString('en-IN')}
+                ₹{(subtotal + (giftPackaging ? giftPackagingPrice : 0)).toLocaleString('en-IN')}
               </span>
             </div>
+            {giftPackaging && (
+              <p style={{ fontSize: '0.6875rem', color: '#15803D', margin: '0 0 6px 0', fontWeight: 600 }}>
+                Includes Premium Festive Gift Packaging (+₹{giftPackagingPrice})
+              </p>
+            )}
             <p className={styles.taxNote}>
-              Taxes calculated at checkout. Express delivery throughout India.
+              Taxes calculated at checkout. {isDiwali ? '✨ 0 Delivery charge on this order!' : 'Express delivery throughout India.'}
             </p>
             <div className={styles.actionButtons}>
               <Link href="/checkout" onClick={closeCart} style={{ width: '100%' }}>

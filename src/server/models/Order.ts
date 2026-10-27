@@ -63,9 +63,11 @@ const OrderSchema = new Schema<OrderDocument>(
       discountTotal: { type: Number, default: 0 },
       taxTotal: { type: Number, default: 0 },
       shippingFee: { type: Number, default: 0 },
+      giftWrapFee: { type: Number, default: 0 },
       grandTotal: { type: Number, required: true },
       currency: { type: String, default: 'INR' },
     },
+    giftPackaging: { type: Boolean, default: false },
     paymentMethod: {
       type: String,
       enum: ['ONLINE_GATEWAY', 'COD', 'UPI', 'CREDIT_CARD', 'DEBIT_CARD', 'NET_BANKING'],

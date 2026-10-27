@@ -1,6 +1,7 @@
 import React from 'react';
 import { CatalogService } from '@/server/services/catalogService';
 import { Settings as SettingsIcon, ShieldCheck, Mail, Phone, Truck, CreditCard } from 'lucide-react';
+import { SeasonalThemeSettings } from '@/components/admin/SeasonalThemeSettings';
 import styles from '../admin.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -12,12 +13,15 @@ export default async function AdminSettingsPage() {
     <div className={styles.container}>
       <div className={styles.pageHeader}>
         <div className={styles.titleStack}>
-          <h1 className={styles.pageTitle}>Settings</h1>
+          <h1 className={styles.pageTitle}>Settings & Appearance</h1>
           <p className={styles.pageSubtitle}>
-            Store preferences, currency configuration, shipping thresholds, and tax compliance.
+            Store preferences, seasonal campaigns, Diwali mode, shipping thresholds, and compliance.
           </p>
         </div>
       </div>
+
+      {/* Seasonal Theme Control Center (Diwali Mode + Backblaze B2 Assets) */}
+      <SeasonalThemeSettings initialTheme={settings.seasonalTheme} />
 
       <div className={styles.twoColumnGrid}>
         {/* Store Profile */}

@@ -7,6 +7,8 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 
+import { SeasonalThemeConfig } from '@/types';
+
 interface StorefrontShellProps {
   children: React.ReactNode;
   announcementBar?: {
@@ -15,6 +17,7 @@ interface StorefrontShellProps {
     ctaText?: string;
     ctaLink?: string;
   };
+  seasonalTheme?: SeasonalThemeConfig;
 }
 
 /**

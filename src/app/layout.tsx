@@ -59,10 +59,25 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const content = await CatalogService.getHomepageContent();
+  const [content, settings] = await Promise.all([
+    CatalogService.getHomepageContent(),
+    CatalogService.getSettings(),
+  ]);
+
+  const isDiwali = CatalogService.isSeasonalThemeActive(settings.seasonalTheme);
+
+  const activeAnnouncement =
+    isDiwali && settings.seasonalTheme?.announcementText
+      ? {
+          isActive: true,
+          message: settings.seasonalTheme.announcementText,
+          ctaText: settings.seasonalTheme.announcementCtaText || 'EXPLORE THE COLLECTION',
+          ctaLink: settings.seasonalTheme.announcementCtaLink || '/shop?gender=MEN',
+        }
+      : content.announcementBar;
 
   return (
-    <html lang="en">
+    <html lang="en" data-theme={isDiwali ? 'diwali' : 'normal'}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -72,10 +87,13 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <CartProvider>
+        <CartProvider isDiwali={isDiwali}>
           <WishlistProvider>
             <ToastProvider>
-              <StorefrontShell announcementBar={content.announcementBar}>
+              <StorefrontShell
+                announcementBar={activeAnnouncement}
+                seasonalTheme={isDiwali ? settings.seasonalTheme : undefined}
+              >
                 {children}
               </StorefrontShell>
             </ToastProvider>

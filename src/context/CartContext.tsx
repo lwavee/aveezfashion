@@ -15,9 +15,14 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   subtotal: number;
+  isDiwali: boolean;
   freeShippingThreshold: number;
   remainingForFreeShipping: number;
   qualifiesForFreeShipping: boolean;
+  effectiveShippingFee: number;
+  giftPackaging: boolean;
+  setGiftPackaging: (val: boolean) => void;
+  giftPackagingPrice: number;
   appliedCoupon: { code: string; discount: number; message?: string } | null;
   setAppliedCoupon: (coupon: { code: string; discount: number; message?: string } | null) => void;
   clearCoupon: () => void;
@@ -25,13 +30,18 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const CartProvider: React.FC<{ children: React.ReactNode; isDiwali?: boolean }> = ({
+  children,
+  isDiwali = false,
+}) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; message?: string } | null>(null);
+  const [giftPackaging, setGiftPackaging] = useState(false);
+  const giftPackagingPrice = 99;
 
-  const freeShippingThreshold = 1999;
+  const freeShippingThreshold = isDiwali ? 0 : 1999;
 
   // Hydrate from localStorage on client mount
   useEffect(() => {
@@ -43,6 +53,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const storedCoupon = localStorage.getItem('aveez_coupon');
       if (storedCoupon) {
         setAppliedCoupon(JSON.parse(storedCoupon));
+      }
+      const storedGift = localStorage.getItem('aveez_gift_packaging');
+      if (storedGift) {
+        setGiftPackaging(storedGift === 'true');
       }
     } catch {
       // Ignore parse errors
@@ -66,6 +80,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   }, [appliedCoupon, mounted]);
+
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem('aveez_gift_packaging', String(giftPackaging));
+    }
+  }, [giftPackaging, mounted]);
 
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
@@ -111,8 +131,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
-  const qualifiesForFreeShipping = subtotal >= freeShippingThreshold;
+
+  // During Diwali mode: 0 delivery charge on ANY order!
+  const qualifiesForFreeShipping = isDiwali || subtotal >= freeShippingThreshold;
+  const remainingForFreeShipping = qualifiesForFreeShipping
+    ? 0
+    : Math.max(0, freeShippingThreshold - subtotal);
+  const effectiveShippingFee = qualifiesForFreeShipping ? 0 : 99;
 
   return (
     <CartContext.Provider
@@ -128,9 +153,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         clearCart,
         totalItems,
         subtotal,
+        isDiwali,
         freeShippingThreshold,
         remainingForFreeShipping,
         qualifiesForFreeShipping,
+        effectiveShippingFee,
+        giftPackaging,
+        setGiftPackaging,
+        giftPackagingPrice,
         appliedCoupon,
         setAppliedCoupon,
         clearCoupon,

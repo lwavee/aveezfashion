@@ -16,18 +16,21 @@ export const revalidate = 60; // Incremental Static Regeneration every 60s
 
 export default async function HomePage() {
   // Fetch real catalog data from database/service layer
-  const [content, categories, newArrivalsData, bestSellersData, accessoriesData] = await Promise.all([
+  const [content, settings, categories, newArrivalsData, bestSellersData, accessoriesData] = await Promise.all([
     CatalogService.getHomepageContent(),
+    CatalogService.getSettings(),
     CatalogService.getCategories(),
     CatalogService.getProducts({ isNewArrival: true, limit: 8 }),
     CatalogService.getProducts({ isBestSeller: true, limit: 4 }),
     CatalogService.getAccessories({ limit: 12 }),
   ]);
 
+  const isDiwali = CatalogService.isSeasonalThemeActive(settings.seasonalTheme);
+
   return (
     <div className={styles.homeContainer}>
       {/* 1. Hero Section Slider */}
-      <HeroSection />
+      <HeroSection seasonalTheme={isDiwali ? settings.seasonalTheme : undefined} />
 
       {/* 2. Shop By Category (Immediate visual category discovery) */}
       <CategoryGrid categories={categories} />

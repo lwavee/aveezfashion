@@ -75,9 +75,11 @@ interface OrderDetail {
     discountTotal: number;
     taxTotal: number;
     shippingFee: number;
+    giftWrapFee?: number;
     grandTotal: number;
     currency: string;
   };
+  giftPackaging?: boolean;
   paymentMethod: 'ONLINE_GATEWAY' | 'COD';
   paymentStatus: 'UNPAID' | 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
   fulfillmentStatus: string;
@@ -667,6 +669,13 @@ export default function OrderDetailPage() {
                     : `₹${Number(order.pricing?.shippingFee || 0).toLocaleString('en-IN')}`}
                 </span>
               </div>
+
+              {((order.pricing?.giftWrapFee || 0) > 0 || order.giftPackaging) && (
+                <div className={styles.breakdownRow} style={{ color: '#059669', fontWeight: 600 }}>
+                  <span>🎁 Premium Festive Gift Packaging</span>
+                  <span>₹{Number(order.pricing?.giftWrapFee || 99).toLocaleString('en-IN')}</span>
+                </div>
+              )}
 
               {(order.pricing?.taxTotal || 0) > 0 && (
                 <div className={styles.breakdownRow}>

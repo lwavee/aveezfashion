@@ -59,7 +59,11 @@ export default function CheckoutPage() {
     items,
     subtotal,
     clearCart,
+    isDiwali,
     qualifiesForFreeShipping,
+    giftPackaging,
+    setGiftPackaging,
+    giftPackagingPrice,
     appliedCoupon,
     setAppliedCoupon,
     clearCoupon,
@@ -96,9 +100,12 @@ export default function CheckoutPage() {
   const isTestOrder = items.some(
     (item) => item.variantSku === 'AVZ-TEST-PAY-001-STD' || item.slug === 'aveez-payment-test-product'
   );
-  const shippingFee = isTestOrder ? 1 : (qualifiesForFreeShipping ? 0 : 99);
+  // During Diwali mode: 0 delivery charge on ANY order!
+  const isFreeDelivery = isDiwali || qualifiesForFreeShipping;
+  const shippingFee = isTestOrder ? 1 : (isFreeDelivery ? 0 : 99);
+  const giftWrapFee = giftPackaging ? (giftPackagingPrice || 99) : 0;
   const discountTotal = appliedCoupon ? appliedCoupon.discount : 0;
-  const grandTotal = Math.max(0, subtotal - discountTotal + shippingFee);
+  const grandTotal = Math.max(0, subtotal - discountTotal + shippingFee + giftWrapFee);
 
   // Load Session and Saved Addresses on mount
   useEffect(() => {
@@ -298,6 +305,7 @@ export default function CheckoutPage() {
           },
           items,
           couponCode: appliedCoupon?.code,
+          giftPackaging: !!giftPackaging,
           paymentMethod: 'ONLINE_GATEWAY',
         }),
       });
@@ -882,6 +890,29 @@ export default function CheckoutPage() {
               </div>
             )}
 
+            {/* Premium Festive Gift Packaging Selection Card */}
+            <div className={`${styles.giftCardWrap} ${giftPackaging ? styles.giftCardWrapSelected : ''}`}>
+              <div className={styles.giftCardHeader}>
+                <span className={styles.giftEmoji}>🎁</span>
+                <div className={styles.giftCardTexts}>
+                  <div className={styles.giftCardTitleRow}>
+                    <span className={styles.giftCardTitle}>Premium Festive Gift Packaging</span>
+                    <span className={styles.giftCardPrice}>₹{giftPackagingPrice || 99}</span>
+                  </div>
+                  <p className={styles.giftCardDesc}>
+                    Signature luxury box, gold wax seal, and personalized festive greeting card.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className={giftPackaging ? styles.giftBtnAdded : styles.giftBtnAdd}
+                onClick={() => setGiftPackaging(!giftPackaging)}
+              >
+                {giftPackaging ? '✓ Gift Packaging Added' : `+ Add Luxury Packaging (₹${giftPackagingPrice || 99})`}
+              </button>
+            </div>
+
             {/* Financial Breakdown */}
             <div className={styles.priceBreakdown}>
               <div className={styles.priceRow}>
@@ -897,13 +928,22 @@ export default function CheckoutPage() {
               )}
 
               <div className={styles.priceRow}>
-                <span>Shipping Fee</span>
+                <span>
+                  Shipping Fee {isDiwali && <small style={{ color: '#C5A059' }}>(Diwali Offer: ₹0 Delivery)</small>}
+                </span>
                 {shippingFee === 0 ? (
                   <span className={styles.freeShipHighlight}>FREE</span>
                 ) : (
                   <span>₹{shippingFee.toLocaleString('en-IN')}</span>
                 )}
               </div>
+
+              {giftPackaging && (
+                <div className={styles.priceRow} style={{ color: '#059669' }}>
+                  <span>Premium Gift Packaging</span>
+                  <span>+₹{(giftPackagingPrice || 99).toLocaleString('en-IN')}</span>
+                </div>
+              )}
 
               <div className={styles.grandTotalRow}>
                 <span className={styles.grandTotalLabel}>TOTAL PAYABLE</span>

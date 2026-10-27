@@ -65,3 +65,27 @@
     display: none;
   }
 }
+
+/* ==================================================
+   DIWALI FESTIVE ANNOUNCEMENT BAR
+   ================================================== */
+:global([data-theme="diwali"]) .bar {
+  background: linear-gradient(90deg, #24060B 0%, #380B12 50%, #24060B 100%);
+  border-bottom: 1px solid rgba(197, 160, 89, 0.4);
+  color: #FDFBF7;
+}
+
+:global([data-theme="diwali"]) .message {
+  color: #FDFBF7;
+}
+
+:global([data-theme="diwali"]) .cta {
+  color: #E0C58A;
+  text-decoration-color: rgba(224, 197, 138, 0.7);
+}
+
+:global([data-theme="diwali"]) .cta:hover {
+  color: #D4AF37;
+  opacity: 1;
+}
+

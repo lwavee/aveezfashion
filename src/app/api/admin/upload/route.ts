@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
+    const target = (formData.get('target') as string | null) || '';
 
     if (!file) {
       return NextResponse.json(
@@ -34,15 +35,26 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const result = await StorageService.uploadProductImage(
-      buffer,
-      file.name,
-      file.type || 'image/jpeg'
-    );
+    let result;
+    if (target.includes('diwali') || target.includes('campaign')) {
+      const sanitizedName = file.name.toLowerCase().replace(/[^a-z0-9_.-]/g, '-');
+      const fileName = `diwali-hero-${Date.now()}-${sanitizedName}`;
+      result = await StorageService.uploadCampaignAsset(
+        buffer,
+        `campaigns/diwali/${fileName}`,
+        file.type || 'image/webp'
+      );
+    } else {
+      result = await StorageService.uploadProductImage(
+        buffer,
+        file.name,
+        file.type || 'image/jpeg'
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Product image uploaded successfully.',
+      message: 'Image uploaded successfully.',
       data: result,
     });
   } catch (error: any) {

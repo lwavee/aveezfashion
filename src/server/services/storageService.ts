@@ -32,6 +32,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 let b2AuthCache: B2AuthCache | null = null;
 let b2BucketIdCache: string | null = null;
+let b2BucketNameCache: string | null = null;
 
 export class StorageService {
   /**
@@ -174,6 +175,7 @@ export class StorageService {
     const bucket = data.buckets?.[0];
     if (bucket && bucket.bucketId) {
       b2BucketIdCache = bucket.bucketId;
+      b2BucketNameCache = bucket.bucketName || bucketName;
       return bucket.bucketId;
     }
 
@@ -287,6 +289,87 @@ export class StorageService {
   }
 
   /**
+   * Uploads an optimized campaign asset (e.g., Diwali hero, men, women) to Backblaze B2.
+   * Also ensures a local disk copy in public/uploads/ for fast CDN and zero-latency fallback.
+   */
+  static async uploadCampaignAsset(
+    buffer: Buffer,
+    fileKey: string,
+    mimeType: string = 'image/webp'
+  ): Promise<UploadResult> {
+    const fileName = path.basename(fileKey);
+
+    // Save local copy in public/uploads/${fileKey}
+    const localFilePath = path.resolve('public/uploads', fileKey);
+    const localDir = path.dirname(localFilePath);
+    if (!fs.existsSync(localDir)) {
+      fs.mkdirSync(localDir, { recursive: true });
+    }
+    fs.writeFileSync(localFilePath, buffer);
+
+    // Upload to Backblaze B2 if configured
+    if (this.isB2Configured()) {
+      try {
+        const auth = await this.getB2Auth();
+        if (auth) {
+          const bucketId = await this.getB2BucketId(auth);
+          if (bucketId) {
+            const getUploadUrlRes = await fetch(`${auth.apiUrl}/b2api/v2/b2_get_upload_url`, {
+              method: 'POST',
+              headers: {
+                Authorization: auth.authorizationToken,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ bucketId }),
+            });
+
+            if (getUploadUrlRes.ok) {
+              const uploadUrlData = await getUploadUrlRes.json();
+              const sha1 = crypto.createHash('sha1').update(buffer).digest('hex');
+
+              const b2UploadRes = await fetch(uploadUrlData.uploadUrl, {
+                method: 'POST',
+                headers: {
+                  Authorization: uploadUrlData.authorizationToken,
+                  'X-Bz-File-Name': encodeURIComponent(fileKey),
+                  'Content-Type': mimeType,
+                  'Content-Length': String(buffer.length),
+                  'X-Bz-Content-Sha1': sha1,
+                },
+                body: new Uint8Array(buffer),
+              });
+
+              if (b2UploadRes.ok) {
+                return {
+                  url: `/api/media/${fileKey}`,
+                  fileName,
+                  fileKey,
+                  size: buffer.length,
+                  mimeType,
+                  storageProvider: 'b2',
+                };
+              } else {
+                console.warn('[StorageService] B2 campaign upload returned non-200, falling back to local.');
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[StorageService] Error during B2 campaign upload:', err);
+      }
+    }
+
+    return {
+      url: `/uploads/${fileKey}`,
+      fileName,
+      fileKey,
+      size: buffer.length,
+      mimeType,
+      storageProvider: 'local',
+    };
+  }
+
+  /**
    * Fetches an asset buffer from Backblaze B2 with authorization.
    */
   static async fetchB2Asset(fileKey: string): Promise<{ buffer: Buffer; mimeType: string } | null> {
@@ -294,7 +377,10 @@ export class StorageService {
       const auth = await this.getB2Auth();
       if (!auth) return null;
 
-      const bucketName = process.env.B2_BUCKET_NAME || 'aveezfashion';
+      if (!b2BucketNameCache) {
+        await this.getB2BucketId(auth);
+      }
+      const bucketName = b2BucketNameCache || process.env.B2_BUCKET_NAME || 'aveezfashion';
       const downloadUrl = `${auth.downloadUrl}/file/${bucketName}/${fileKey}`;
 
       const res = await fetch(downloadUrl, {
@@ -315,3 +401,4 @@ export class StorageService {
     }
   }
 }
+

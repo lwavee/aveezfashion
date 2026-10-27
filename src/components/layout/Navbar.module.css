@@ -471,3 +471,38 @@
     padding: 16px;
   }
 }
+
+/* ==================================================
+   DIWALI FESTIVE NAVBAR
+   Warm Ivory, Deep Wine & Restrained Gold Accents
+   ================================================== */
+:global([data-theme="diwali"]) .navbar {
+  background-color: #FDFBF7;
+  border-bottom: 1px solid rgba(197, 160, 89, 0.25);
+}
+
+:global([data-theme="diwali"]) .scrolled {
+  background-color: rgba(253, 251, 247, 0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(197, 160, 89, 0.35);
+  box-shadow: 0 4px 20px rgba(56, 11, 18, 0.06);
+}
+
+:global([data-theme="diwali"]) .navLink:hover {
+  color: #4A0E17;
+}
+
+:global([data-theme="diwali"]) .navLink::after {
+  background-color: #C5A059;
+}
+
+:global([data-theme="diwali"]) .bagBadge {
+  background-color: #4A0E17;
+  color: #FDFBF7;
+}
+
+:global([data-theme="diwali"]) .mobileDrawer {
+  background-color: #FDFBF7;
+  border-left: 1px solid rgba(197, 160, 89, 0.3);
+}
+

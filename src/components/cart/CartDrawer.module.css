@@ -259,6 +259,43 @@
   margin-bottom: var(--space-md);
 }
 
+.giftOptionRow {
+  background-color: var(--color-white-off);
+  border: 1px dashed var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-bottom: var(--space-sm);
+}
+
+.giftLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.giftCheckbox {
+  accent-color: var(--color-black-rich);
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.giftTextWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.giftHeading {
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-black-rich);
+}
+
+.giftSubtext {
+  font-size: 0.6875rem;
+  color: var(--color-gray-600);
+}
+
 .actionButtons {
   display: flex;
   flex-direction: column;

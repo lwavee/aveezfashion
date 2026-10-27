@@ -5,6 +5,7 @@ import { Product } from '@/server/models/Product';
 import { initialProducts, paymentTestProduct } from '@/server/db/seedData';
 import { getSessionFromRequest } from '@/server/auth';
 import { getActiveRazorpayCredentials } from '@/server/razorpay';
+import { CatalogService } from '@/server/services/catalogService';
 
 export async function POST(req: NextRequest) {
   try {
@@ -174,17 +175,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const freeShippingThreshold = 1999;
+    const settings = await CatalogService.getSettings();
+    const isDiwali = CatalogService.isSeasonalThemeActive(settings.seasonalTheme);
+
+    const freeShippingThreshold = isDiwali ? 0 : (settings.freeShippingThreshold || 1999);
+    const standardShippingFee = isDiwali ? 0 : (settings.standardShippingFee || 99);
+
     // Controlled test product: exact ₹1.00 shipping charge (Subtotal: ₹1.00 + Shipping: ₹1.00 = Total: ₹2.00)
-    // All normal products preserve existing shipping calculation rules
+    // When Diwali mode is ON: 0 delivery charge on ANY order!
     const shippingFee = isTestOrder
       ? 1
-      : recalculatedSubtotal >= freeShippingThreshold
+      : isDiwali || recalculatedSubtotal >= freeShippingThreshold
       ? 0
-      : 99;
+      : standardShippingFee;
+
+    const giftWrapFee = body.giftPackaging ? (settings.seasonalTheme?.giftPackagingPrice || 99) : 0;
 
     const taxTotal = Math.round((recalculatedSubtotal - discountTotal) * 0.12);
-    const grandTotal = Math.max(0, recalculatedSubtotal - discountTotal + shippingFee);
+    const grandTotal = Math.max(0, recalculatedSubtotal - discountTotal + shippingFee + giftWrapFee);
 
     const orderNumber = `AVZ-${new Date().getFullYear()}-${Math.floor(
       100000 + Math.random() * 900000
@@ -240,9 +248,11 @@ export async function POST(req: NextRequest) {
         discountTotal,
         taxTotal,
         shippingFee,
+        giftWrapFee,
         grandTotal,
         currency: 'INR',
       },
+      giftPackaging: !!body.giftPackaging,
       paymentMethod: ['UPI', 'CREDIT_CARD', 'DEBIT_CARD', 'NET_BANKING', 'ONLINE_GATEWAY'].includes(paymentMethod)
         ? paymentMethod
         : 'ONLINE_GATEWAY',

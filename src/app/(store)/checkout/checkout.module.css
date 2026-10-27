@@ -864,6 +864,94 @@
   }
 }
 
+/* Gift Packaging Card in Checkout */
+.giftCardWrap {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.giftCardWrapSelected {
+  border-color: #C5A059;
+  background: #FFFDF9;
+  box-shadow: 0 2px 8px rgba(197, 160, 89, 0.12);
+}
+
+.giftCardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.giftEmoji {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.giftCardTexts {
+  flex: 1;
+}
+
+.giftCardTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.giftCardTitle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #0A0A0A;
+}
+
+.giftCardPrice {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #C5A059;
+}
+
+.giftCardDesc {
+  font-size: 0.6875rem;
+  color: #6B7280;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.giftBtnAdd {
+  padding: 7px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 6px;
+  background: #F3F4F6;
+  border: 1px solid #D1D5DB;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.giftBtnAdd:hover {
+  background: #E5E7EB;
+}
+
+.giftBtnAdded {
+  padding: 7px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 6px;
+  background: #C5A059;
+  border: 1px solid #C5A059;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

@@ -175,3 +175,51 @@ ul, ol {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==================================================
+   AVEEZ FASHION — GLOBAL DIWALI THEME STYLES
+   ================================================== */
+[data-theme="diwali"] {
+  background-color: var(--color-festive-ivory);
+  color: var(--color-black-rich);
+}
+
+[data-theme="diwali"] body {
+  background-color: var(--color-festive-ivory);
+}
+
+/* Primary Buttons & CTAs in Diwali Mode */
+[data-theme="diwali"] button[class*="primaryBtn"],
+[data-theme="diwali"] a[class*="primaryBtn"],
+[data-theme="diwali"] button[class*="btnPrimary"],
+[data-theme="diwali"] a[class*="btnPrimary"],
+[data-theme="diwali"] button[class*="addToCartBtn"],
+[data-theme="diwali"] button[class*="checkoutBtn"],
+[data-theme="diwali"] [class*="cartDrawer"] button[class*="checkout"] {
+  background-color: #380B12;
+  color: #FDFBF7;
+  border: 1px solid #C5A059;
+  transition: all 0.2s ease;
+}
+
+[data-theme="diwali"] button[class*="primaryBtn"]:hover,
+[data-theme="diwali"] a[class*="primaryBtn"]:hover,
+[data-theme="diwali"] button[class*="btnPrimary"]:hover,
+[data-theme="diwali"] a[class*="btnPrimary"]:hover,
+[data-theme="diwali"] button[class*="addToCartBtn"]:hover,
+[data-theme="diwali"] button[class*="checkoutBtn"]:hover,
+[data-theme="diwali"] [class*="cartDrawer"] button[class*="checkout"]:hover {
+  background-color: #4A0E17;
+  border-color: #E0C58A;
+  box-shadow: 0 4px 18px rgba(197, 160, 89, 0.35);
+}
+
+/* Subtle Diya-inspired scrollbar in Diwali Mode */
+[data-theme="diwali"] ::-webkit-scrollbar-thumb {
+  background: #C5A059;
+}
+
+[data-theme="diwali"] ::-webkit-scrollbar-track {
+  background: #FAF6F0;
+}
+

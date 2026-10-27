@@ -20,15 +20,20 @@ export default function CartPage() {
     appliedCoupon,
     setAppliedCoupon,
     clearCoupon,
+    isDiwali,
+    giftPackaging,
+    setGiftPackaging,
+    giftPackagingPrice,
   } = useCart();
 
   const [couponCode, setCouponCode] = useState('');
   const [couponError, setCouponError] = useState('');
 
-  const shippingFee = qualifiesForFreeShipping ? 0 : 99;
+  const shippingFee = (qualifiesForFreeShipping || isDiwali) ? 0 : 99;
+  const giftWrapCost = giftPackaging ? giftPackagingPrice : 0;
   const discountTotal = appliedCoupon ? appliedCoupon.discount : 0;
   const estimatedTax = Math.round((subtotal - discountTotal) * 0.12); // GST 12%
-  const grandTotal = Math.max(0, subtotal - discountTotal + shippingFee);
+  const grandTotal = Math.max(0, subtotal - discountTotal + shippingFee + giftWrapCost);
 
   const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,15 +207,53 @@ export default function CartPage() {
                 </div>
               ) : null}
               <div className={styles.lineItem}>
-                <span>Estimated Shipping</span>
                 <span>
-                  {qualifiesForFreeShipping ? (
+                  Estimated Shipping {isDiwali && <small style={{ color: '#C5A059' }}>(Diwali Offer)</small>}
+                </span>
+                <span>
+                  {qualifiesForFreeShipping || isDiwali ? (
                     <strong style={{ color: 'var(--color-success)' }}>FREE</strong>
                   ) : (
                     `₹${shippingFee}`
                   )}
                 </span>
               </div>
+
+              {/* Gift Packaging Checkbox Option */}
+              <div
+                style={{
+                  background: 'var(--color-white-off)',
+                  border: '1px dashed var(--color-gray-300)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '10px 12px',
+                  margin: '8px 0',
+                }}
+              >
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={giftPackaging}
+                    onChange={(e) => setGiftPackaging(e.target.checked)}
+                    style={{ accentColor: 'var(--color-black-rich)', marginTop: '2px', cursor: 'pointer' }}
+                  />
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-black-rich)' }}>
+                      🎁 Premium Festive Gift Packaging
+                    </span>
+                    <span style={{ fontSize: '0.6875rem', color: 'var(--color-gray-600)' }}>
+                      Signature box, wax seal & festive ribbon (+₹{giftPackagingPrice})
+                    </span>
+                  </div>
+                </label>
+              </div>
+
+              {giftPackaging && (
+                <div className={styles.lineItem} style={{ color: '#059669' }}>
+                  <span>Premium Gift Packaging</span>
+                  <span>+₹{giftPackagingPrice.toLocaleString('en-IN')}</span>
+                </div>
+              )}
+
               <div className={styles.lineItem}>
                 <span>Estimated GST (12% Included)</span>
                 <span>₹{estimatedTax.toLocaleString('en-IN')}</span>

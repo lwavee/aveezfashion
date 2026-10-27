@@ -334,6 +334,12 @@ export default function OrderDetailPage() {
                 <span>Standard Delivery</span>
                 <span>{order.shippingFee ? `₹${order.shippingFee}` : 'FREE'}</span>
               </div>
+              {((order as any).pricing?.giftWrapFee > 0 || (order as any).giftPackaging) && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#059669', fontWeight: 600 }}>
+                  <span>🎁 Premium Festive Gift Packaging</span>
+                  <span>₹{((order as any).pricing?.giftWrapFee || 99).toLocaleString('en-IN')}</span>
+                </div>
+              )}
               <div style={{ height: '1px', backgroundColor: 'var(--color-gray-200)', margin: '4px 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: '0.9375rem' }}>
                 <span>Final Total</span>
