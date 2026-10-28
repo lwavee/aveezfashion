@@ -38,8 +38,9 @@ export const SeasonalThemeSettings: React.FC<SeasonalThemeSettingsProps> = ({ in
     announcementCtaLink: '/shop?gender=MEN',
     heroHeadline: 'THE DIWALI EDIT',
     heroSubheadline: 'Celebrate the season in timeless style. Architectural silhouettes meet festive warmth.',
+    heroOfferText: 'FLAT 40% OFF',
     heroDesktopImage: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
-    heroMobileImage: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
+    heroMobileImage: '/uploads/campaigns/diwali/diwali-hero-mobile.webp',
     heroOverlayMode: 'without_text',
     heroPrimaryCtaText: 'SHOP FESTIVE MEN →',
     heroPrimaryCtaLink: '/shop?gender=MEN',
@@ -81,6 +82,19 @@ export const SeasonalThemeSettings: React.FC<SeasonalThemeSettingsProps> = ({ in
       id: 'bogo-banner',
       title: 'Diwali Buy One Get One (BOGO)',
       url: '/uploads/campaigns/diwali/diwali-bogo-banner.webp',
+    },
+  ];
+
+  const defaultMobileBanners = [
+    {
+      id: 'mobile-diwali-banner',
+      title: 'Diwali Mobile Hero Banner (Campaign Edit)',
+      url: '/uploads/campaigns/diwali/diwali-hero-mobile.webp',
+    },
+    {
+      id: 'mobile-clean-banner',
+      title: 'Diwali Mobile Clean Photo (With Logo)',
+      url: '/uploads/campaigns/diwali/diwali-hero-mobile-clean.webp',
     },
   ];
 
@@ -458,9 +472,9 @@ export const SeasonalThemeSettings: React.FC<SeasonalThemeSettingsProps> = ({ in
             </div>
           </div>
 
-          {/* Quick Select Preset Diwali Campaign Banners */}
+          {/* Quick Select Preset Diwali Campaign Banners (Desktop) */}
           <div className={styles.presetBannersWrap}>
-            <span className={styles.label}>Diwali Campaign Banners (Select Active Hero Image)</span>
+            <span className={styles.label}>Desktop Campaign Banners (Wide Format)</span>
             <div className={styles.presetBannerGrid}>
               {defaultDiwaliBanners.map((banner) => {
                 const isActive = form.heroDesktopImage === banner.url;
@@ -468,13 +482,41 @@ export const SeasonalThemeSettings: React.FC<SeasonalThemeSettingsProps> = ({ in
                   <div
                     key={banner.id}
                     className={`${styles.presetBannerCard} ${isActive ? styles.presetBannerActive : ''}`}
-                    onClick={() => {
-                      handleSelectDesktopHero(banner.url);
-                      handleSelectMobileHero(banner.url);
-                    }}
+                    onClick={() => handleSelectDesktopHero(banner.url)}
                   >
-                    {isActive && <span className={styles.presetActiveBadge}>Active Hero</span>}
+                    {isActive && <span className={styles.presetActiveBadge}>Active Desktop</span>}
                     <div className={styles.presetThumbWrap}>
+                      <Image
+                        src={banner.url}
+                        alt={banner.title}
+                        fill
+                        className={styles.imageThumb}
+                        sizes="240px"
+                      />
+                    </div>
+                    <div className={styles.presetDetails}>
+                      <p className={styles.presetTitle}>{banner.title}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Quick Select Preset Diwali Mobile Hero Banners (Portrait) */}
+          <div className={styles.presetBannersWrap}>
+            <span className={styles.label}>Mobile Hero Banners (Portrait 3:4 / 4:5 Format)</span>
+            <div className={styles.presetBannerGrid}>
+              {defaultMobileBanners.map((banner) => {
+                const isActive = form.heroMobileImage === banner.url;
+                return (
+                  <div
+                    key={banner.id}
+                    className={`${styles.presetBannerCard} ${isActive ? styles.presetBannerActive : ''}`}
+                    onClick={() => handleSelectMobileHero(banner.url)}
+                  >
+                    {isActive && <span className={styles.presetActiveBadge}>Active Mobile</span>}
+                    <div className={styles.presetThumbWrap} style={{ aspectRatio: '3 / 4' }}>
                       <Image
                         src={banner.url}
                         alt={banner.title}
@@ -534,16 +576,28 @@ export const SeasonalThemeSettings: React.FC<SeasonalThemeSettingsProps> = ({ in
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Festive Hero Subheadline</label>
-                  <textarea
-                    name="heroSubheadline"
-                    value={form.heroSubheadline}
+                  <label className={styles.label}>Festive Offer Text / Discount Badge</label>
+                  <input
+                    type="text"
+                    name="heroOfferText"
+                    value={form.heroOfferText || ''}
                     onChange={handleChange}
-                    placeholder="Celebrate the season in timeless style. Architectural silhouettes meet festive warmth."
-                    className={styles.textarea}
-                    rows={2}
+                    placeholder="FLAT 40% OFF"
+                    className={styles.input}
                   />
                 </div>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.label}>Festive Hero Subheadline</label>
+                <textarea
+                  name="heroSubheadline"
+                  value={form.heroSubheadline}
+                  onChange={handleChange}
+                  placeholder="Celebrate the season in timeless style. Architectural silhouettes meet festive warmth."
+                  className={styles.textarea}
+                  rows={2}
+                />
               </div>
 
               <div className={styles.formGrid}>

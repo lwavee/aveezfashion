@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:seed": "node -r ts-node/register scripts/seed.ts",
+    "db:check": "node scripts/check-db.js",
     "seed:users": "node -r ts-node/register scripts/seed-users.ts"
   },
   "dependencies": {

@@ -22,6 +22,7 @@ export interface HeroSlide {
   womenText?: string;
   isFestive?: boolean;
   hideOverlay?: boolean;
+  offerText?: string;
   link?: string;
 }
 
@@ -36,6 +37,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     headingLine2: 'DIFFERENT.',
     description: 'ARCHITECTURAL SILHOUETTES & HEAVYWEIGHT ESSENTIALS DESIGNED FOR INDIVIDUALITY.',
     image: '/images/heroimage1.png',
+    mobileImage: '/images/heroimage1.png',
     alt: 'Aveez Fashion Editorial Campaign — Chapter 01 (Wear Different)',
     menLink: '/shop?gender=MEN',
     womenLink: '/shop?gender=WOMEN',
@@ -50,6 +52,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     headingLine2: 'DIFFERENT.',
     description: 'ARCHITECTURAL SILHOUETTES & HEAVYWEIGHT ESSENTIALS DESIGNED FOR INDIVIDUALITY.',
     image: '/images/heroimage2.png',
+    mobileImage: '/images/heroimage2.png',
     alt: 'Aveez Fashion Editorial Campaign — Chapter 02 (Wear Different)',
     menLink: '/shop?gender=MEN',
     womenLink: '/shop?gender=WOMEN',
@@ -64,6 +67,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     headingLine2: 'DIFFERENT.',
     description: 'ARCHITECTURAL SILHOUETTES & HEAVYWEIGHT ESSENTIALS DESIGNED FOR INDIVIDUALITY.',
     image: '/images/heroimage3.png',
+    mobileImage: '/images/heroimage3.png',
     alt: 'Aveez Fashion Editorial Campaign — Chapter 03 (Wear Different)',
     menLink: '/shop?gender=MEN',
     womenLink: '/shop?gender=WOMEN',
@@ -96,9 +100,15 @@ export const HeroSection: React.FC<HeroProps> = ({
         {
           id: 901,
           label: '01',
-          image: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
-          mobileImage: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
-          alt: 'AVEEZ FASHION — The Diwali Edit Fashion Banner',
+          image: seasonalTheme?.heroDesktopImage || '/uploads/campaigns/diwali/diwali-edit-banner.webp',
+          mobileImage:
+            seasonalTheme?.heroMobileImage &&
+            !seasonalTheme.heroMobileImage.includes('diwali-hero-mobile')
+              ? seasonalTheme.heroMobileImage
+              : (seasonalTheme?.heroDesktopImage || '/uploads/campaigns/diwali/diwali-edit-banner.webp'),
+          alt: seasonalTheme?.heroHeadline
+            ? `AVEEZ FASHION — ${seasonalTheme.heroHeadline}`
+            : 'AVEEZ FASHION — The Diwali Edit Fashion Banner',
           link: seasonalTheme?.heroPrimaryCtaLink || '/shop',
           hideOverlay: shouldHideOverlay,
           isFestive: true,
@@ -106,6 +116,7 @@ export const HeroSection: React.FC<HeroProps> = ({
           headingLine1: seasonalTheme?.heroHeadline || 'THE DIWALI',
           headingLine2: 'EDIT',
           description: seasonalTheme?.heroSubheadline || 'Celebrate the season in timeless style. Architectural silhouettes meet festive warmth.',
+          offerText: seasonalTheme?.heroOfferText || 'FLAT 40% OFF',
           menLink: seasonalTheme?.heroPrimaryCtaLink || '/shop?gender=MEN',
           menText: seasonalTheme?.heroPrimaryCtaText || 'SHOP FESTIVE MEN →',
           womenLink: seasonalTheme?.heroSecondaryCtaLink || '/shop?gender=WOMEN',
@@ -124,6 +135,7 @@ export const HeroSection: React.FC<HeroProps> = ({
           headingLine1: 'WINTER',
           headingLine2: 'COLLECTION',
           description: 'Heavyweight fleece & tailored seasonal outerwear designed for festive evenings.',
+          offerText: seasonalTheme?.heroOfferText || 'FLAT 40% OFF',
           menLink: '/shop?gender=MEN',
           menText: 'EXPLORE MEN →',
           womenLink: '/shop?gender=WOMEN',
@@ -142,6 +154,7 @@ export const HeroSection: React.FC<HeroProps> = ({
           headingLine1: 'BUY 1',
           headingLine2: 'GET 1',
           description: 'Special Diwali gifting privileges on select architectural streetwear essentials.',
+          offerText: 'BUY 1 GET 1 FREE',
           menLink: '/shop',
           menText: 'CLAIM OFFER →',
         },
@@ -149,7 +162,11 @@ export const HeroSection: React.FC<HeroProps> = ({
 
       // If admin selected or uploaded a custom hero image that is not the default edit banner, place it first
       const customHero = seasonalTheme?.heroDesktopImage;
-      if (customHero && !customHero.includes('hero-desktop.webp')) {
+      if (
+        customHero &&
+        !customHero.includes('hero-desktop.webp') &&
+        !customHero.includes('diwali-edit-banner.webp')
+      ) {
         const existingIdx = defaultBanners.findIndex((b) => b.image === customHero);
         if (existingIdx > -1) {
           // Move selected banner to first position
@@ -161,7 +178,11 @@ export const HeroSection: React.FC<HeroProps> = ({
             id: 900,
             label: '01',
             image: customHero,
-            mobileImage: seasonalTheme?.heroMobileImage || customHero,
+            mobileImage:
+              seasonalTheme?.heroMobileImage &&
+              !seasonalTheme.heroMobileImage.includes('diwali-hero-mobile')
+                ? seasonalTheme.heroMobileImage
+                : customHero,
             alt: seasonalTheme?.heroHeadline || 'AVEEZ FASHION — Diwali Campaign Banner',
             link: seasonalTheme?.heroPrimaryCtaLink || '/shop',
             hideOverlay: shouldHideOverlay,
@@ -170,6 +191,7 @@ export const HeroSection: React.FC<HeroProps> = ({
             headingLine1: seasonalTheme?.heroHeadline || 'THE DIWALI',
             headingLine2: 'EDIT',
             description: seasonalTheme?.heroSubheadline,
+            offerText: seasonalTheme?.heroOfferText || 'FLAT 40% OFF',
             menLink: seasonalTheme?.heroPrimaryCtaLink || '/shop?gender=MEN',
             menText: seasonalTheme?.heroPrimaryCtaText || 'SHOP FESTIVE MEN →',
             womenLink: seasonalTheme?.heroSecondaryCtaLink || '/shop?gender=WOMEN',
@@ -244,6 +266,9 @@ export const HeroSection: React.FC<HeroProps> = ({
   return (
     <section
       className={`${styles.heroSlider} ${isDiwali ? styles.festiveHeroSlider : ''}`}
+      style={{
+        '--hero-aspect-ratio': isDiwali ? '1983 / 793' : '2022 / 778',
+      } as React.CSSProperties}
       aria-label="Editorial Campaign Hero Slider"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -261,27 +286,27 @@ export const HeroSection: React.FC<HeroProps> = ({
               className={`${styles.slide} ${isActive ? styles.activeSlide : ''}`}
               aria-hidden={!isActive}
             >
-              {/* Desktop Wide Editorial Image */}
+              {/* Desktop Wide Editorial Image (Visible on Viewports > 768px) */}
               <div className={styles.desktopImageContainer}>
                 <Image
                   src={slide.image}
                   alt={slide.alt}
                   fill
                   priority={index === 0}
-                  sizes="100vw"
+                  sizes="(min-width: 769px) 100vw, 1px"
                   className={styles.slideImage}
                 />
               </div>
 
-              {/* Mobile Portrait Crop */}
+              {/* Mobile Dedicated Banner Image (Visible on Viewports <= 768px) */}
               <div className={styles.mobileImageContainer}>
                 <Image
                   src={slide.mobileImage || slide.image}
                   alt={slide.alt}
                   fill
                   priority={index === 0}
-                  sizes="100vw"
-                  className={styles.slideImage}
+                  sizes="(max-width: 768px) 100vw, 1px"
+                  className={styles.mobileSlideImage}
                 />
               </div>
 
@@ -314,6 +339,14 @@ export const HeroSection: React.FC<HeroProps> = ({
                     )}
 
                     <div className={styles.dividerLine} aria-hidden="true" />
+
+                    {slide.isFestive && (seasonalTheme?.heroOfferText || slide.offerText) && (
+                      <div className={styles.offerBadgeOverlay}>
+                        <span className={styles.offerBadgeText}>
+                          {seasonalTheme?.heroOfferText || slide.offerText}
+                        </span>
+                      </div>
+                    )}
 
                     {slide.description && (
                       <p className={styles.heroSubheadline}>{slide.description}</p>

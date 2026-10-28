@@ -330,6 +330,7 @@ export interface SeasonalThemeConfig {
   announcementCtaLink?: string;
   heroHeadline: string;
   heroSubheadline: string;
+  heroOfferText?: string;
   heroDesktopImage: string;
   heroMobileImage: string;
   heroOverlayMode?: 'with_text' | 'without_text';
