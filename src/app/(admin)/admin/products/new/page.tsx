@@ -140,9 +140,13 @@ function NewProductStudio() {
   // Clothing Sizing & Colours
   const [selectedSizes, setSelectedSizes] = useState<string[]>(['M', 'L']);
   const [customSizeInput, setCustomSizeInput] = useState('');
-  const [colors, setColors] = useState<ColorVariant[]>([{ name: 'Onyx Black', hex: '#0A0A0A' }]);
+  const [colors, setColors] = useState<ColorVariant[]>([]);
   const [newColorName, setNewColorName] = useState('');
   const [newColorHex, setNewColorHex] = useState('#0A0A0A');
+  const [isGroupingColors, setIsGroupingColors] = useState(false);
+  const [groupingError, setGroupingError] = useState<string | null>(null);
+  const [unclassifiedImages, setUnclassifiedImages] = useState<UploadedImage[]>([]);
+  const [colorGroupsRun, setColorGroupsRun] = useState(false);
 
   // Variant Matrix
   const [variantMatrix, setVariantMatrix] = useState<MatrixVariantItem[]>([]);
@@ -172,6 +176,32 @@ function NewProductStudio() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
+
+  // AI Merchandising & Automation State
+  const [isAnalyzingAi, setIsAnalyzingAi] = useState(false);
+  const [aiAnalysisProgress, setAiAnalysisProgress] = useState('Analyzing product image with AI...');
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiGeneratedFields, setAiGeneratedFields] = useState<Set<string>>(new Set());
+  const [manuallyEditedFields, setManuallyEditedFields] = useState<Set<string>>(new Set());
+  const [suggestedNewCategory, setSuggestedNewCategory] = useState<string | null>(null);
+  const [isApprovingCategory, setIsApprovingCategory] = useState(false);
+  const [fieldRegenerating, setFieldRegenerating] = useState<string | null>(null);
+  const [shortDescription, setShortDescription] = useState('');
+  const [suggestedHomepageSection, setSuggestedHomepageSection] = useState<string>('new_arrivals');
+  const [stylingTips, setStylingTips] = useState('');
+
+  const markManuallyEdited = (field: string) => {
+    setManuallyEditedFields((prev) => {
+      const next = new Set(prev);
+      next.add(field);
+      return next;
+    });
+    setAiGeneratedFields((prev) => {
+      const next = new Set(prev);
+      next.delete(field);
+      return next;
+    });
+  };
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -501,6 +531,250 @@ function NewProductStudio() {
     };
   }, [basePrice, salePrice, costPrice]);
 
+  // AI Application & Suggestions Logic
+  const applyAiSuggestions = (ai: any, forceField?: string) => {
+    const newAiFields = new Set<string>();
+
+    if (!forceField || forceField === 'title') {
+      // Preserve administrator's entered title unless explicitly regenerating title
+      if (forceField === 'title' || (!title.trim() && !manuallyEditedFields.has('title'))) {
+        if (ai.title) {
+          setTitle(ai.title);
+          newAiFields.add('title');
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'description') {
+      if (forceField || !manuallyEditedFields.has('description')) {
+        if (ai.description) {
+          setDescription(ai.description);
+          newAiFields.add('description');
+        }
+        if (ai.shortDescription) {
+          setShortDescription(ai.shortDescription);
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'slug') {
+      if (!isSlugManuallyEdited && (forceField || !manuallyEditedFields.has('slug'))) {
+        if (ai.suggestedSlug) {
+          setSlug(ai.suggestedSlug);
+          newAiFields.add('slug');
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'category') {
+      if (forceField || !manuallyEditedFields.has('category')) {
+        const targetSlug = String(ai.categorySlug || '').toLowerCase();
+        const matched = allCategories.find(
+          (c) => c.slug.toLowerCase() === targetSlug || c.name.toLowerCase() === targetSlug
+        );
+        if (matched) {
+          setCategory(matched.slug);
+          newAiFields.add('category');
+          setSuggestedNewCategory(null);
+        } else if (ai.newCategorySuggestion) {
+          setSuggestedNewCategory(ai.newCategorySuggestion);
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'productType') {
+      if (!productType && (forceField || !manuallyEditedFields.has('productType'))) {
+        if (ai.productType === 'accessories' || ai.productType === 'clothing') {
+          setProductType(ai.productType);
+          newAiFields.add('productType');
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'department') {
+      if (forceField || !manuallyEditedFields.has('department')) {
+        if (ai.department) {
+          setDepartment(ai.department);
+          setGender(ai.department === 'WOMEN' ? 'WOMEN' : ai.department === 'MEN' ? 'MEN' : 'UNISEX');
+          newAiFields.add('department');
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'collection') {
+      if (forceField || !manuallyEditedFields.has('collectionId')) {
+        if (ai.suggestedCollection) {
+          const matchedCol = collections.find(
+            (col) => col.slug.toLowerCase() === String(ai.suggestedCollection).toLowerCase()
+          );
+          if (matchedCol) {
+            setCollectionId(matchedCol.id);
+            newAiFields.add('collectionId');
+          }
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'tags') {
+      if (forceField || !manuallyEditedFields.has('tags')) {
+        if (Array.isArray(ai.tags) && ai.tags.length > 0) {
+          setTags((prev) => Array.from(new Set([...prev, ...ai.tags])));
+          newAiFields.add('tags');
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'colors') {
+      if (forceField || !manuallyEditedFields.has('colors')) {
+        // Only adopt colors from AI if colors is currently empty and not manually edited
+        if (colors.length === 0 && Array.isArray(ai.colors) && ai.colors.length > 0) {
+          const mappedColors: ColorVariant[] = ai.colors.map((c: any) => {
+            const name = typeof c === 'string' ? c : c.name;
+            const hex = typeof c === 'object' && c.hex ? c.hex : resolveColorHex(name);
+            return { name, hex };
+          });
+          setColors(mappedColors);
+          newAiFields.add('colors');
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'seo') {
+      if (forceField || !manuallyEditedFields.has('metaTitle')) {
+        if (ai.metaTitle) {
+          setMetaTitle(ai.metaTitle);
+          newAiFields.add('metaTitle');
+        }
+      }
+      if (forceField || !manuallyEditedFields.has('metaDescription')) {
+        if (ai.metaDescription) {
+          setMetaDescription(ai.metaDescription);
+          newAiFields.add('metaDescription');
+        }
+      }
+    }
+
+    if (!forceField || forceField === 'attributes') {
+      if (ai.fabric && (forceField || !manuallyEditedFields.has('fabric'))) {
+        setFabric(ai.fabric);
+        newAiFields.add('fabric');
+      }
+      if (ai.fit && (forceField || !manuallyEditedFields.has('fit'))) {
+        setFit(ai.fit);
+        newAiFields.add('fit');
+      }
+      if (ai.stylingTips && (forceField || !manuallyEditedFields.has('stylingTips'))) {
+        setStylingTips(ai.stylingTips);
+        newAiFields.add('stylingTips');
+      }
+    }
+
+    if (ai.imageAlt) {
+      setImages((prev) =>
+        prev.map((img, idx) => ({
+          ...img,
+          alt: !img.alt || img.alt.includes('view') ? `${ai.imageAlt} (view ${idx + 1})` : img.alt,
+        }))
+      );
+    }
+
+    if (ai.suggestedHomepageSection) {
+      setSuggestedHomepageSection(ai.suggestedHomepageSection);
+    }
+
+    setAiGeneratedFields((prev) => {
+      const next = new Set(prev);
+      newAiFields.forEach((f) => next.add(f));
+      return next;
+    });
+  };
+
+  const triggerAiAnalysis = async (
+    imageUrl: string,
+    forceField?: string,
+    explicitColors?: string[]
+  ) => {
+    if (forceField) {
+      setFieldRegenerating(forceField);
+    } else {
+      setIsAnalyzingAi(true);
+      setAiAnalysisProgress(
+        title.trim()
+          ? `Generating editorial details grounded in "${title.trim()}"...`
+          : 'Analyzing product image with AI...'
+      );
+    }
+    setAiError(null);
+
+    try {
+      const activeColorNames = explicitColors || colors.map((c) => c.name);
+      const res = await fetch('/api/admin/ai/analyze-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageUrl,
+          title: title.trim() || undefined,
+          detectedColors: activeColorNames,
+          department,
+          productType,
+          forceField,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || 'AI analysis failed.');
+      }
+
+      applyAiSuggestions(json.data, forceField);
+    } catch (err: any) {
+      console.warn('[AI Analysis] Error:', err);
+      setAiError(err.message || 'AI analysis could not complete. You can enter details manually or retry.');
+    } finally {
+      setIsAnalyzingAi(false);
+      setFieldRegenerating(null);
+    }
+  };
+
+  const handleApproveSuggestedCategory = async () => {
+    if (!suggestedNewCategory) return;
+    setIsApprovingCategory(true);
+    try {
+      const res = await fetch('/api/admin/categories/approve-suggested', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: suggestedNewCategory,
+          department: [department],
+        }),
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        const created = json.data;
+        setAllCategories((prev) => [...prev, created]);
+        if (productType === 'accessories') {
+          setAccessoryCategories((prev) => [...prev, created]);
+        } else {
+          setClothingCategories((prev) => [...prev, created]);
+        }
+        setCategory(created.slug);
+        setSuggestedNewCategory(null);
+        setAiGeneratedFields((prev) => {
+          const next = new Set(prev);
+          next.add('category');
+          return next;
+        });
+        setFormSuccess(`Category "${created.name}" created and assigned!`);
+      } else {
+        throw new Error(json.error || 'Failed to approve category.');
+      }
+    } catch (err: any) {
+      setFormError(err.message || 'Failed to approve category.');
+    } finally {
+      setIsApprovingCategory(false);
+    }
+  };
+
   // 7. Image Upload Handler
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -541,12 +815,14 @@ function NewProductStudio() {
           sortOrder: images.length + newUploaded.length,
           fileName: data.data.fileName,
         });
-
-        // Trigger client-side color suggestion probe
-        detectColorsFromImage(file);
       }
 
       setImages((prev) => [...prev, ...newUploaded]);
+
+      // Inform user to click "Specify with Color"
+      setFormSuccess(
+        `${newUploaded.length} ${newUploaded.length === 1 ? 'image' : 'images'} uploaded to cloud storage! Click "Specify with Color" below to automatically detect garment colours and group photos.`
+      );
     } catch (err: any) {
       setUploadError(err.message || 'Image upload failed. Please try again.');
     } finally {
@@ -681,6 +957,173 @@ function NewProductStudio() {
     setQuickColorName('');
   };
 
+  // Automatic Color Grouping Handler ("Specify with Color")
+  const handleSpecifyWithColor = async () => {
+    if (images.length === 0) {
+      setFormError('Please upload product photos first before specifying colors.');
+      return;
+    }
+
+    setIsGroupingColors(true);
+    setGroupingError(null);
+    setAiAnalysisProgress(
+      title.trim()
+        ? `Analyzing photos & detecting visible garment colours for "${title.trim()}"...`
+        : 'Analyzing photos & detecting visible garment colours...'
+    );
+
+    try {
+      const res = await fetch('/api/admin/ai/group-colors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: title.trim() || undefined,
+          images: images.map((img) => ({
+            url: img.url,
+            fileName: img.fileName,
+            alt: img.alt,
+            color: img.color,
+          })),
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || 'Failed to analyze colors from images.');
+      }
+
+      const { groups, unclassified } = json.data;
+
+      if (Array.isArray(groups) && groups.length > 0) {
+        // 1. Populate detected colors
+        const detectedCols: ColorVariant[] = groups.map((g: any) => ({
+          name: g.colorName,
+          hex: g.colorHex,
+        }));
+        setColors(detectedCols);
+
+        // 2. Tag each image with its detected color
+        const urlToColor = new Map<string, string>();
+        for (const g of groups) {
+          for (const img of g.images) {
+            urlToColor.set(img.url, g.colorName);
+          }
+        }
+
+        setImages((prev) =>
+          prev.map((img) => ({
+            ...img,
+            color: urlToColor.get(img.url) || undefined,
+          }))
+        );
+
+        setUnclassifiedImages(unclassified || []);
+        setColorGroupsRun(true);
+        setActiveUploadColor(groups[0]?.colorName || 'ALL');
+
+        setFormSuccess(
+          `Identified ${groups.length} colourways: ${groups.map((g: any) => g.colorName).join(', ')}. Photos grouped successfully!`
+        );
+
+        // 3. If title is provided and description is not manually entered, automatically generate title-grounded AI details!
+        if (title.trim() && (!description || !manuallyEditedFields.has('description'))) {
+          triggerAiAnalysis(images[0].url, undefined, detectedCols.map((c) => c.name));
+        }
+      } else {
+        setGroupingError('Could not confidently distinguish colors. You can specify or tweak colors manually.');
+      }
+    } catch (err: any) {
+      console.error('[SpecifyWithColor] Error:', err);
+      setGroupingError(err.message || 'Color detection could not complete. You can assign colors manually.');
+    } finally {
+      setIsGroupingColors(false);
+    }
+  };
+
+  const handleEditColorName = (oldName: string, newName: string) => {
+    const trimmedNew = newName.trim();
+    if (!trimmedNew || oldName.toLowerCase() === trimmedNew.toLowerCase()) return;
+
+    const newHex = resolveColorHex(trimmedNew);
+
+    setColors((prev) =>
+      prev.map((c) =>
+        c.name.toLowerCase() === oldName.toLowerCase()
+          ? { name: trimmedNew, hex: newHex }
+          : c
+      )
+    );
+
+    setImages((prev) =>
+      prev.map((img) =>
+        img.color && img.color.toLowerCase() === oldName.toLowerCase()
+          ? { ...img, color: trimmedNew }
+          : img
+      )
+    );
+
+    setVariantMatrix((prev) =>
+      prev.map((v) =>
+        v.color.toLowerCase() === oldName.toLowerCase()
+          ? { ...v, color: trimmedNew, colorHex: newHex, key: `${trimmedNew}__${v.size}` }
+          : v
+      )
+    );
+
+    if (activeUploadColor.toLowerCase() === oldName.toLowerCase()) {
+      setActiveUploadColor(trimmedNew);
+    }
+  };
+
+  const handleEditColorHex = (colorName: string, newHex: string) => {
+    setColors((prev) =>
+      prev.map((c) =>
+        c.name.toLowerCase() === colorName.toLowerCase()
+          ? { ...c, hex: newHex }
+          : c
+      )
+    );
+
+    setVariantMatrix((prev) =>
+      prev.map((v) =>
+        v.color.toLowerCase() === colorName.toLowerCase()
+          ? { ...v, colorHex: newHex }
+          : v
+      )
+    );
+  };
+
+  const handleMoveImageToColor = (imageUrl: string, targetColor: string) => {
+    setImages((prev) =>
+      prev.map((img) => {
+        if (img.url === imageUrl) {
+          return {
+            ...img,
+            color: targetColor === 'UNCLASSIFIED' || !targetColor ? undefined : targetColor,
+          };
+        }
+        return img;
+      })
+    );
+  };
+
+  const handleDeleteColorGroup = (colorName: string) => {
+    setColors((prev) => prev.filter((c) => c.name.toLowerCase() !== colorName.toLowerCase()));
+    setImages((prev) =>
+      prev.map((img) =>
+        img.color && img.color.toLowerCase() === colorName.toLowerCase()
+          ? { ...img, color: undefined }
+          : img
+      )
+    );
+    setVariantMatrix((prev) =>
+      prev.filter((v) => v.color.toLowerCase() !== colorName.toLowerCase())
+    );
+    if (activeUploadColor.toLowerCase() === colorName.toLowerCase()) {
+      setActiveUploadColor('ALL');
+    }
+  };
+
   // 8. Size Selector Controls
   const toggleSize = (size: string) => {
     setSelectedSizes((prev) => {
@@ -715,11 +1158,7 @@ function NewProductStudio() {
   };
 
   const handleRemoveColor = (colorName: string) => {
-    if (colors.length === 1) {
-      alert('A product must have at least one colour.');
-      return;
-    }
-    setColors((prev) => prev.filter((c) => c.name !== colorName));
+    handleDeleteColorGroup(colorName);
   };
 
   // 10. Tag Management
@@ -1063,7 +1502,31 @@ function NewProductStudio() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {images.length > 0 && (
+            <button
+              type="button"
+              className={styles.specifyWithColorBtn}
+              onClick={handleSpecifyWithColor}
+              disabled={isGroupingColors}
+              title="Automatically detect visible colors from photos and group into variants"
+            >
+              <Palette size={14} />
+              <span>{isGroupingColors ? 'GROUPING COLOURS...' : 'SPECIFY WITH COLOR'}</span>
+            </button>
+          )}
+          {images.length > 0 && (
+            <button
+              type="button"
+              className={styles.aiRegenerateAllBtn}
+              onClick={() => triggerAiAnalysis(images[0].url)}
+              disabled={isAnalyzingAi}
+              title={title.trim() ? `Generate editorial copy grounded in "${title.trim()}"` : 'Generate AI copy'}
+            >
+              <Sparkles size={14} />
+              <span>{isAnalyzingAi ? 'ANALYZING...' : 'GENERATE AI COPY'}</span>
+            </button>
+          )}
           <button
             type="button"
             className={styles.draftActionBtn}
@@ -1083,6 +1546,44 @@ function NewProductStudio() {
           </button>
         </div>
       </div>
+
+      {/* AI Processing Status Indicator */}
+      {isAnalyzingAi && (
+        <div className={styles.aiStatusBar}>
+          <div className={styles.aiSpinner} />
+          <div className={styles.aiStatusContent}>
+            <span className={styles.aiStatusTitle}>
+              {title.trim()
+                ? `✨ Generating Editorial Copy Grounded in "${title.trim()}"...`
+                : '✨ Analyzing Product Image with AI...'}
+            </span>
+            <span className={styles.aiStatusSub}>
+              {colors.length > 0
+                ? `Writing title-grounded descriptions, category matching, and SEO for colourways: ${colors.map((c) => c.name).join(', ')}`
+                : 'Extracting category matching, copywriting, visible colors, tags & SEO without guessing technical specifications'}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* AI Error Alert with Retry */}
+      {aiError && (
+        <div className={styles.aiErrorBanner}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AlertCircle size={16} />
+            <span>{aiError}</span>
+          </div>
+          {images.length > 0 && (
+            <button
+              type="button"
+              className={styles.aiRetryBtn}
+              onClick={() => triggerAiAnalysis(images[0].url)}
+            >
+              Retry AI Analysis
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Action Alerts */}
       {formError && (
@@ -1141,10 +1642,34 @@ function NewProductStudio() {
 
           <div className={styles.sectionBody}>
             <div>
-              <label className={styles.label}>
-                <span>Product Title</span>
-                <span className={styles.labelRequired}>*</span>
-              </label>
+              <div className={styles.fieldLabelRow}>
+                <label className={styles.label}>
+                  <span>Product Title</span>
+                  <span className={styles.labelRequired}>*</span>
+                </label>
+                <div className={styles.labelLeftGroup}>
+                  {aiGeneratedFields.has('title') && (
+                    <span className={styles.aiBadge}>
+                      <Sparkles size={11} /> AI Suggestion
+                    </span>
+                  )}
+                  {manuallyEditedFields.has('title') && (
+                    <span className={styles.editedBadge}>Edited</span>
+                  )}
+                  {images.length > 0 && (
+                    <button
+                      type="button"
+                      className={styles.fieldRegenBtn}
+                      onClick={() => triggerAiAnalysis(images[0].url, 'title')}
+                      disabled={isAnalyzingAi}
+                      title="Regenerate Title"
+                    >
+                      <RefreshCw size={11} className={fieldRegenerating === 'title' ? styles.spin : ''} />
+                      <span>Regenerate Title</span>
+                    </button>
+                  )}
+                </div>
+              </div>
               <input
                 type="text"
                 required
@@ -1155,21 +1680,39 @@ function NewProductStudio() {
                     : 'e.g. Artisan Floral Embroidered Hairband — Noir & Pearl'
                 }
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  markManuallyEdited('title');
+                }}
               />
             </div>
 
             <div className={styles.formGridThree}>
               {/* 1. Department */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <span>Department</span>
-                  <span className={styles.labelRequired}>*</span>
-                </label>
+                <div className={styles.fieldLabelRow}>
+                  <label className={styles.label}>
+                    <span>Department</span>
+                    <span className={styles.labelRequired}>*</span>
+                  </label>
+                  <div className={styles.labelLeftGroup}>
+                    {aiGeneratedFields.has('department') && (
+                      <span className={styles.aiBadge}>
+                        <Sparkles size={11} /> AI
+                      </span>
+                    )}
+                    {manuallyEditedFields.has('department') && (
+                      <span className={styles.editedBadge}>Edited</span>
+                    )}
+                  </div>
+                </div>
                 <select
                   className={styles.select}
                   value={department}
-                  onChange={(e) => handleDepartmentChange(e.target.value as any)}
+                  onChange={(e) => {
+                    handleDepartmentChange(e.target.value as any);
+                    markManuallyEdited('department');
+                  }}
                   disabled={loadingTaxonomy}
                 >
                   <option value="MEN">Men</option>
@@ -1184,14 +1727,41 @@ function NewProductStudio() {
 
               {/* 2. Category */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <span>Category</span>
-                  <span className={styles.labelRequired}>*</span>
-                </label>
+                <div className={styles.fieldLabelRow}>
+                  <label className={styles.label}>
+                    <span>Category</span>
+                    <span className={styles.labelRequired}>*</span>
+                  </label>
+                  <div className={styles.labelLeftGroup}>
+                    {aiGeneratedFields.has('category') && (
+                      <span className={styles.aiBadge}>
+                        <Sparkles size={11} /> AI Matched
+                      </span>
+                    )}
+                    {manuallyEditedFields.has('category') && (
+                      <span className={styles.editedBadge}>Edited</span>
+                    )}
+                    {images.length > 0 && (
+                      <button
+                        type="button"
+                        className={styles.fieldRegenBtn}
+                        onClick={() => triggerAiAnalysis(images[0].url, 'category')}
+                        disabled={isAnalyzingAi}
+                        title="Suggest Categories Again"
+                      >
+                        <RefreshCw size={11} className={fieldRegenerating === 'category' ? styles.spin : ''} />
+                        <span>Suggest Again</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
                 <select
                   className={styles.select}
                   value={category}
-                  onChange={(e) => handleCategoryChange(e.target.value)}
+                  onChange={(e) => {
+                    handleCategoryChange(e.target.value);
+                    markManuallyEdited('category');
+                  }}
                   disabled={loadingTaxonomy || !department || availableCategories.length === 0}
                 >
                   {loadingTaxonomy ? (
@@ -1220,17 +1790,61 @@ function NewProductStudio() {
                     ? 'Select department first'
                     : `${availableCategories.length} categories available`}
                 </span>
+
+                {/* Intelligent Category Assignment - New Category Suggested Alert */}
+                {suggestedNewCategory && (
+                  <div className={styles.categorySuggestionAlert}>
+                    <div className={styles.suggestionInfo}>
+                      <Sparkles size={16} />
+                      <span>
+                        AI suggested a novel category: <strong>{suggestedNewCategory}</strong> (not in catalog).
+                      </span>
+                    </div>
+                    <div className={styles.suggestionActions}>
+                      <button
+                        type="button"
+                        className={styles.approveCategoryBtn}
+                        onClick={handleApproveSuggestedCategory}
+                        disabled={isApprovingCategory}
+                      >
+                        {isApprovingCategory ? 'Creating...' : 'Approve & Create Category'}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.dismissCategoryBtn}
+                        onClick={() => setSuggestedNewCategory(null)}
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* 3. Collection (Optional) */}
               <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <span>Collection (Optional)</span>
-                </label>
+                <div className={styles.fieldLabelRow}>
+                  <label className={styles.label}>
+                    <span>Collection (Optional)</span>
+                  </label>
+                  <div className={styles.labelLeftGroup}>
+                    {aiGeneratedFields.has('collectionId') && (
+                      <span className={styles.aiBadge}>
+                        <Sparkles size={11} /> AI Suggested
+                      </span>
+                    )}
+                    {manuallyEditedFields.has('collectionId') && (
+                      <span className={styles.editedBadge}>Edited</span>
+                    )}
+                  </div>
+                </div>
                 <select
                   className={styles.select}
                   value={collectionId}
-                  onChange={(e) => setCollectionId(e.target.value)}
+                  onChange={(e) => {
+                    setCollectionId(e.target.value);
+                    markManuallyEdited('collectionId');
+                  }}
                   disabled={loadingTaxonomy || !category}
                 >
                   <option value="">No Collection Assigned</option>
@@ -1252,12 +1866,34 @@ function NewProductStudio() {
 
             {/* Description */}
             <div className={styles.formGroup}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className={styles.fieldLabelRow}>
                 <label className={styles.label}>
-                  <span>Description</span>
+                  <span>Detailed Description</span>
                   <span className={styles.labelRequired}>*</span>
                 </label>
-                <span className={styles.helperText}>{description.length} characters</span>
+                <div className={styles.labelLeftGroup}>
+                  {aiGeneratedFields.has('description') && (
+                    <span className={styles.aiBadge}>
+                      <Sparkles size={11} /> AI Generated
+                    </span>
+                  )}
+                  {manuallyEditedFields.has('description') && (
+                    <span className={styles.editedBadge}>Edited</span>
+                  )}
+                  {images.length > 0 && (
+                    <button
+                      type="button"
+                      className={styles.fieldRegenBtn}
+                      onClick={() => triggerAiAnalysis(images[0].url, 'description')}
+                      disabled={isAnalyzingAi}
+                      title="Regenerate Description"
+                    >
+                      <RefreshCw size={11} className={fieldRegenerating === 'description' ? styles.spin : ''} />
+                      <span>Regenerate Description</span>
+                    </button>
+                  )}
+                  <span className={styles.helperText}>{description.length} characters</span>
+                </div>
               </div>
               <textarea
                 rows={4}
@@ -1265,20 +1901,33 @@ function NewProductStudio() {
                 className={styles.textarea}
                 placeholder="Architectural silhouette crafted with precision drape, premium combed natural fibers, and substantial weight..."
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  markManuallyEdited('description');
+                }}
               />
             </div>
 
             {/* URL Slug */}
             <div className={styles.formGroup}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <label className={styles.label}>
-                  <span>Storefront URL Slug</span>
-                </label>
+                <div className={styles.labelLeftGroup}>
+                  <label className={styles.label}>
+                    <span>Storefront URL Slug</span>
+                  </label>
+                  {aiGeneratedFields.has('slug') && (
+                    <span className={styles.aiBadge}>
+                      <Sparkles size={11} /> AI Generated
+                    </span>
+                  )}
+                </div>
                 {isSlugManuallyEdited && (
                   <button
                     type="button"
-                    onClick={() => setIsSlugManuallyEdited(false)}
+                    onClick={() => {
+                      setIsSlugManuallyEdited(false);
+                      if (title) setSlug(title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''));
+                    }}
                     style={{ fontSize: '0.6875rem', color: '#71717A', cursor: 'pointer', background: 'none' }}
                   >
                     Reset to auto-generated
@@ -1293,6 +1942,7 @@ function NewProductStudio() {
                   value={slug}
                   onChange={(e) => {
                     setIsSlugManuallyEdited(true);
+                    markManuallyEdited('slug');
                     setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
                   }}
                 />
@@ -1385,18 +2035,63 @@ function NewProductStudio() {
             <div className={styles.sectionHeaderLeft}>
               <span className={styles.sectionNumber}>B</span>
               <div>
-                <h2 className={styles.sectionTitle}>PRODUCT IMAGES</h2>
+                <h2 className={styles.sectionTitle}>PRODUCT IMAGES & COLOUR GROUPS</h2>
                 <p className={styles.sectionSubtitle}>
-                  High-resolution fashion photography uploaded directly to Backblaze B2 private storage
+                  High-resolution photography organized by genuine colourways into Backblaze B2 private storage
                 </p>
               </div>
             </div>
-            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: images.length > 0 ? '#0A0A0A' : '#71717A' }}>
-              {images.length} {images.length === 1 ? 'image' : 'images'} added
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: images.length > 0 ? '#0A0A0A' : '#71717A' }}>
+                {images.length} {images.length === 1 ? 'photo' : 'photos'} ({colors.length} {colors.length === 1 ? 'colour' : 'colours'})
+              </span>
+              <button
+                type="button"
+                className={styles.specifyWithColorBtn}
+                onClick={handleSpecifyWithColor}
+                disabled={isGroupingColors || images.length === 0}
+                title="Automatically analyze uploaded photos, identify visible colors, and group into variants"
+              >
+                <Palette size={14} />
+                <span>{isGroupingColors ? 'ANALYZING & GROUPING...' : 'SPECIFY WITH COLOR'}</span>
+              </button>
+            </div>
           </div>
 
           <div className={styles.sectionBody}>
+            {/* Workflow Guide */}
+            <div className={styles.colorWorkflowGuide}>
+              <div className={styles.colorWorkflowSteps}>
+                <span className={`${styles.workflowStepBadge} ${title.trim() ? styles.workflowStepBadgeActive : ''}`}>
+                  1. Title: {title.trim() ? `"${title.trim()}"` : 'Enter in Section A'}
+                </span>
+                <span>→</span>
+                <span className={`${styles.workflowStepBadge} ${images.length > 0 ? styles.workflowStepBadgeActive : ''}`}>
+                  2. Upload Photos ({images.length})
+                </span>
+                <span>→</span>
+                <span className={`${styles.workflowStepBadge} ${colors.length > 0 ? styles.workflowStepBadgeActive : ''}`}>
+                  3. Specify with Color ({colors.length})
+                </span>
+                <span>→</span>
+                <span className={`${styles.workflowStepBadge} ${description ? styles.workflowStepBadgeActive : ''}`}>
+                  4. Review AI Details
+                </span>
+              </div>
+              {images.length > 0 && colors.length === 0 && (
+                <span style={{ fontSize: '0.75rem', color: '#B45309', fontWeight: 600 }}>
+                  ← Click &ldquo;Specify with Color&rdquo; to group photos
+                </span>
+              )}
+            </div>
+
+            {groupingError && (
+              <div style={{ padding: '10px 14px', backgroundColor: '#FEF2F2', border: '1px solid #F87171', borderRadius: '6px', color: '#991B1B', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                <AlertCircle size={16} />
+                <span>{groupingError}</span>
+              </div>
+            )}
+
             {/* Colour Selector & Target Tabs */}
             <div className={styles.colorFilterBar}>
               <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0A0A0A', marginRight: '4px' }}>
@@ -1671,25 +2366,183 @@ function NewProductStudio() {
               );
             })()}
 
-            {/* Smart Colour Detection Suggestions */}
-            {suggestedColors.length > 0 && (
-              <div className={styles.colorSuggestionBar}>
-                <span className={styles.colorSuggestionTitle}>
-                  <Palette size={14} />
-                  <span>Detected palette from image:</span>
-                </span>
-                {suggestedColors.map((sc) => (
+            {/* Detected Colourways & Image Groups Manager */}
+            {colors.length > 0 && (
+              <div className={styles.colorGroupsContainer}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <h3 style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#0A0A0A', letterSpacing: '0.02em', margin: 0 }}>
+                    COLOURWAYS &amp; PHOTO ASSIGNMENTS ({colors.length})
+                  </h3>
                   <button
-                    key={sc.name}
                     type="button"
-                    className={styles.colorSuggestionPill}
-                    onClick={() => handleAddColor(sc.name, sc.hex)}
+                    className={styles.specifyWithColorBtn}
+                    style={{ padding: '4px 10px', fontSize: '0.6875rem' }}
+                    onClick={handleSpecifyWithColor}
+                    disabled={isGroupingColors}
+                    title="Re-run colour detection on uploaded photos"
                   >
-                    <span className={styles.swatchDot} style={{ backgroundColor: sc.hex }} />
-                    <span>{sc.name}</span>
-                    <Plus size={10} />
+                    <RefreshCw size={11} className={isGroupingColors ? styles.spin : ''} />
+                    <span>RE-RUN DETECTION</span>
                   </button>
-                ))}
+                </div>
+
+                {colors.map((c) => {
+                  const assignedImages = images.filter(
+                    (img) => img.color && img.color.toLowerCase() === c.name.toLowerCase()
+                  );
+
+                  return (
+                    <div key={c.name} className={styles.colorGroupCard}>
+                      <div className={styles.colorGroupHeader}>
+                        <div className={styles.colorGroupMeta}>
+                          <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                            <span
+                              className={styles.swatchDot}
+                              style={{
+                                backgroundColor: resolveColorHex(c.name, c.hex),
+                                width: '16px',
+                                height: '16px',
+                                cursor: 'pointer',
+                              }}
+                            />
+                            <input
+                              type="color"
+                              value={resolveColorHex(c.name, c.hex)}
+                              onChange={(e) => handleEditColorHex(c.name, e.target.value)}
+                              style={{
+                                position: 'absolute',
+                                opacity: 0,
+                                width: '16px',
+                                height: '16px',
+                                cursor: 'pointer',
+                              }}
+                              title="Edit hex shade"
+                            />
+                          </div>
+
+                          <input
+                            type="text"
+                            className={styles.colorNameInput}
+                            value={c.name}
+                            onChange={(e) => handleEditColorName(c.name, e.target.value)}
+                            title="Click to edit colourway label"
+                          />
+
+                          <span className={styles.colorCountBadge}>
+                            {assignedImages.length} {assignedImages.length === 1 ? 'photo' : 'photos'}
+                          </span>
+                        </div>
+
+                        <div className={styles.colorGroupActions}>
+                          <button
+                            type="button"
+                            className={styles.deleteGroupBtn}
+                            onClick={() => handleDeleteColorGroup(c.name)}
+                            title={`Remove ${c.name} colourway`}
+                          >
+                            <Trash2 size={12} />
+                            <span>Delete Colourway</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Thumbnails assigned to this color */}
+                      {assignedImages.length > 0 ? (
+                        <div className={styles.colorGroupThumbGrid}>
+                          {assignedImages.map((img) => (
+                            <div key={img.url} className={styles.colorGroupThumbCard}>
+                              {img.isPrimary && (
+                                <span
+                                  style={{
+                                    position: 'absolute',
+                                    top: '4px',
+                                    left: '4px',
+                                    background: '#0A0A0A',
+                                    color: '#FFF',
+                                    fontSize: '0.5625rem',
+                                    padding: '1px 4px',
+                                    borderRadius: '2px',
+                                    fontWeight: 700,
+                                    zIndex: 1,
+                                  }}
+                                >
+                                  PRIMARY
+                                </span>
+                              )}
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={img.url} alt={img.alt} className={styles.colorGroupThumbImg} />
+                              <div className={styles.colorGroupThumbFooter}>
+                                <select
+                                  className={styles.colorGroupThumbMoveSelect}
+                                  value={c.name}
+                                  onChange={(e) => handleMoveImageToColor(img.url, e.target.value)}
+                                  title="Move photo to another colourway or Unclassified"
+                                >
+                                  <option value={c.name}>{c.name}</option>
+                                  {colors
+                                    .filter((other) => other.name.toLowerCase() !== c.name.toLowerCase())
+                                    .map((other) => (
+                                      <option key={other.name} value={other.name}>
+                                        Move to {other.name}
+                                      </option>
+                                    ))}
+                                  <option value="UNCLASSIFIED">Move to Unclassified</option>
+                                </select>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: '0.75rem', color: '#71717A', fontStyle: 'italic', padding: '6px 0' }}>
+                          No photos assigned to this colourway yet.
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+
+                {/* Unclassified Images Section */}
+                {(() => {
+                  const unclassified = images.filter((img) => !img.color);
+                  if (unclassified.length === 0) return null;
+
+                  return (
+                    <div className={styles.unclassifiedNotice}>
+                      <div className={styles.unclassifiedHeader}>
+                        <AlertCircle size={16} />
+                        <span>
+                          Unclassified Photos ({unclassified.length}) — Review &amp; Assign Colourway
+                        </span>
+                      </div>
+                      <p style={{ fontSize: '0.75rem', color: '#92400E', margin: '0 0 10px 0' }}>
+                        The colour could not be automatically confirmed with high certainty. Assign them below:
+                      </p>
+                      <div className={styles.colorGroupThumbGrid}>
+                        {unclassified.map((img) => (
+                          <div key={img.url} className={styles.colorGroupThumbCard}>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={img.url} alt={img.alt} className={styles.colorGroupThumbImg} />
+                            <div className={styles.colorGroupThumbFooter}>
+                              <select
+                                className={styles.colorGroupThumbMoveSelect}
+                                value=""
+                                onChange={(e) => handleMoveImageToColor(img.url, e.target.value)}
+                                title="Assign this photo to a colourway"
+                              >
+                                <option value="">Assign Colour...</option>
+                                {colors.map((c) => (
+                                  <option key={c.name} value={c.name}>
+                                    {c.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -2494,28 +3347,70 @@ function NewProductStudio() {
             {/* SEO Metadata */}
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <span>SEO Title Tag (Optional)</span>
-                </label>
+                <div className={styles.fieldLabelRow}>
+                  <label className={styles.label}>
+                    <span>SEO Title Tag (Optional)</span>
+                  </label>
+                  <div className={styles.labelLeftGroup}>
+                    {aiGeneratedFields.has('metaTitle') && (
+                      <span className={styles.aiBadge}>
+                        <Sparkles size={11} /> AI Suggested
+                      </span>
+                    )}
+                    {manuallyEditedFields.has('metaTitle') && (
+                      <span className={styles.editedBadge}>Edited</span>
+                    )}
+                    {images.length > 0 && (
+                      <button
+                        type="button"
+                        className={styles.fieldRegenBtn}
+                        onClick={() => triggerAiAnalysis(images[0].url, 'seo')}
+                        disabled={isAnalyzingAi}
+                        title="Regenerate SEO"
+                      >
+                        <RefreshCw size={11} className={fieldRegenerating === 'seo' ? styles.spin : ''} />
+                        <span>Regenerate SEO</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
                 <input
                   type="text"
                   className={styles.input}
                   placeholder={title || 'Custom search engine page title...'}
                   value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value)}
+                  onChange={(e) => {
+                    setMetaTitle(e.target.value);
+                    markManuallyEdited('metaTitle');
+                  }}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <span>SEO Meta Description (Optional)</span>
-                </label>
+                <div className={styles.fieldLabelRow}>
+                  <label className={styles.label}>
+                    <span>SEO Meta Description (Optional)</span>
+                  </label>
+                  <div className={styles.labelLeftGroup}>
+                    {aiGeneratedFields.has('metaDescription') && (
+                      <span className={styles.aiBadge}>
+                        <Sparkles size={11} /> AI Suggested
+                      </span>
+                    )}
+                    {manuallyEditedFields.has('metaDescription') && (
+                      <span className={styles.editedBadge}>Edited</span>
+                    )}
+                  </div>
+                </div>
                 <input
                   type="text"
                   className={styles.input}
                   placeholder="Appears in Google search snippets..."
                   value={metaDescription}
-                  onChange={(e) => setMetaDescription(e.target.value)}
+                  onChange={(e) => {
+                    setMetaDescription(e.target.value);
+                    markManuallyEdited('metaDescription');
+                  }}
                 />
               </div>
             </div>
@@ -2539,6 +3434,18 @@ function NewProductStudio() {
           </div>
 
           <div className={styles.actionButtons}>
+            {images.length > 0 && (
+              <button
+                type="button"
+                className={styles.aiRegenerateAllBtn}
+                onClick={() => triggerAiAnalysis(images[0].url)}
+                disabled={isAnalyzingAi || isSubmitting}
+                title="Regenerate all AI merchandising suggestions"
+              >
+                <Sparkles size={14} />
+                <span>{isAnalyzingAi ? 'ANALYZING...' : 'REGENERATE SUGGESTIONS'}</span>
+              </button>
+            )}
             <button
               type="button"
               className={styles.cancelActionBtn}

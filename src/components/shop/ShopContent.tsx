@@ -72,13 +72,13 @@ export const ShopContent: React.FC<ShopContentProps> = ({
   }, []);
 
   // Query parameters state
-  const currentCategory = searchParams.get('category') || '';
-  const currentGender = searchParams.get('gender') || '';
-  const currentSize = searchParams.get('size') || '';
-  const currentColor = searchParams.get('color') || searchParams.get('colour') || '';
-  const currentMinPrice = searchParams.get('minPrice') || '';
-  const currentMaxPrice = searchParams.get('maxPrice') || '';
-  const currentSort = searchParams.get('sort') || '';
+  const currentCategory = searchParams?.get('category') || '';
+  const currentGender = searchParams?.get('gender') || '';
+  const currentSize = searchParams?.get('size') || '';
+  const currentColor = searchParams?.get('color') || searchParams?.get('colour') || '';
+  const currentMinPrice = searchParams?.get('minPrice') || '';
+  const currentMaxPrice = searchParams?.get('maxPrice') || '';
+  const currentSort = searchParams?.get('sort') || '';
 
   // Calculate active filter count
   const activeCount = [
@@ -90,7 +90,7 @@ export const ShopContent: React.FC<ShopContentProps> = ({
   ].filter(Boolean).length;
 
   const handleSortChange = (newSort: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || '');
     if (newSort) {
       params.set('sort', newSort);
     } else {
@@ -101,7 +101,7 @@ export const ShopContent: React.FC<ShopContentProps> = ({
   };
 
   const removeFilter = (key: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || '');
     params.delete(key);
     if (key === 'color') params.delete('colour');
     params.delete('page');
@@ -109,7 +109,7 @@ export const ShopContent: React.FC<ShopContentProps> = ({
   };
 
   const removePriceFilter = () => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || '');
     params.delete('minPrice');
     params.delete('maxPrice');
     params.delete('page');
@@ -118,9 +118,9 @@ export const ShopContent: React.FC<ShopContentProps> = ({
 
   const clearAllFilters = () => {
     const params = new URLSearchParams();
-    const filterType = searchParams.get('filter');
-    const searchVal = searchParams.get('search');
-    const sortVal = searchParams.get('sort');
+    const filterType = searchParams?.get('filter');
+    const searchVal = searchParams?.get('search');
+    const sortVal = searchParams?.get('sort');
     if (filterType) params.set('filter', filterType);
     if (searchVal) params.set('search', searchVal);
     if (sortVal) params.set('sort', sortVal);
@@ -330,7 +330,7 @@ export const ShopContent: React.FC<ShopContentProps> = ({
             <div className={styles.pagination}>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
                 const isActive = pageNum === currentPage;
-                const params = new URLSearchParams(searchParams.toString());
+                const params = new URLSearchParams(searchParams?.toString() || '');
                 params.set('page', pageNum.toString());
 
                 return (

@@ -31,7 +31,7 @@ export function AccountNav() {
         const isActive =
           item.href === '/account'
             ? pathname === '/account'
-            : pathname.startsWith(item.href);
+            : Boolean(pathname?.startsWith(item.href));
         const Icon = item.icon;
 
         return (

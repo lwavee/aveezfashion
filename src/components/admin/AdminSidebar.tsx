@@ -15,6 +15,7 @@ import {
   Boxes,
   Tag,
   SlidersHorizontal,
+  Sparkles,
   Settings,
   ArrowUpRight,
   LogOut,
@@ -51,6 +52,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Inventory', href: '/admin/inventory', icon: <Boxes size={17} /> },
   { label: 'Coupons', href: '/admin/coupons', icon: <Tag size={17} /> },
   { label: 'Homepage Content', href: '/admin/content', icon: <SlidersHorizontal size={17} /> },
+  { label: 'AI Studio', href: '/admin/ai-studio', icon: <Sparkles size={17} /> },
   { label: 'Settings', href: '/admin/settings', icon: <Settings size={17} /> },
 ];
 
@@ -137,7 +139,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
               const isActive =
                 item.href === '/admin'
                   ? pathname === '/admin'
-                  : pathname.startsWith(item.href);
+                  : Boolean(pathname?.startsWith(item.href));
 
               return (
                 <li key={item.href} className={styles.navLi}>

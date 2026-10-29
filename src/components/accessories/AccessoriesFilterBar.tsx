@@ -36,7 +36,7 @@ export const AccessoriesFilterBar: React.FC<AccessoriesFilterBarProps> = ({
   const searchParams = useSearchParams();
 
   const handleCategorySelect = (categorySlug: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || '');
     if (categorySlug === 'all') {
       params.delete('category');
     } else {
@@ -48,7 +48,7 @@ export const AccessoriesFilterBar: React.FC<AccessoriesFilterBarProps> = ({
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const sortVal = e.target.value;
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || '');
     if (sortVal) {
       params.set('sort', sortVal);
     } else {

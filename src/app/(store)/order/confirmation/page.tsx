@@ -10,7 +10,7 @@ import styles from './confirmation.module.css';
 
 export default function OrderConfirmationPage() {
   const searchParams = useSearchParams();
-  const orderNumber = searchParams.get('orderNumber');
+  const orderNumber = searchParams?.get('orderNumber');
 
   if (orderNumber) {
     if (typeof window !== 'undefined') {

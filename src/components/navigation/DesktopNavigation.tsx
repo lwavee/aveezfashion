@@ -36,7 +36,7 @@ export const DesktopNavigation: React.FC<DesktopNavigationProps> = ({
     <nav className={`${styles.nav} ${className}`} aria-label="Main Navigation">
       <ul className={styles.navList}>
         {items.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+          const isActive = pathname === item.href || (item.href !== '/' && Boolean(pathname?.startsWith(item.href)));
 
           return (
             <li key={item.label} className={styles.navItem}>

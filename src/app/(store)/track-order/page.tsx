@@ -31,7 +31,7 @@ const TIMELINE_STEPS = [
 
 export default function TrackOrderPage() {
   const searchParams = useSearchParams();
-  const initialOrderNumber = searchParams.get('orderNumber') || '';
+  const initialOrderNumber = searchParams?.get('orderNumber') || '';
 
   const [orderNumber, setOrderNumber] = useState(initialOrderNumber);
   const [verificationContact, setVerificationContact] = useState('');

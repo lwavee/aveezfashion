@@ -52,12 +52,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   // Fetch real catalog data from database/service layer
-  const [content, settings, categories, bestSellersData, accessoriesData] = await Promise.all([
+  const [content, settings, categories, bestSellersData, accessoriesData, heroSlides] = await Promise.all([
     CatalogService.getHomepageContent(),
     CatalogService.getSettings(),
     CatalogService.getCategories(),
     CatalogService.getProducts({ isBestSeller: true, limit: 4 }),
     CatalogService.getAccessories({ limit: 8 }),
+    CatalogService.getHeroSlides(),
   ]);
 
   const isDiwali = CatalogService.isSeasonalThemeActive(settings.seasonalTheme);
@@ -93,7 +94,10 @@ export default async function HomePage() {
       />
 
       {/* C. Compelling Diwali Campaign Hero */}
-      <HeroSection seasonalTheme={isDiwali ? settings.seasonalTheme : undefined} />
+      <HeroSection
+        slides={heroSlides.length > 0 ? heroSlides : undefined}
+        seasonalTheme={isDiwali ? settings.seasonalTheme : undefined}
+      />
 
       {/* D. Four Visual Shopping Categories (or 6 in Normal Mode) */}
       <CategoryGrid categories={categories} isDiwali={isDiwali} />

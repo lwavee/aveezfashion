@@ -65,16 +65,16 @@ function NavbarContent({ isDiwali }: NavbarProps) {
   const isShop = pathname === '/shop';
 
   const isNewArrivalsActive =
-    !isHome && (filterParam === 'new' || pathname.startsWith('/collections/new'));
+    !isHome && (filterParam === 'new' || Boolean(pathname?.startsWith('/collections/new')));
   const isWomenActive =
-    !isHome && (genderParam === 'WOMEN' || pathname.startsWith('/collections/women'));
+    !isHome && (genderParam === 'WOMEN' || Boolean(pathname?.startsWith('/collections/women')));
   const isMenActive =
-    !isHome && (genderParam === 'MEN' || pathname.startsWith('/collections/men'));
+    !isHome && (genderParam === 'MEN' || Boolean(pathname?.startsWith('/collections/men')));
   const isAccessoriesActive =
-    !isHome && (pathname === '/accessories' || pathname.startsWith('/accessories'));
+    !isHome && (pathname === '/accessories' || Boolean(pathname?.startsWith('/accessories')));
   const isOriginalsActive =
     !isHome &&
-    (pathname.startsWith('/collections/aveez-originals') ||
+    (Boolean(pathname?.startsWith('/collections/aveez-originals')) ||
       collectionParam === 'aveez-originals' ||
       collectionParam === 'originals');
   const isShopAllActive =
@@ -82,8 +82,8 @@ function NavbarContent({ isDiwali }: NavbarProps) {
   const isSaleActive =
     !isHome &&
     (filterParam === 'sale' ||
-      pathname.startsWith('/collections/sale') ||
-      pathname.startsWith('/sale'));
+      Boolean(pathname?.startsWith('/collections/sale')) ||
+      Boolean(pathname?.startsWith('/sale')));
 
   return (
     <>
@@ -114,7 +114,7 @@ function NavbarContent({ isDiwali }: NavbarProps) {
               <Link
                 href="/shop?tag=festive"
                 className={`${styles.navLink} ${styles.festiveLink} ${
-                  pathname.includes('festive') || searchParams?.get('tag') === 'festive'
+                  Boolean(pathname?.includes('festive')) || searchParams?.get('tag') === 'festive'
                     ? styles.active
                     : ''
                 }`}

@@ -27,6 +27,7 @@ const ROUTE_TITLES: Record<string, { title: string; section: string }> = {
   '/admin/inventory': { title: 'Inventory Management', section: 'Operations' },
   '/admin/coupons': { title: 'Coupons & Promotions', section: 'Marketing' },
   '/admin/content': { title: 'Homepage Content', section: 'Storefront' },
+  '/admin/ai-studio': { title: 'AI Studio', section: 'Campaigns' },
   '/admin/settings': { title: 'Settings', section: 'System' },
 };
 
@@ -41,8 +42,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <>{children}</>;
   }
 
-  const currentRouteMeta = ROUTE_TITLES[pathname] || {
-    title: pathname.split('/').pop()?.toUpperCase() || 'CONSOLE',
+  const currentRouteMeta = (pathname && ROUTE_TITLES[pathname]) || {
+    title: (pathname || '').split('/').pop()?.toUpperCase() || 'CONSOLE',
     section: 'Admin',
   };
 

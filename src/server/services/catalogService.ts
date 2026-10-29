@@ -4,6 +4,8 @@ import { Category } from '@/server/models/Category';
 import { Collection } from '@/server/models/Collection';
 import { HomepageContent } from '@/server/models/HomepageContent';
 import { Settings } from '@/server/models/Settings';
+import { Campaign } from '@/server/models/Campaign';
+import type { HeroSlide } from '@/components/home/HeroSection';
 import {
   initialCategories,
   initialCollections,
@@ -91,6 +93,7 @@ export class CatalogService {
     page?: number;
     limit?: number;
     tag?: string;
+    isFeatured?: boolean;
     isBestSeller?: boolean;
     isNewArrival?: boolean;
     isAveezOriginal?: boolean;
@@ -113,6 +116,7 @@ export class CatalogService {
         filter.gender = { $in: [params.gender.toUpperCase(), 'UNISEX'] };
       }
 
+      if (params.isFeatured) filter.isFeatured = true;
       if (params.isBestSeller) filter.isBestSeller = true;
       if (params.isNewArrival) filter.isNewArrival = true;
       if (params.isAveezOriginal) filter.isAveezOriginal = true;
@@ -335,6 +339,75 @@ export class CatalogService {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+  }
+
+  /**
+   * Retrieves all currently active and scheduled campaigns from MongoDB.
+   * Automatically handles scheduling time-windows and excludes expired/archived items.
+   */
+  static async getActiveCampaigns(): Promise<any[]> {
+    try {
+      await connectToDatabase();
+      const now = new Date();
+
+      const campaigns = await Campaign.find({
+        status: { $in: ['ACTIVE', 'SCHEDULED'] },
+        $or: [
+          { startDate: null, endDate: null },
+          { startDate: { $lte: now }, endDate: null },
+          { startDate: null, endDate: { $gte: now } },
+          { startDate: { $lte: now }, endDate: { $gte: now } },
+        ],
+      })
+        .sort({ priority: -1, createdAt: -1 })
+        .lean();
+
+      return JSON.parse(JSON.stringify(campaigns));
+    } catch (err) {
+      console.warn('[CatalogService] Failed to query active campaigns:', err);
+      return [];
+    }
+  }
+
+  /**
+   * Transforms approved active hero campaigns from MongoDB into data-driven HeroSlides.
+   */
+  static async getHeroSlides(): Promise<HeroSlide[]> {
+    const activeCampaigns = await this.getActiveCampaigns();
+    const heroCampaigns = activeCampaigns.filter(
+      (c: any) => c.purpose === 'hero_banner' || c.targetSection === 'hero'
+    );
+
+    if (heroCampaigns.length > 0) {
+      return heroCampaigns.map((camp: any, idx: number) => {
+        const headlineText = camp.headline || 'WEAR DIFFERENT.';
+        const words = headlineText.split(' ');
+        const mid = Math.ceil(words.length / 2);
+        const headingLine1 = words.slice(0, mid).join(' ');
+        const headingLine2 = words.slice(mid).join(' ');
+
+        return {
+          id: idx + 1,
+          label: String(idx + 1).padStart(2, '0'),
+          tagline: camp.offerText || `CHAPTER 0${idx + 1} / EDIT`,
+          headingLine1: headingLine1 || 'WEAR',
+          headingLine2: headingLine2 || 'DIFFERENT.',
+          description: (camp.subheadline || '').toUpperCase(),
+          image: camp.desktopImage,
+          mobileImage: camp.mobileImage || camp.desktopImage,
+          alt: `Aveez Fashion — ${camp.name}`,
+          menLink: camp.ctaLink || '/shop?gender=MEN',
+          womenLink: camp.ctaLink ? `${camp.ctaLink}&gender=WOMEN` : '/shop?gender=WOMEN',
+          menText: camp.ctaText || 'EXPLORE COLLECTION →',
+          womenText: 'SHOP WOMEN →',
+          offerText: camp.offerText,
+          isFestive: camp.theme === 'diwali' || camp.theme === 'wedding',
+          link: camp.ctaLink,
+        };
+      });
+    }
+
+    return [];
   }
 
   /**

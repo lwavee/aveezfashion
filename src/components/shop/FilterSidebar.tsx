@@ -21,15 +21,15 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentCategory = searchParams.get('category') || '';
-  const currentGender = searchParams.get('gender') || '';
-  const currentSize = searchParams.get('size') || '';
-  const currentColor = searchParams.get('color') || searchParams.get('colour') || '';
-  const currentMinPrice = searchParams.get('minPrice') || '';
-  const currentMaxPrice = searchParams.get('maxPrice') || '';
+  const currentCategory = searchParams?.get('category') || '';
+  const currentGender = searchParams?.get('gender') || '';
+  const currentSize = searchParams?.get('size') || '';
+  const currentColor = searchParams?.get('color') || searchParams?.get('colour') || '';
+  const currentMinPrice = searchParams?.get('minPrice') || '';
+  const currentMaxPrice = searchParams?.get('maxPrice') || '';
 
   const updateFilter = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || '');
     if (value) {
       params.set(key, value);
     } else {
@@ -40,7 +40,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   };
 
   const updateColorFilter = (colorVal: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString() || '');
     if (colorVal) {
       params.set('color', colorVal);
       params.delete('colour');
@@ -54,9 +54,9 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
 
   const clearAllFilters = () => {
     const params = new URLSearchParams();
-    const filterType = searchParams.get('filter');
-    const searchVal = searchParams.get('search');
-    const sortVal = searchParams.get('sort');
+    const filterType = searchParams?.get('filter');
+    const searchVal = searchParams?.get('search');
+    const sortVal = searchParams?.get('sort');
     if (filterType) params.set('filter', filterType);
     if (searchVal) params.set('search', searchVal);
     if (sortVal) params.set('sort', sortVal);
@@ -260,7 +260,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
                   type="button"
                   key={idx}
                   onClick={() => {
-                    const params = new URLSearchParams(searchParams.toString());
+                    const params = new URLSearchParams(searchParams?.toString() || '');
                     if (tier.min) params.set('minPrice', tier.min);
                     else params.delete('minPrice');
                     if (tier.max) params.set('maxPrice', tier.max);

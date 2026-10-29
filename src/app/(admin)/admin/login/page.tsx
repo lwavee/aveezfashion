@@ -16,7 +16,7 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const errorParam = searchParams.get('error');
+    const errorParam = searchParams?.get('error');
     if (errorParam === 'unauthorized') {
       setError('Access denied: Administrator authorization required.');
     }
@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
         throw new Error(data.error || 'Invalid administrator credentials.');
       }
 
-      const redirectPath = searchParams.get('redirect') || '/admin';
+      const redirectPath = searchParams?.get('redirect') || '/admin';
       router.push(redirectPath);
       router.refresh();
     } catch (err: any) {
