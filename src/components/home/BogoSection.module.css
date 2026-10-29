@@ -1,0 +1,235 @@
+.section {
+  padding: clamp(2.5rem, 5vw, 4.5rem) var(--container-padding);
+  width: 100%;
+}
+
+.bannerContainer {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  background-color: var(--color-festive-wine-deep, #24060B);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(36, 6, 11, 0.12);
+  min-height: 480px;
+}
+
+.visualColumn {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+  overflow: hidden;
+}
+
+.bannerImage {
+  object-fit: cover;
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bannerContainer:hover .bannerImage {
+  transform: scale(1.03);
+}
+
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(36, 6, 11, 0) 60%,
+    rgba(36, 6, 11, 0.85) 100%
+  );
+  pointer-events: none;
+}
+
+.detailsColumn {
+  padding: clamp(2rem, 4vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #FFFDF9;
+}
+
+.badgeRow {
+  margin-bottom: 1rem;
+}
+
+.pillBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(197, 160, 89, 0.15);
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  font-family: var(--font-family-body);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-festive-gold, #C5A059);
+}
+
+.badgeIcon {
+  color: var(--color-festive-gold, #C5A059);
+}
+
+.title {
+  font-family: var(--font-family-display);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #FFFDF9;
+  line-height: 1.1;
+  margin: 0 0 0.875rem;
+}
+
+.subtitle {
+  font-family: var(--font-family-body);
+  font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+  line-height: 1.6;
+  color: rgba(255, 253, 249, 0.85);
+  margin: 0 0 1.5rem;
+  max-width: 520px;
+}
+
+.codeCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(197, 160, 89, 0.5);
+  margin-bottom: 1.5rem;
+  max-width: 480px;
+}
+
+.codeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.codeLabel {
+  font-family: var(--font-family-body);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 253, 249, 0.65);
+}
+
+.codeText {
+  font-family: var(--font-family-display);
+  font-size: 1.1875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--color-festive-gold, #C5A059);
+}
+
+.autoAppliedText {
+  font-family: var(--font-family-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: rgba(255, 253, 249, 0.8);
+  background: rgba(197, 160, 89, 0.15);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.termsList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.termItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: var(--font-family-body);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(255, 253, 249, 0.8);
+}
+
+.checkIcon {
+  color: var(--color-festive-gold, #C5A059);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ctaRow {
+  display: flex;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.9375rem 2rem;
+  background-color: var(--color-festive-gold, #C5A059);
+  color: #140709;
+  font-family: var(--font-family-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+
+.ctaButton:hover {
+  background-color: var(--color-festive-gold-light, #E0C58A);
+  transform: translateY(-1px);
+}
+
+.ctaArrow {
+  transition: transform 200ms ease;
+}
+
+.ctaButton:hover .ctaArrow {
+  transform: translateX(4px);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 900px) {
+  .bannerContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .visualColumn {
+    height: 280px;
+    min-height: 280px;
+  }
+
+  .imageOverlay {
+    background: linear-gradient(
+      180deg,
+      rgba(36, 6, 11, 0) 50%,
+      rgba(36, 6, 11, 0.9) 100%
+    );
+  }
+
+  .detailsColumn {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .codeCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .ctaButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

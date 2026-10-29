@@ -57,9 +57,9 @@
   /* ==================================================
      2. TYPOGRAPHY SYSTEM
      ================================================== */
-  --font-family-display:    'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-family-body:       'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-family-serif:      'Playfair Display', 'Bodoni MT', Didot, Georgia, serif;
+  --font-family-display:    var(--font-outfit), 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-body:       var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-serif:      var(--font-playfair), 'Playfair Display', 'Bodoni MT', Didot, Georgia, serif;
   --font-family-mono:       ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Heading & Display Scale */

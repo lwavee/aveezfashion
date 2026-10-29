@@ -16,9 +16,9 @@ console.log('1. All festive banners configured:', hasFestiveBanners ? 'PASS' : '
 
 // 2. Verify Default Editorial Banners
 const hasDefaultBanners = 
-  heroTsx.includes('/images/heroimage1.png') && 
-  heroTsx.includes('/images/heroimage2.png') && 
-  heroTsx.includes('/images/heroimage3.png');
+  (heroTsx.includes('/api/media/hero/hero1.webp') || heroTsx.includes('/images/heroimage1.png')) && 
+  (heroTsx.includes('/api/media/hero/hero2.webp') || heroTsx.includes('/images/heroimage2.png')) && 
+  (heroTsx.includes('/api/media/hero/hero3.webp') || heroTsx.includes('/images/heroimage3.png'));
 console.log('2. All default editorial banners configured:', hasDefaultBanners ? 'PASS' : 'FAIL');
 
 // 3. Verify No Slide Override Pollution

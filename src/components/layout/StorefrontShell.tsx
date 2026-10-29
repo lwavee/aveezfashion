@@ -29,9 +29,11 @@ interface StorefrontShellProps {
 export const StorefrontShell: React.FC<StorefrontShellProps> = ({
   children,
   announcementBar,
+  seasonalTheme,
 }) => {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
+  const isDiwali = Boolean(seasonalTheme?.enabled && seasonalTheme?.theme === 'diwali');
 
   // Completely isolate admin routes from public storefront chrome
   if (isAdmin) {
@@ -47,7 +49,7 @@ export const StorefrontShell: React.FC<StorefrontShellProps> = ({
           ctaLink={announcementBar.ctaLink}
         />
       )}
-      <Navbar />
+      <Navbar isDiwali={isDiwali} />
       <main id="main-content">{children}</main>
       <Footer />
       <CartDrawer />

@@ -11,30 +11,47 @@ import styles from './BestSellersSection.module.css';
 export interface BestSellersSectionProps {
   products: Product[];
   viewAllLink?: string;
+  isFestive?: boolean;
+  title?: string;
+  eyebrow?: string;
+  subtitle?: string;
 }
 
 export const BestSellersSection: React.FC<BestSellersSectionProps> = ({
   products,
   viewAllLink = '/shop?filter=bestseller',
+  isFestive = false,
+  title,
+  eyebrow,
+  subtitle,
 }) => {
   const { isInWishlist, toggleWishlist } = useWishlist();
 
   // Display top 4 products
   const displayProducts = products.slice(0, 4);
 
+  const displayEyebrow = eyebrow || (isFestive ? '✨ FESTIVE FAVORITES' : 'CURATED SELECTION');
+  const displayTitle = title || (isFestive ? 'BEST-SELLING FESTIVE LOOKS' : 'POPULAR PICKS');
+  const displaySubtitle =
+    subtitle ||
+    (isFestive
+      ? 'Handcrafted traditional kurtas, celebratory sets, and festive essentials.'
+      : 'Architectural essentials defining the season.');
+  const displayViewAll = isFestive && viewAllLink === '/shop?filter=bestseller' ? '/shop?tag=festive' : viewAllLink;
+
   return (
-    <section className={styles.section} aria-label="Popular Picks">
+    <section className={styles.section} aria-label={displayTitle}>
       <div className={`container ${styles.container}`}>
         {/* Section Editorial Header */}
         <div className={styles.header}>
           <div className={styles.titleStack}>
-            <span className={styles.eyebrow}>CURATED SELECTION</span>
-            <h2 className={styles.heading}>POPULAR PICKS</h2>
-            <p className={styles.supportingText}>Architectural essentials defining the season.</p>
+            <span className={styles.eyebrow}>{displayEyebrow}</span>
+            <h2 className={styles.heading}>{displayTitle}</h2>
+            <p className={styles.supportingText}>{displaySubtitle}</p>
           </div>
 
-          <Link href={viewAllLink} className={styles.desktopViewAll}>
-            <span>VIEW ALL PRODUCTS</span>
+          <Link href={displayViewAll} className={styles.desktopViewAll}>
+            <span>VIEW ALL FESTIVE PIECES</span>
             <span className={styles.viewAllArrow} aria-hidden="true">→</span>
           </Link>
         </div>

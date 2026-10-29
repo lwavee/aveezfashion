@@ -10,7 +10,11 @@ import { useWishlist } from '@/context/WishlistContext';
 import { SearchModal } from './SearchModal';
 import styles from './Navbar.module.css';
 
-function NavbarContent() {
+interface NavbarProps {
+  isDiwali?: boolean;
+}
+
+function NavbarContent({ isDiwali }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -106,11 +110,23 @@ function NavbarContent() {
 
           {/* Center Column: Desktop Navigation with Mega-Menu Dropdowns */}
           <nav className={styles.desktopNav} role="navigation" aria-label="Main Navigation">
+            {isDiwali && (
+              <Link
+                href="/shop?tag=festive"
+                className={`${styles.navLink} ${styles.festiveLink} ${
+                  pathname.includes('festive') || searchParams?.get('tag') === 'festive'
+                    ? styles.active
+                    : ''
+                }`}
+              >
+                FESTIVE COLLECTION
+              </Link>
+            )}
             <Link
-              href="/shop?filter=new"
-              className={`${styles.navLink} ${isNewArrivalsActive ? styles.active : ''}`}
+              href="/shop"
+              className={`${styles.navLink} ${isShopAllActive ? styles.active : ''}`}
             >
-              NEW ARRIVALS
+              SHOP
             </Link>
 
             {/* Women with Dropdown */}
@@ -361,11 +377,20 @@ function NavbarContent() {
             </button>
 
             <nav className={styles.mobileNavLinks}>
+              {isDiwali && (
+                <Link
+                  href="/shop?tag=festive"
+                  className={`${styles.mobileNavLink} ${styles.festiveMobileLink}`}
+                >
+                  <span>✨ FESTIVE COLLECTION</span>
+                  <ChevronRight size={16} />
+                </Link>
+              )}
               <Link
-                href="/shop?filter=new"
-                className={`${styles.mobileNavLink} ${isNewArrivalsActive ? styles.active : ''}`}
+                href="/shop"
+                className={`${styles.mobileNavLink} ${isShopAllActive ? styles.active : ''}`}
               >
-                <span>NEW ARRIVALS</span>
+                <span>SHOP ALL</span>
                 <ChevronRight size={16} />
               </Link>
 
@@ -530,7 +555,7 @@ function NavbarContent() {
   );
 }
 
-export const Navbar: React.FC = () => {
+export const Navbar: React.FC<NavbarProps> = ({ isDiwali }) => {
   return (
     <Suspense
       fallback={
@@ -542,12 +567,12 @@ export const Navbar: React.FC = () => {
               </Link>
             </div>
             <nav className={styles.desktopNav} role="navigation" aria-label="Main Navigation">
-              <span className={styles.navLink}>NEW ARRIVALS</span>
+              {isDiwali && <span className={`${styles.navLink} ${styles.festiveLink}`}>FESTIVE COLLECTION</span>}
+              <span className={styles.navLink}>SHOP</span>
               <span className={styles.navLink}>WOMEN</span>
               <span className={styles.navLink}>MEN</span>
               <span className={styles.navLink}>ACCESSORIES</span>
               <span className={`${styles.navLink} ${styles.originalsLink}`}>AVEEZ ORIGINALS</span>
-              <span className={styles.navLink}>SHOP ALL</span>
               <span className={`${styles.navLink} ${styles.saleLink}`}>SALE</span>
             </nav>
             <div className={styles.actionIcons} />
@@ -555,7 +580,7 @@ export const Navbar: React.FC = () => {
         </header>
       }
     >
-      <NavbarContent />
+      <NavbarContent isDiwali={isDiwali} />
     </Suspense>
   );
 };

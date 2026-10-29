@@ -102,6 +102,21 @@
   color: var(--color-error);
 }
 
+.festiveLink {
+  color: var(--color-festive-burgundy, #4A0E17);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.festiveLink:hover {
+  color: var(--color-festive-gold, #C5A059);
+}
+
+.festiveMobileLink {
+  color: var(--color-festive-burgundy, #4A0E17) !important;
+  font-weight: 700 !important;
+}
+
 /* Mega-Menu Dropdown on hover */
 .megaDropdown {
   position: absolute;

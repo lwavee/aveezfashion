@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Playfair_Display, Outfit, Inter } from 'next/font/google';
 import '@/styles/tokens.css';
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
@@ -7,38 +8,65 @@ import { ToastProvider } from '@/components/ui/Toast';
 import { StorefrontShell } from '@/components/layout/StorefrontShell';
 import { CatalogService } from '@/server/services/catalogService';
 
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  variable: '--font-playfair',
+  display: 'swap',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['500', '600', '700', '800'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://aveezfashion.com'),
   title: {
-    default: 'AVEEZ FASHION — Luxury Streetwear & Heavyweight Apparel',
+    default: 'AVEEZ FASHION — Luxury Indian Ethnic & Heavyweight Streetwear',
     template: '%s | AVEEZ FASHION',
   },
   description:
-    'Contemporary luxury streetwear, architectural boxy silhouettes, and 450 GSM heavyweight French terry essentials. Handcrafted in India.',
+    'Contemporary Indian festive fashion, royal kurta sets, architectural silhouettes, and 450 GSM heavyweight apparel. Handcrafted in India.',
   keywords: [
     'aveez fashion',
-    'luxury streetwear',
+    'diwali festive wear',
+    'indian ethnic wear',
+    'men kurta pajama',
+    'women festive wear',
+    'couple matching outfits',
+    'luxury streetwear india',
     'heavyweight hoodies',
     'oversized t-shirts',
-    'indian streetwear brand',
-    'minimalist fashion',
   ],
   authors: [{ name: 'AVEEZ FASHION' }],
   creator: 'AVEEZ FASHION',
+  alternates: {
+    canonical: 'https://aveezfashion.com',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: 'https://aveezfashion.com',
     siteName: 'AVEEZ FASHION',
-    title: 'AVEEZ FASHION — Wear Different',
+    title: 'AVEEZ FASHION — Wear Different | The Festive & Luxury Edit',
     description:
-      'Contemporary luxury streetwear, architectural silhouettes, and heavyweight essentials designed for individuality.',
+      'Contemporary Indian festive fashion, architectural silhouettes, and heavyweight essentials designed for individuality.',
     images: [
       {
-        url: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200&auto=format&fit=crop',
-        width: 1200,
-        height: 630,
-        alt: 'AVEEZ FASHION Editorial Campaign',
+        url: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
+        width: 1920,
+        height: 1080,
+        alt: 'AVEEZ FASHION Diwali Festive Campaign',
       },
     ],
   },
@@ -76,14 +104,51 @@ export default async function RootLayout({
         }
       : content.announcementBar;
 
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://aveezfashion.com/#organization',
+        name: 'AVEEZ FASHION',
+        url: 'https://aveezfashion.com',
+        logo: 'https://aveezfashion.com/brand/master-logo-black.png',
+        sameAs: ['https://www.instagram.com/aveezfashion'],
+        contactPoint: {
+          '@type': 'ContactPoint',
+          email: 'care@aveezfashion.com',
+          contactType: 'customer service',
+          areaServed: 'IN',
+          availableLanguage: ['English', 'Hindi'],
+        },
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://aveezfashion.com/#website',
+        url: 'https://aveezfashion.com',
+        name: 'AVEEZ FASHION',
+        publisher: {
+          '@id': 'https://aveezfashion.com/#organization',
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://aveezfashion.com/shop?search={search_term_string}',
+          'query-input': 'required name=search_term_string',
+        },
+      },
+    ],
+  };
+
   return (
-    <html lang="en" data-theme={isDiwali ? 'diwali' : 'normal'}>
+    <html
+      lang="en"
+      data-theme={isDiwali ? 'diwali' : 'normal'}
+      className={`${inter.variable} ${outfit.variable} ${playfair.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap"
-          rel="stylesheet"
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </head>
       <body>
@@ -92,7 +157,7 @@ export default async function RootLayout({
             <ToastProvider>
               <StorefrontShell
                 announcementBar={activeAnnouncement}
-                seasonalTheme={isDiwali ? settings.seasonalTheme : undefined}
+                seasonalTheme={settings.seasonalTheme}
               >
                 {children}
               </StorefrontShell>
