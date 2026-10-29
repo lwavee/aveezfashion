@@ -82,3 +82,4 @@ export const BogoSection: React.FC<BogoSectionProps> = ({
     </section>
   );
 };
+

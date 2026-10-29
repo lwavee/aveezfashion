@@ -40,3 +40,4 @@ console.log('\nTop 20 largest images:');
 imgFiles.sort((a, b) => b.size - a.size).slice(0, 20).forEach(f => {
   console.log(` - ${(f.size / (1024 * 1024)).toFixed(2)} MB : ${f.path}`);
 });
+
