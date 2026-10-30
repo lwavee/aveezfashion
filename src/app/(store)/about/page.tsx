@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/images/signature.png',
+        url: '/api/media/campaigns/signature.webp',
         width: 1536,
         height: 1024,
         alt: 'Aveez Fashion Brand Story & Editorial Manifesto',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     title: 'About Aveez Fashion | Contemporary Clothing & Personal Style',
     description:
       'Discover Aveez Fashion, a contemporary clothing brand focused on individual style, modern essentials and coordinated looks for everyday expression.',
-    images: ['/images/signature.png'],
+    images: ['/api/media/campaigns/signature.webp'],
   },
 };
 
@@ -58,28 +58,28 @@ export default function AboutPage() {
   const instagramReels = [
     {
       id: 'reel-1',
-      image: '/images/reels/reel-1.jpg',
+      image: '/api/media/reels/reel-1.webp',
       alt: 'Aveez Fashion Couple Matching Look',
       label: 'REEL 01',
       url: 'https://www.instagram.com/reel/DQWqjskjfnQ/',
     },
     {
       id: 'reel-4',
-      image: '/images/reels/reel-4.jpg',
+      image: '/api/media/reels/reel-4.webp',
       alt: 'Aveez Fashion Handcrafted Floral Suit',
       label: 'REEL 02',
       url: 'https://www.instagram.com/reel/DQMXQ4NCSLE/',
     },
     {
       id: 'reel-2',
-      image: '/images/reels/reel-2.jpg',
+      image: '/api/media/reels/reel-2.webp',
       alt: 'Aveez Fashion Embroidered Anarkali Ensemble',
       label: 'REEL 03',
       url: 'https://www.instagram.com/reel/DQUDXawif0G/',
     },
     {
       id: 'reel-3',
-      image: '/images/reels/reel-3.jpg',
+      image: '/api/media/reels/reel-3.webp',
       alt: 'Aveez Fashion Daylight Printed Casual Kurti',
       label: 'REEL 04',
       url: 'https://www.instagram.com/reel/DQO-GifiWQd/',
@@ -107,7 +107,7 @@ export default function AboutPage() {
 
           <div className={styles.heroImageContainer}>
             <Image
-              src="/images/signature.png"
+              src="/api/media/campaigns/signature.webp"
               alt="Aveez Fashion Brand Editorial Campaign featuring contemporary menswear styling in architectural light"
               fill
               priority
@@ -143,7 +143,7 @@ export default function AboutPage() {
 
             <div className={styles.storyImageCard}>
               <Image
-                src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=85&w=1000&auto=format&fit=crop"
+                src="/api/media/together/royal-pair.webp"
                 alt="Contemporary fashion styling reflecting individual expression and considered design"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -215,7 +215,7 @@ export default function AboutPage() {
           <div className={styles.galleryCollage}>
             <div className={`${styles.collageCard} ${styles.collageDominant}`}>
               <Image
-                src="/images/heroimage1.png"
+                src="/api/media/hero/hero1.webp"
                 alt="Contemporary streetwear styling from the Aveez collection"
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
@@ -227,7 +227,7 @@ export default function AboutPage() {
 
             <div className={`${styles.collageCard} ${styles.collageItem2}`}>
               <Image
-                src="/images/heroimage2.png"
+                src="/api/media/hero/hero2.webp"
                 alt="Relaxed everyday essentials designed for personal expression"
                 fill
                 sizes="(max-width: 1024px) 100vw, 55vw"
@@ -239,7 +239,7 @@ export default function AboutPage() {
 
             <div className={`${styles.collageCard} ${styles.collageItem3}`}>
               <Image
-                src="/images/TOGETHER/royalpair.png"
+                src="/api/media/together/royal-pair.webp"
                 alt="Coordinated couple outfits celebrating mutual style"
                 fill
                 sizes="(max-width: 640px) 100vw, 25vw"
@@ -251,7 +251,7 @@ export default function AboutPage() {
 
             <div className={`${styles.collageCard} ${styles.collageItem4}`}>
               <Image
-                src="/images/heroimage3.png"
+                src="/api/media/hero/hero3.webp"
                 alt="Statement silhouette and tailored details"
                 fill
                 sizes="(max-width: 640px) 100vw, 25vw"
@@ -275,7 +275,7 @@ export default function AboutPage() {
           <div className={styles.matchingGrid}>
             <div className={styles.matchingImageCard}>
               <Image
-                src="/images/TOGETHER/madefor2.png"
+                src="/api/media/together/made-for-two.webp"
                 alt="Men and Women Matching Styles by Aveez Fashion"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -313,7 +313,7 @@ export default function AboutPage() {
       >
         <div className={styles.statementBg} aria-hidden="true">
           <Image
-            src="/images/signature.png"
+            src="/api/media/campaigns/signature.webp"
             alt=""
             fill
             sizes="100vw"

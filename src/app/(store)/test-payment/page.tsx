@@ -64,7 +64,7 @@ export default function TestPaymentPage() {
         color: 'Test Edition',
         price: 1,
         originalPrice: 1,
-        image: '/images/CATEGORY/accessories.png',
+        image: '/api/media/together/made-for-two.webp',
       },
       1
     );

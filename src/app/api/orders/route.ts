@@ -39,8 +39,8 @@ export async function GET(req: NextRequest) {
         unitPrice: i.unitPrice ?? i.price ?? 0,
         quantity: i.quantity || 1,
         totalPrice: i.totalPrice ?? ((i.unitPrice ?? 0) * (i.quantity || 1)),
-        image: i.thumbnailImage ?? i.image ?? '/images/placeholder.jpg',
-        thumbnailImage: i.thumbnailImage ?? i.image ?? '/images/placeholder.jpg',
+        image: i.thumbnailImage ?? i.image ?? '/brand/clothing-label-mark.svg',
+        thumbnailImage: i.thumbnailImage ?? i.image ?? '/brand/clothing-label-mark.svg',
       }));
 
       const grandTotal = ord.pricing?.grandTotal || 0;

@@ -408,6 +408,12 @@ export class AiService {
           const mime = ext === 'webp' ? 'image/webp' : ext === 'png' ? 'image/png' : 'image/jpeg';
           return { buffer: buf, mimeType: mime };
         }
+
+        // In serverless / read-only production environments (like Vercel), fetch directly from Backblaze B2
+        const b2Asset = await StorageService.fetchB2Asset(cleanPath);
+        if (b2Asset) {
+          return { buffer: b2Asset.buffer, mimeType: b2Asset.mimeType };
+        }
       }
 
       if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {

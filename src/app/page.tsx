@@ -40,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
       url: 'https://aveezfashion.com',
       images: [
         {
-          url: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
+          url: settings.seasonalTheme?.heroDesktopImage || '/api/media/campaigns/diwali/hero-desktop.webp',
           width: 1920,
           height: 1080,
           alt: 'AVEEZ FASHION Diwali Campaign',
@@ -100,7 +100,11 @@ export default async function HomePage() {
       />
 
       {/* D. Four Visual Shopping Categories (or 6 in Normal Mode) */}
-      <CategoryGrid categories={categories} isDiwali={isDiwali} />
+      <CategoryGrid
+        categories={categories}
+        isDiwali={isDiwali}
+        seasonalTheme={isDiwali ? settings.seasonalTheme : undefined}
+      />
 
       {/* E. Best-Selling / Featured Festive Products */}
       <BestSellersSection products={bestSellersData.products} isFestive={isDiwali} />
@@ -120,7 +124,7 @@ export default async function HomePage() {
             secondaryLabel="THE AVEEZ SIGNATURE"
             headline="NOT MADE TO BLEND IN."
             description="Distinctive style. Individual expression. A different point of view."
-            image="/api/media/campaigns/signature.webp"
+            image={content.aveezOriginals?.image || '/api/media/campaigns/signature.webp'}
             ctaText="EXPLORE THE COLLECTION ↗"
             ctaLink={content.aveezOriginals?.ctaLink || '/collections/aveez-originals'}
           />

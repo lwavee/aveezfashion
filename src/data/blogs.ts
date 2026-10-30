@@ -95,7 +95,7 @@ export const BLOG_POSTS: BlogPost[] = [
       avatar: '/brand/av-monogram.svg',
       bio: 'The creative and textile research collective behind Aveez Fashion, exploring structural silhouettes, premium natural cottons, and modern Indian aesthetics.',
     },
-    coverImage: '/images/atelier-manifesto.jpg',
+    coverImage: '/api/media/campaigns/signature.webp',
     coverAlt: 'Aveez Fashion Luxury Streetwear Atelier in India',
     tags: [
       'Aveez Fashion',
@@ -188,7 +188,7 @@ export const BLOG_POSTS: BlogPost[] = [
             'First, zero translucency—even our crisp White drops remain completely opaque under bright sunlight. Second, wind resistance and natural thermal insulation without synthetic polyester stuffiness. Third, an iconic, self-supporting drape that cascades smoothly down the body without bunching or clinging.',
           ],
           image: {
-            url: '/images/heroimage1.png',
+            url: '/api/media/hero/hero1.webp',
             alt: 'Aveez Fashion Heavyweight 280 GSM Boxy Tee in Studio Setting',
             caption: 'The Aveez Boxy Tee in pure black, illustrating structural shoulder drape and 280 GSM unwrinkled form.',
           },
@@ -281,7 +281,7 @@ export const BLOG_POSTS: BlogPost[] = [
       avatar: '/brand/av-monogram.svg',
       bio: 'Textile engineers and fabric curators at Aveez Fashion specializing in long-staple Indian cottons and high-density circular knit structures.',
     },
-    coverImage: '/images/heroimage2.png',
+    coverImage: '/api/media/hero/hero2.webp',
     coverAlt: 'Close-up of Aveez Fashion Heavyweight Combed Cotton Weave',
     tags: ['Fabric Guide', 'GSM Explained', 'Heavyweight Cotton', 'French Terry', 'Textile Quality'],
     toc: [
@@ -413,7 +413,7 @@ export const BLOG_POSTS: BlogPost[] = [
       avatar: '/brand/av-monogram.svg',
       bio: 'Fashion stylists and art directors shaping the visual aesthetic and campaign wardrobes for Aveez Fashion drops.',
     },
-    coverImage: '/images/heroimage3.png',
+    coverImage: '/api/media/hero/hero3.webp',
     coverAlt: 'Styling oversized streetwear silhouette with Aveez Fashion capsule',
     tags: ['Styling Guide', 'Oversized Fit', 'Boxy Silhouettes', 'Streetwear Proportions', 'Capsule Wardrobe'],
     toc: [

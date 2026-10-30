@@ -19,13 +19,11 @@ const HomepageContentSchema = new Schema<HomepageContentDocument>(
       },
       desktopImage: {
         type: String,
-        default:
-          'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1920&auto=format&fit=crop',
+        default: '/api/media/hero/hero1.webp',
       },
       mobileImage: {
         type: String,
-        default:
-          'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1080&auto=format&fit=crop',
+        default: '/api/media/hero/hero1.webp',
       },
       primaryCtaText: { type: String, default: 'SHOP MEN' },
       primaryCtaLink: { type: String, default: '/shop?gender=MEN' },
@@ -42,8 +40,7 @@ const HomepageContentSchema = new Schema<HomepageContentDocument>(
       },
       image: {
         type: String,
-        default:
-          'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1400&auto=format&fit=crop',
+        default: '/api/media/campaigns/signature.webp',
       },
       ctaText: { type: String, default: 'EXPLORE AVEEZ ORIGINALS' },
       ctaLink: { type: String, default: '/collections/aveez-originals' },

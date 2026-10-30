@@ -32,7 +32,7 @@ export const InstagramGridSection: React.FC = () => {
   const posts: EditorialPost[] = [
     {
       id: 'reel-1',
-      image: '/images/reels/reel-1.jpg',
+      image: '/api/media/reels/reel-1.webp',
       alt: 'Aveez Fashion Reel Look 01 — Together In Style Couple Ensemble',
       label: 'EDITORIAL 01',
       title: 'Together In Style',
@@ -42,7 +42,7 @@ export const InstagramGridSection: React.FC = () => {
     },
     {
       id: 'reel-4',
-      image: '/images/reels/reel-4.jpg',
+      image: '/api/media/reels/reel-4.webp',
       alt: 'Aveez Fashion Reel Look 02 — Handcrafted Pastel Floral Suit',
       label: 'EDITORIAL 02',
       title: 'Atelier Pastel Suit',
@@ -52,7 +52,7 @@ export const InstagramGridSection: React.FC = () => {
     },
     {
       id: 'reel-2',
-      image: '/images/reels/reel-2.jpg',
+      image: '/api/media/reels/reel-2.webp',
       alt: 'Aveez Fashion Reel Look 03 — Embroidered Anarkali Ensemble',
       label: 'EDITORIAL 03',
       title: 'Noir Embroidered Edit',
@@ -62,7 +62,7 @@ export const InstagramGridSection: React.FC = () => {
     },
     {
       id: 'reel-3',
-      image: '/images/reels/reel-3.jpg',
+      image: '/api/media/reels/reel-3.webp',
       alt: 'Aveez Fashion Reel Look 04 — Daylight Printed Casual Kurti',
       label: 'EDITORIAL 04',
       title: 'Daylight Indigo Print',
@@ -72,7 +72,7 @@ export const InstagramGridSection: React.FC = () => {
     },
     {
       id: 'reel-5',
-      image: '/images/reels/reel-5.jpg',
+      image: '/api/media/reels/reel-5.webp',
       alt: 'Aveez Fashion Reel Look 05 — Contemporary Youth Silhouette',
       label: 'EDITORIAL 05',
       title: 'The Modern Narrative',

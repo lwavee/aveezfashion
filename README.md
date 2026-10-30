@@ -25,10 +25,6 @@
 
 Rejecting the cycle of disposable fast fashion, Aveez creates enduring wardrobe centerpieces characterized by bold drop-shoulder cuts, boxy drapes, custom fabric milling, and an austere monochrome design language. Every garment is cut, stitched, and finished with precision to hold its shape wash after wash.
 
-<p align="center">
-  <img src="public/images/heroimage1.png" alt="Aveez Fashion Editorial Campaign" width="100%"/>
-</p>
-
 ---
 
 ## 🧵 The Craft & Material Philosophy
@@ -44,57 +40,12 @@ At the core of Aveez Fashion is an obsessive dedication to fabric engineering:
 
 ## 🖤 Curated Collections
 
-<table align="center" width="100%">
-  <tr>
-    <td width="50%" align="center">
-      <img src="public/images/CATEGORY/men.png" alt="Men's Collection" width="100%"/>
-      <br/>
-      <strong>MEN</strong>
-      <br/>
-      <em>Boxy silhouettes & heavyweight essentials</em>
-    </td>
-    <td width="50%" align="center">
-      <img src="public/images/CATEGORY/women.png" alt="Women's Collection" width="100%"/>
-      <br/>
-      <strong>WOMEN</strong>
-      <br/>
-      <em>Architectural tailoring & relaxed drapes</em>
-    </td>
-  </tr>
-</table>
-
-<table align="center" width="100%">
-  <tr>
-    <td width="25%" align="center">
-      <img src="public/images/CATEGORY/hoodies.png" alt="Hoodies" width="100%"/>
-      <br/>
-      <strong>HOODIES</strong>
-      <br/>
-      <sub>450 GSM French Terry</sub>
-    </td>
-    <td width="25%" align="center">
-      <img src="public/images/CATEGORY/oversizetshirt.png" alt="Oversized Tees" width="100%"/>
-      <br/>
-      <strong>OVERSIZED TEES</strong>
-      <br/>
-      <sub>280 GSM Combed Jersey</sub>
-    </td>
-    <td width="25%" align="center">
-      <img src="public/images/CATEGORY/bootom.png" alt="Bottoms" width="100%"/>
-      <br/>
-      <strong>BOTTOMS</strong>
-      <br/>
-      <sub>Pleated Wide-Leg Pants</sub>
-    </td>
-    <td width="25%" align="center">
-      <img src="public/images/CATEGORY/shirt.png" alt="Shirts" width="100%"/>
-      <br/>
-      <strong>SHIRTS</strong>
-      <br/>
-      <sub>Cuban Collar & Overshirts</sub>
-    </td>
-  </tr>
-</table>
+- **MEN:** Boxy silhouettes & heavyweight essentials
+- **WOMEN:** Architectural tailoring & relaxed drapes
+- **HOODIES:** 450 GSM French Terry
+- **OVERSIZED TEES:** 280 GSM Combed Jersey
+- **BOTTOMS:** Pleated Wide-Leg Pants
+- **SHIRTS:** Cuban Collar & Overshirts
 
 ---
 
@@ -102,38 +53,10 @@ At the core of Aveez Fashion is an obsessive dedication to fabric engineering:
 
 *Two styles. One connection.* A dedicated high-fashion capsule celebrating coordinated couple styling across traditional, streetwear, and lounging contexts.
 
-<table align="center" width="100%">
-  <tr>
-    <td width="25%" align="center">
-      <img src="public/images/TOGETHER/royalpair.png" alt="Royal Pair" width="100%"/>
-      <br/>
-      <strong>ROYAL PAIR</strong>
-      <br/>
-      <sub>Poshak & Kurta Pajama</sub>
-    </td>
-    <td width="25%" align="center">
-      <img src="public/images/TOGETHER/sport.png" alt="Sport Together" width="100%"/>
-      <br/>
-      <strong>SPORT TOGETHER</strong>
-      <br/>
-      <sub>Matching Sportswear</sub>
-    </td>
-    <td width="25%" align="center">
-      <img src="public/images/TOGETHER/nightin.png" alt="Night In" width="100%"/>
-      <br/>
-      <strong>NIGHT IN</strong>
-      <br/>
-      <sub>Matching Nightwear</sub>
-    </td>
-    <td width="25%" align="center">
-      <img src="public/images/TOGETHER/madefor2.png" alt="Made For Two" width="100%"/>
-      <br/>
-      <strong>MADE FOR TWO</strong>
-      <br/>
-      <sub>Couple T-Shirts</sub>
-    </td>
-  </tr>
-</table>
+- **ROYAL PAIR:** Poshak & Kurta Pajama
+- **SPORT TOGETHER:** Matching Sportswear
+- **NIGHT IN:** Matching Nightwear
+- **MADE FOR TWO:** Couple T-Shirts
 
 ---
 

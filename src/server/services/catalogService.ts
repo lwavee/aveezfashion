@@ -435,8 +435,8 @@ export class CatalogService {
         headline: 'WEAR DIFFERENT.',
         subheadline:
           'ARCHITECTURAL SILHOUETTES & HEAVYWEIGHT ESSENTIALS DESIGNED FOR INDIVIDUALITY.',
-        desktopImage: '/images/heroimage1.png',
-        mobileImage: '/images/heroimage1.png',
+        desktopImage: '/api/media/hero/hero1.webp',
+        mobileImage: '/api/media/hero/hero1.webp',
         primaryCtaText: 'SHOP MEN',
         primaryCtaLink: '/shop?gender=MEN',
         secondaryCtaText: 'SHOP WOMEN',
@@ -447,8 +447,7 @@ export class CatalogService {
         headline: 'THE ARCHITECTURAL SILHOUETTE',
         description:
           'Crafted from custom 450 GSM luxury brushed French terry cotton with relaxed drop shoulders and structured drapes. Designed and constructed in India.',
-        image:
-          'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1400&auto=format&fit=crop',
+        image: '/api/media/campaigns/signature.webp',
         ctaText: 'EXPLORE AVEEZ ORIGINALS',
         ctaLink: '/collections/aveez-originals',
       },
@@ -506,8 +505,8 @@ export class CatalogService {
       heroHeadline: 'THE DIWALI EDIT',
       heroSubheadline: 'Celebrate the season in timeless style. Architectural silhouettes meet festive warmth.',
       heroOfferText: 'FLAT 40% OFF',
-      heroDesktopImage: '/uploads/campaigns/diwali/diwali-edit-banner.webp',
-      heroMobileImage: '/uploads/campaigns/diwali/diwali-hero-mobile.webp',
+      heroDesktopImage: '/api/media/campaigns/diwali/hero-desktop.webp',
+      heroMobileImage: '/api/media/campaigns/diwali/hero-mobile.webp',
       heroOverlayMode: 'without_text' as const,
       heroPrimaryCtaText: 'SHOP FESTIVE MEN →',
       heroPrimaryCtaLink: '/shop?gender=MEN',

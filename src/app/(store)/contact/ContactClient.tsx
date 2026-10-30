@@ -238,7 +238,7 @@ export default function ContactClient() {
 
           <div className={styles.heroImageWrapper}>
             <Image
-              src="/images/heroimage2.png"
+              src="/api/media/hero/hero2.webp"
               alt="Aveez Fashion Client Care & Support Editorial"
               fill
               priority

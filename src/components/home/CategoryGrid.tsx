@@ -1,12 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Category } from '@/types';
+import { Category, SeasonalThemeConfig } from '@/types';
 import styles from './CategoryGrid.module.css';
 
 interface CategoryGridProps {
   categories: Category[];
   isDiwali?: boolean;
+  seasonalTheme?: SeasonalThemeConfig;
 }
 
 interface FestiveCategory {
@@ -81,17 +82,52 @@ const EDITORIAL_CONFIGS: Record<string, { image: string; objectPosition: string 
   },
 };
 
-export const CategoryGrid: React.FC<CategoryGridProps> = ({ categories, isDiwali }) => {
+export const CategoryGrid: React.FC<CategoryGridProps> = ({ categories, isDiwali, seasonalTheme }) => {
   if (isDiwali) {
+    const festiveList: FestiveCategory[] = [
+      {
+        id: 'men-ethnic',
+        name: "Men's Ethnic Wear",
+        subtitle: 'Kurta sets & royal silhouettes',
+        image: seasonalTheme?.menImage || '/api/media/campaigns/diwali/men.webp',
+        href: '/shop?gender=MEN&tag=festive',
+        objectPosition: 'center 20%',
+      },
+      {
+        id: 'women-festive',
+        name: "Women's Festive Wear",
+        subtitle: 'Festive anarkalis & drapes',
+        image: seasonalTheme?.womenImage || '/api/media/campaigns/diwali/women.webp',
+        href: '/shop?gender=WOMEN&tag=festive',
+        objectPosition: 'center 20%',
+      },
+      {
+        id: 'couple-matching',
+        name: 'Couple Matching Outfits',
+        subtitle: 'Coordinated festive harmony',
+        image: seasonalTheme?.matchingStylesImage || '/api/media/campaigns/diwali/matching-styles.webp',
+        href: '/collections/matching-styles',
+        objectPosition: 'center 25%',
+      },
+      {
+        id: 'best-diwali-looks',
+        name: 'Best Festive Looks',
+        subtitle: 'Curated statement edits',
+        image: seasonalTheme?.heroDesktopImage || '/api/media/campaigns/diwali/hero-desktop.webp',
+        href: '/shop?tag=diwali',
+        objectPosition: 'center 35%',
+      },
+    ];
+
     return (
       <section className={`container ${styles.section}`} aria-label="Festive Shopping Categories">
         <div className={styles.header}>
-          <span className={styles.sectionEyebrow}>✨ THE DIWALI EDIT</span>
+          <span className={styles.sectionEyebrow}>✨ THE FESTIVE EDIT</span>
           <h2 className={styles.sectionTitle}>SHOP BY FESTIVE CATEGORY</h2>
         </div>
 
         <div className={styles.festiveGrid}>
-          {FESTIVE_CATEGORIES.map((cat, idx) => (
+          {festiveList.map((cat, idx) => (
             <Link
               key={cat.id}
               href={cat.href}
@@ -133,7 +169,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ categories, isDiwali
 
   const renderCard = (cat: Category, isHero: boolean) => {
     const editorial = EDITORIAL_CONFIGS[cat.slug];
-    const imageSrc = editorial?.image || cat.image;
+    const imageSrc = cat.image || editorial?.image || '';
     const objectPosition = editorial?.objectPosition || 'center center';
 
     const getCategoryHref = (slug: string) => {

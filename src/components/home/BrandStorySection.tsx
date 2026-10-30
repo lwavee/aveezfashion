@@ -24,7 +24,7 @@ export const BrandStorySection: React.FC<BrandStoryProps> = ({
   ctaText = 'OUR STORY',
   ctaLink = '/about',
   eyebrow = 'PHILOSOPHY & PURPOSE',
-  image = '/images/atelier-manifesto.jpg',
+  image = '/api/media/campaigns/signature.webp',
 }) => {
   // Extract key manifesto thesis from paragraphs
   const quoteText =

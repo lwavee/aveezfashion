@@ -12,8 +12,8 @@ export interface AccessoriesHeroProps {
   collectionAnchorId?: string;
 }
 
-const DEFAULT_PRIMARY_IMAGE = '/images/products/artisan-floral-embroidered-hairband.jpg';
-const DEFAULT_SECONDARY_IMAGE = '/images/products/minimalist-matte-architectural-claw-clip.jpg';
+const DEFAULT_PRIMARY_IMAGE = '/api/media/together/made-for-two.webp';
+const DEFAULT_SECONDARY_IMAGE = '/api/media/campaigns/diwali/accessories.webp';
 
 export const AccessoriesHero: React.FC<AccessoriesHeroProps> = ({
   totalCount,

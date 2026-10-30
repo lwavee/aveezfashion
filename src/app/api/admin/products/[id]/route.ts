@@ -292,7 +292,7 @@ export async function PATCH(
 
     if (Array.isArray(body.images)) {
       product.images = body.images.map((img: any, idx: number) => ({
-        url: typeof img === 'string' ? img : (img.url || '/images/placeholder.jpg'),
+        url: typeof img === 'string' ? img : (img.url || ''),
         alt: typeof img === 'string' ? `${product.title} - View ${idx + 1}` : (img.alt || `${product.title} - View ${idx + 1}`),
         color: typeof img === 'object' && img.color ? String(img.color).trim() : undefined,
         isPrimary: typeof img === 'object' ? Boolean(img.isPrimary) : idx === 0,

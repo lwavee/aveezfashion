@@ -359,7 +359,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 7. Format Images
-    const rawImages = Array.isArray(images) && images.length > 0 ? images : ['/images/placeholder.jpg'];
+    const rawImages = Array.isArray(images) ? images.filter(Boolean) : [];
     const formattedImages = rawImages.map((img: any, idx: number) => {
       if (typeof img === 'string') {
         return {
@@ -370,7 +370,7 @@ export async function POST(req: NextRequest) {
         };
       }
       return {
-        url: img.url || '/images/placeholder.jpg',
+        url: img.url || '',
         alt: img.alt || `${title.trim()} - View ${idx + 1}`,
         color: img.color ? String(img.color).trim() : undefined,
         isPrimary: img.isPrimary ?? idx === 0,

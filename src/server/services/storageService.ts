@@ -183,6 +183,26 @@ export class StorageService {
   }
 
   /**
+   * Attempts to save a local backup copy in public/uploads/ for development and caching.
+   * Never throws if operating in a serverless or read-only environment (e.g. Vercel, AWS Lambda).
+   */
+  private static trySaveLocalFile(subPath: string, buffer: Buffer): boolean {
+    try {
+      const localFilePath = path.resolve('public/uploads', subPath);
+      const localDir = path.dirname(localFilePath);
+      if (!fs.existsSync(localDir)) {
+        fs.mkdirSync(localDir, { recursive: true });
+      }
+      fs.writeFileSync(localFilePath, buffer);
+      return true;
+    } catch (err: any) {
+      // Gracefully ignore read-only file systems (EROFS) in cloud deployments
+      console.warn(`[StorageService] Local disk write skipped for "${subPath}" (${err.code || err.message}).`);
+      return false;
+    }
+  }
+
+  /**
    * Uploads an image file buffer to Backblaze B2 or local disk storage.
    */
   static async uploadProductImage(
@@ -215,15 +235,7 @@ export class StorageService {
     const generatedFileName = `prod-${uniqueId}.${ext}`;
     const fileKey = `products/${generatedFileName}`;
 
-    // Always ensure local backup in public/uploads/products for resilience and instant SSR availability
-    const uploadsDir = path.resolve('public/uploads/products');
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-    const localFilePath = path.join(uploadsDir, generatedFileName);
-    fs.writeFileSync(localFilePath, buffer);
-
-    // Try Backblaze B2 upload if configured
+    // 1. Primary Cloud Storage: Backblaze B2 (when configured)
     if (this.isB2Configured()) {
       try {
         const auth = await this.getB2Auth();
@@ -257,6 +269,9 @@ export class StorageService {
               });
 
               if (b2UploadRes.ok) {
+                // Best-effort local cache for local dev / writable environments
+                this.trySaveLocalFile(fileKey, buffer);
+
                 // Return media gateway URL that streams verified private B2 assets securely
                 return {
                   url: `/api/media/${fileKey}`,
@@ -267,25 +282,37 @@ export class StorageService {
                   storageProvider: 'b2',
                 };
               } else {
-                console.warn('[StorageService] B2 file upload request returned non-200, falling back to local storage.');
+                const errText = await b2UploadRes.text().catch(() => '');
+                console.warn('[StorageService] B2 file upload request returned non-200:', b2UploadRes.status, errText);
               }
+            } else {
+              const errText = await getUploadUrlRes.text().catch(() => '');
+              console.warn('[StorageService] B2 get_upload_url failed:', getUploadUrlRes.status, errText);
             }
           }
         }
       } catch (b2Error) {
-        console.warn('[StorageService] B2 upload encountered an error, falling back to local storage:', b2Error);
+        console.warn('[StorageService] B2 upload encountered an error:', b2Error);
       }
     }
 
-    // Local fallback
-    return {
-      url: `/uploads/products/${generatedFileName}`,
-      fileName: generatedFileName,
-      fileKey,
-      size: buffer.length,
-      mimeType: finalMime,
-      storageProvider: 'local',
-    };
+    // 2. Local fallback (for local development where public/uploads is writable)
+    const savedLocally = this.trySaveLocalFile(fileKey, buffer);
+    if (savedLocally) {
+      return {
+        url: `/uploads/products/${generatedFileName}`,
+        fileName: generatedFileName,
+        fileKey,
+        size: buffer.length,
+        mimeType: finalMime,
+        storageProvider: 'local',
+      };
+    }
+
+    // 3. Fallback failure notice if in read-only environment and B2 is inaccessible
+    throw new Error(
+      'Image upload failed: The server filesystem is read-only and Backblaze B2 cloud storage is not accessible. Please ensure B2_KEY_ID, B2_APPLICATION_KEY, and B2_BUCKET_NAME are configured in your deployment environment variables.'
+    );
   }
 
   /**
@@ -299,15 +326,7 @@ export class StorageService {
   ): Promise<UploadResult> {
     const fileName = path.basename(fileKey);
 
-    // Save local copy in public/uploads/${fileKey}
-    const localFilePath = path.resolve('public/uploads', fileKey);
-    const localDir = path.dirname(localFilePath);
-    if (!fs.existsSync(localDir)) {
-      fs.mkdirSync(localDir, { recursive: true });
-    }
-    fs.writeFileSync(localFilePath, buffer);
-
-    // Upload to Backblaze B2 if configured
+    // 1. Primary Cloud Storage: Backblaze B2 (when configured)
     if (this.isB2Configured()) {
       try {
         const auth = await this.getB2Auth();
@@ -340,6 +359,9 @@ export class StorageService {
               });
 
               if (b2UploadRes.ok) {
+                // Best-effort local cache for local dev / writable environments
+                this.trySaveLocalFile(fileKey, buffer);
+
                 return {
                   url: `/api/media/${fileKey}`,
                   fileName,
@@ -359,14 +381,22 @@ export class StorageService {
       }
     }
 
-    return {
-      url: `/uploads/${fileKey}`,
-      fileName,
-      fileKey,
-      size: buffer.length,
-      mimeType,
-      storageProvider: 'local',
-    };
+    // 2. Local fallback
+    const savedLocally = this.trySaveLocalFile(fileKey, buffer);
+    if (savedLocally) {
+      return {
+        url: `/uploads/${fileKey}`,
+        fileName,
+        fileKey,
+        size: buffer.length,
+        mimeType,
+        storageProvider: 'local',
+      };
+    }
+
+    throw new Error(
+      'Campaign asset upload failed: Server filesystem is read-only and Backblaze B2 is not accessible. Please check your cloud storage environment variables.'
+    );
   }
 
   /**

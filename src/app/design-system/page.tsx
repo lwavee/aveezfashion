@@ -47,12 +47,12 @@ const MOCK_PREVIEW_PRODUCT: Product = {
   isAveezOriginal: true,
   images: [
     {
-      url: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=800&auto=format&fit=crop',
+      url: '/api/media/categories/oversized-tees.webp',
       alt: 'Front View Onyx Heavyweight Hoodie',
       isPrimary: true,
     },
     {
-      url: 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?q=80&w=800&auto=format&fit=crop',
+      url: '/api/media/categories/hoodies.webp',
       alt: 'Detail View Onyx Heavyweight Hoodie',
       isPrimary: false,
     },

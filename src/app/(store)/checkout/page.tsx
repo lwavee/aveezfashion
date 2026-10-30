@@ -841,7 +841,7 @@ export default function CheckoutPage() {
                 <div key={`${item.productId}-${item.variantSku}`} className={styles.itemRow}>
                   <div className={styles.itemImageWrap}>
                     <Image
-                      src={item.image || '/images/placeholder.jpg'}
+                      src={item.image || '/brand/clothing-label-mark.svg'}
                       alt={item.title}
                       fill
                       sizes="56px"

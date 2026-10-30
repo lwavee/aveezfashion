@@ -181,7 +181,7 @@ export default function AdminProductsPage() {
         basePrice: parseFloat(addForm.basePrice),
         salePrice: addForm.salePrice ? parseFloat(addForm.salePrice) : undefined,
         description: addForm.description.trim(),
-        images: addForm.imageUrl.trim() ? [addForm.imageUrl.trim()] : ['/images/placeholder.jpg'],
+        images: addForm.imageUrl.trim() ? [addForm.imageUrl.trim()] : [],
         variants,
         status: addForm.status,
       };
@@ -709,7 +709,7 @@ export default function AdminProductsPage() {
                 </label>
                 <input
                   type="text"
-                  placeholder="https://... or /images/..."
+                  placeholder="https://... or /api/media/..."
                   value={addForm.imageUrl}
                   onChange={(e) => setAddForm({ ...addForm, imageUrl: e.target.value })}
                   style={{ width: '100%', padding: '8px 10px', fontSize: '13px', border: '1px solid #D1D5DB', borderRadius: '3px' }}

@@ -81,7 +81,7 @@ const THEME_PRESETS: ThemePreset[] = [
     ctaText: 'SHOP WINTER EDIT →',
     ctaLink: '/shop?collection=winter',
     offerText: 'NEW SEASON DROP',
-    sampleImage: '/images/heroimage1.png',
+    sampleImage: '/api/media/hero/hero1.webp',
   },
   {
     id: 'new_arrivals',
@@ -93,7 +93,7 @@ const THEME_PRESETS: ThemePreset[] = [
     ctaText: 'SHOP NEW ARRIVALS →',
     ctaLink: '/shop?filter=new-arrivals',
     offerText: 'LIMITED EDITION',
-    sampleImage: '/images/heroimage2.png',
+    sampleImage: '/api/media/hero/hero2.webp',
   },
   {
     id: 'men',
@@ -687,7 +687,7 @@ export default function AiStudioPage() {
                     <button
                       type="button"
                       className={styles.presetBtn}
-                      onClick={() => setCurrentImage('/images/heroimage1.png')}
+                      onClick={() => setCurrentImage('/api/media/hero/hero1.webp')}
                     >
                       Monochrome Drop
                     </button>

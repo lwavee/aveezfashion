@@ -34,8 +34,8 @@ export default function AdminContentPage() {
   // Seasonal Theme State
   const [seasonalThemeEnabled, setSeasonalThemeEnabled] = useState(true);
   const [seasonalTheme, setSeasonalTheme] = useState('diwali');
-  const [seasonalDesktopImg, setSeasonalDesktopImg] = useState('/uploads/campaigns/diwali/diwali-edit-banner.webp');
-  const [seasonalMobileImg, setSeasonalMobileImg] = useState('/uploads/campaigns/diwali/diwali-hero-mobile.webp');
+  const [seasonalDesktopImg, setSeasonalDesktopImg] = useState('/api/media/campaigns/diwali/hero-desktop.webp');
+  const [seasonalMobileImg, setSeasonalMobileImg] = useState('/api/media/campaigns/diwali/hero-mobile.webp');
 
   // Brand Story State
   const [brandStoryTitle, setBrandStoryTitle] = useState('INDIVIDUALITY BY DESIGN.');

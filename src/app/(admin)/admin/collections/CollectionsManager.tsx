@@ -49,7 +49,7 @@ export function CollectionsManager() {
   const [addSlug, setAddSlug] = useState('');
   const [addTagline, setAddTagline] = useState('');
   const [addDesc, setAddDesc] = useState('');
-  const [addCover, setAddCover] = useState('/images/heroimage1.png');
+  const [addCover, setAddCover] = useState('');
   const [addDepts, setAddDepts] = useState<('MEN' | 'WOMEN' | 'UNISEX' | 'ACCESSORIES')[]>([
     'MEN',
     'WOMEN',
@@ -122,7 +122,7 @@ export function CollectionsManager() {
           slug: addSlug.trim() || undefined,
           tagline: addTagline.trim(),
           description: addDesc.trim(),
-          coverImage: addCover.trim() || '/images/heroimage1.png',
+          coverImage: addCover.trim() || '/api/media/hero/hero1.webp',
           departments: addDepts,
           categories: addSelectedCats,
           featured: addFeatured,

@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/images/atelier-manifesto.jpg',
+        url: '/api/media/campaigns/signature.webp',
         width: 1200,
         height: 630,
         alt: 'Aveez Fashion Journal & Editorial Atelier',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: 'Fashion Journal & Editorial | Aveez Fashion',
     description:
       'Explore the Aveez Fashion Journal: insights on luxury Indian streetwear, 280+ GSM heavyweight textiles, and architectural silhouettes.',
-    images: ['/images/atelier-manifesto.jpg'],
+    images: ['/api/media/campaigns/signature.webp'],
   },
 };
 

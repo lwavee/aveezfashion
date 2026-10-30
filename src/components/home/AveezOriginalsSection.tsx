@@ -23,7 +23,7 @@ export const AveezOriginalsSection: React.FC<AveezOriginalsProps> = ({
   collectionId,
   headline = 'NOT MADE TO BLEND IN.',
   description = 'Distinctive style. Individual expression. A different point of view.',
-  image = '/images/signature.png',
+  image = '/api/media/campaigns/signature.webp',
   ctaText = 'EXPLORE THE COLLECTION ↗',
   ctaLink = '/collections/aveez-originals',
 }) => {
@@ -67,7 +67,7 @@ export const AveezOriginalsSection: React.FC<AveezOriginalsProps> = ({
     !image.includes('aveez-originals-campaign') &&
     !image.includes('photo-1552374196')
       ? image
-      : '/images/signature.png';
+      : '/api/media/campaigns/signature.webp';
 
   return (
     <section

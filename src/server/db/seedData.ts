@@ -53,7 +53,7 @@ export const initialCategories: Partial<Category>[] = [
     name: 'Accessories',
     slug: 'accessories',
     description: 'The Finishing Touch — Handcrafted hair accessories, floral headbands, clips, and styling charms.',
-    image: '/images/CATEGORY/accessories.png',
+    image: '/api/media/together/made-for-two.webp',
     displayOrder: 7,
     isActive: true,
   },
@@ -108,8 +108,7 @@ export const initialCollections: Partial<Collection>[] = [
     tagline: 'Architectural silhouettes crafted in heavyweight French terry.',
     description:
       'The foundational drop representing Aveez Fashion’s design philosophy: substantial fabrics, precision cuts, and effortless drape.',
-    coverImage:
-      'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200&auto=format&fit=crop',
+    coverImage: '/api/media/campaigns/signature.webp',
     featured: true,
     isActive: true,
   },
@@ -118,8 +117,7 @@ export const initialCollections: Partial<Collection>[] = [
     slug: 'monochrome-edit',
     tagline: 'Timeless minimalism in pure onyx black and optic white.',
     description: 'A curated edit of high-contrast pieces designed for effortless pairing.',
-    coverImage:
-      'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1200&auto=format&fit=crop',
+    coverImage: '/api/media/hero/hero2.webp',
     featured: true,
     isActive: true,
   },
@@ -138,7 +136,7 @@ export const initialProducts: Partial<Product>[] = [
     basePrice: 99,
     images: [
       {
-        url: '/images/products/handmade-teddy-bear-keychain.jpg',
+        url: '/api/media/together/made-for-two.webp',
         alt: 'Handmade Teddy Bear Keychain',
         isPrimary: true,
         sortOrder: 0,
@@ -185,7 +183,7 @@ export const paymentTestProduct: Partial<Product> = {
   salePrice: 1,
   images: [
     {
-      url: '/images/CATEGORY/accessories.png',
+      url: '/api/media/together/made-for-two.webp',
       alt: 'AVEEZ Payment Test Product - Internal Razorpay Verification',
       isPrimary: true,
       sortOrder: 0,

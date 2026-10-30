@@ -12,6 +12,10 @@ interface StyleCard {
   objectPosition?: string;
 }
 
+export interface TogetherInStyleProps {
+  items?: StyleCard[];
+}
+
 const TOGETHER_STYLES: StyleCard[] = [
   {
     id: 'royal-pair',
@@ -47,7 +51,9 @@ const TOGETHER_STYLES: StyleCard[] = [
   },
 ];
 
-export const TogetherInStyleSection: React.FC = () => {
+export const TogetherInStyleSection: React.FC<TogetherInStyleProps> = ({ items }) => {
+  const displayItems = items && items.length > 0 ? items : TOGETHER_STYLES;
+
   return (
     <section className={`container ${styles.section}`} aria-label="Together In Style — Men × Women Matching Styles">
       <div className={styles.header}>
@@ -61,7 +67,7 @@ export const TogetherInStyleSection: React.FC = () => {
       </div>
 
       <div className={styles.grid}>
-        {TOGETHER_STYLES.map((item, idx) => (
+        {displayItems.map((item, idx) => (
           <Link
             key={item.id}
             href={item.link}
