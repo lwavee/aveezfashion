@@ -4,6 +4,9 @@ import { Order } from '@/server/models/Order';
 import { getSessionFromRequest } from '@/server/auth';
 import { generateInvoicePdf } from '@/server/services/invoiceService';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }

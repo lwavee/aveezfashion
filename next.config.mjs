@@ -5,7 +5,10 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    serverComponentsExternalPackages: ['mongoose', 'bcryptjs'],
+    serverComponentsExternalPackages: ['mongoose', 'bcryptjs', 'pdfkit', 'sharp'],
+    outputFileTracingIncludes: {
+      '/**': ['./node_modules/pdfkit/**/*'],
+    },
   },
   images: {
     remotePatterns: [

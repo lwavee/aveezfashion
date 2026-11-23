@@ -73,7 +73,7 @@ export async function generateInvoicePdf({
   order,
   saveInvoiceNumber = true,
 }: InvoiceGenerationOptions): Promise<{ pdfBuffer: Buffer; invoiceNumber: string }> {
-  await connectToDatabase();
+  await connectToDatabase().catch((err) => console.warn('Invoice generation: Database connection fallback:', err.message));
 
   // Load store settings
   const settings = await Settings.findOne({}).lean().catch(() => null);
